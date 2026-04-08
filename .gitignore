@@ -1,6 +1,19 @@
+# Environment
+.env
+*.env
+
+# Python
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# State
 state.json
-trading.log
-*.tmp
+*.log
+
+# IDE
+.vscode/
+.idea/

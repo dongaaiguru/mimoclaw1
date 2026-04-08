@@ -1,8 +1,8 @@
-# Polymarket Unified Score Engine
+# Polymarket Unified Score Engine — V2
 
-A quantitative trading system for Polymarket prediction markets, built around a unified mathematical decision function.
+A multi-engine quantitative trading system for Polymarket prediction markets.
 
-> **From $50 to consistent returns** — using Bayesian inference, LMSR pricing, KL divergence, Stoikov risk control, and Kelly criterion position sizing.
+> **$100 capital, 4 strategies, daily profits** — combining directional signals, market making, logical arbitrage, and information arbitrage with GTC execution and strict risk management.
 
 ---
 
@@ -52,21 +52,35 @@ Tested on **8 real Polymarket crypto markets** with live API data (April 2026).
 
 ---
 
+## V2: What's New
+
+- **GTC limit orders** (not FOK) — orders rest on book until filled
+- **Zero slippage buffer** — limit orders fill at exact price
+- **Order lifecycle tracking** — every order tracked from creation to fill
+- **Heartbeat watchdog** — cancels stale orders if bot crashes
+- **Multi-engine architecture** — 4 strategies running in parallel
+- **$100 capital optimized** — Kelly sizing, 15% drawdown circuit breaker
+
 ## Project Structure
 
 ```
 polymarket-engine/
 ├── README.md                 # This file
-├── strategy.md               # Full mathematical derivations
+├── PLAN.md                   # Master plan ($100 capital, 6-week roadmap)
+├── RESEARCH.md               # Strategy research (top trader analysis)
+├── strategy.md               # Mathematical derivations
 ├── system_design.md          # Architecture & components
-├── execution_plan.md         # Step-by-step execution logic
-├── bot.py                    # Production bot (paper + live)
+├── execution_plan.md         # Execution logic
+├── bot.py                    # V1 bot (single engine)
+├── bot_v2.py                 # V2 bot (multi-engine, GTC execution)
 ├── src/
 │   └── models/
 │       └── score.py          # All 5 models + unified Score
-├── backtest_proven.py        # Final calibrated backtest
-├── backtest_v2.py            # v2 backtest (realistic ticks)
-├── backtest.py               # v1 backtest (initial)
+├── backtest_proven.py        # V1 calibrated backtest
+├── backtest_v2.py            # V2 backtest (realistic ticks)
+├── backtest_v3.py            # V3 backtest
+├── backtest_final.py         # Final backtest
+├── backtest_combined.py      # Multi-engine backtest with real market data
 ├── requirements.txt          # Python dependencies
 └── .env.example              # API credential template
 ```
@@ -88,22 +102,25 @@ cp .env.example .env
 # Edit .env with your Polymarket API credentials
 ```
 
-### 3. Run Paper Trading
+### 3. Run Paper Trading (V2 — Multi-Engine)
 
 ```bash
-python bot.py
+python bot_v2.py                    # All engines
+python bot_v2.py --engine mm        # Market making only
+python bot_v2.py --engine dir       # Directional only
 ```
 
 ### 4. Run Live Trading
 
 ```bash
-python bot.py --live
+python bot_v2.py --live
 ```
 
 ### 5. Run Backtest
 
 ```bash
-python backtest_proven.py
+python backtest_proven.py           # V1 single-engine backtest
+python backtest_combined.py         # V2 multi-engine backtest
 ```
 
 ---
