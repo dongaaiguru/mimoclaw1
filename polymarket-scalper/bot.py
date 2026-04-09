@@ -1244,6 +1244,23 @@ class OrderManager:
             return round(price, 4)
         return round(round(price / tick_size) * tick_size, 4)
 
+    # ─── Upgrade 2: Net inventory tracking for market making ─
+
+    def get_net_inventory(self, slug: str) -> float:
+        """
+        Returns net position for a market.
+        Positive = long YES, negative = short YES, 0 = flat.
+        Used by market making to skew quotes.
+        """
+        pos = self.positions.get(slug)
+        if pos:
+            return pos.shares
+        return 0.0
+
+    def get_total_inventory(self) -> float:
+        """Total absolute exposure across all positions."""
+        return sum(abs(p.cost) for p in self.positions.values())
+
     # ─── Core Properties ─────────────────────────────────────
 
     @property
@@ -1417,25 +1434,47 @@ class OrderManager:
         self.capital -= cost
 
         if order.side == "BUY":
-            self.positions[order.slug] = Position(
-                slug=order.slug, token=order.token, side="LONG",
-                entry_price=fill_price, shares=order.shares, cost=cost,
-                entry_spread=order.entry_spread, entry_volume=order.entry_volume,
-                entry_liquidity=order.entry_liquidity, entry_price_range=order.entry_price_range,
-                stop_loss_price=round(fill_price - 0.02, 4),
-            )
-            LOG.info(f"🟢 FILLED BUY | {order.shares:.0f} @ ${fill_price:.4f} | {order.slug[:35]}")
+            if order.slug in self.positions:
+                # Adding to existing position
+                pos = self.positions[order.slug]
+                total_cost = pos.cost + cost
+                total_shares = pos.shares + order.shares
+                pos.entry_price = total_cost / total_shares
+                pos.shares = total_shares
+                pos.cost = total_cost
+                LOG.info(f"🟢 ADDED BUY | {order.shares:.0f} @ ${fill_price:.4f} | "
+                        f"Total: {total_shares:.0f} @ ${pos.entry_price:.4f} | {order.slug[:35]}")
+            else:
+                self.positions[order.slug] = Position(
+                    slug=order.slug, token=order.token, side="LONG",
+                    entry_price=fill_price, shares=order.shares, cost=cost,
+                    entry_spread=order.entry_spread, entry_volume=order.entry_volume,
+                    entry_liquidity=order.entry_liquidity, entry_price_range=order.entry_price_range,
+                    stop_loss_price=round(fill_price - 0.02, 4),
+                )
+                LOG.info(f"🟢 FILLED BUY | {order.shares:.0f} @ ${fill_price:.4f} | {order.slug[:35]}")
         else:
+            # SELL fill
             pos = self.positions.pop(order.slug, None)
-            if pos:
-                pnl = (fill_price - pos.entry_price) * pos.shares
-                self.capital += pos.shares * fill_price
+            if pos and pos.side == "LONG":
+                # Closing a long position
+                pnl = (fill_price - pos.entry_price) * order.shares
+                self.capital += order.shares * fill_price
                 self.peak = max(self.peak, self.capital)
                 hold = time.time() - pos.opened
+
+                # If partial fill (sold fewer shares than we hold)
+                remaining = pos.shares - order.shares
+                if remaining > 0.01:
+                    # Put the rest back as a position
+                    pos.shares = remaining
+                    pos.cost = pos.entry_price * remaining
+                    self.positions[order.slug] = pos
+
                 trade = Trade(
                     slug=order.slug, question=self._market_questions.get(order.slug, ""),
                     entry_price=pos.entry_price, exit_price=fill_price,
-                    shares=pos.shares, pnl=pnl, hold_sec=hold, reason="filled",
+                    shares=order.shares, pnl=pnl, hold_sec=hold, reason="filled",
                     entry_spread=pos.entry_spread, entry_volume=pos.entry_volume,
                     entry_liquidity=pos.entry_liquidity, entry_price_range=pos.entry_price_range,
                     exit_type="profit" if pnl > 0 else "loss",
@@ -1444,14 +1483,34 @@ class OrderManager:
                 if self.brain:
                     self.brain.learn_from_trade(trade)
                 emoji = "🟢" if pnl > 0 else "🔴"
-                LOG.info(f"{emoji} FILLED SELL | {pos.shares:.0f} @ ${fill_price:.4f} | PnL=${pnl:+.3f} | {order.slug[:35]}")
+                LOG.info(f"{emoji} FILLED SELL | {order.shares:.0f} @ ${fill_price:.4f} | "
+                        f"PnL=${pnl:+.3f} | {order.slug[:35]}")
+            else:
+                # SELL filled but no long position = we're SHORT
+                # Track as negative position (short YES)
+                self.capital += order.shares * fill_price  # received cash
+                self.positions[order.slug] = Position(
+                    slug=order.slug, token=order.token, side="SHORT",
+                    entry_price=fill_price, shares=-order.shares, cost=cost,
+                    entry_spread=order.entry_spread, entry_volume=order.entry_volume,
+                    entry_liquidity=order.entry_liquidity, entry_price_range=order.entry_price_range,
+                    stop_loss_price=round(fill_price + 0.02, 4),  # stop above for shorts
+                )
+                LOG.info(f"🔴 SHORT SELL | {order.shares:.0f} @ ${fill_price:.4f} | "
+                        f"Will cover with BUY | {order.slug[:35]}")
 
     def force_exit_position(self, slug: str, exit_price: float, reason: str):
         pos = self.positions.pop(slug, None)
         if not pos:
             return
-        pnl = (exit_price - pos.entry_price) * pos.shares
-        self.capital += pos.shares * exit_price
+
+        if pos.side == "LONG":
+            pnl = (exit_price - pos.entry_price) * pos.shares
+            self.capital += pos.shares * exit_price
+        else:  # SHORT
+            pnl = (pos.entry_price - exit_price) * abs(pos.shares)
+            self.capital += abs(pos.shares) * (pos.entry_price + pnl / abs(pos.shares))
+
         self.peak = max(self.peak, self.capital)
         hold = time.time() - pos.opened
         trade = Trade(
@@ -1469,16 +1528,26 @@ class OrderManager:
         LOG.info(f"{emoji} FORCE EXIT | {pos.shares:.0f} @ ${exit_price:.4f} | PnL=${pnl:+.3f} | {reason} | {slug[:35]}")
 
     def check_stop_losses(self, market_prices: Dict[str, float]):
-        """Upgrade 6: Per-position stop loss."""
+        """Upgrade 6: Per-position stop loss. Handles both long and short."""
         for slug, pos in list(self.positions.items()):
             if pos.stop_loss_price <= 0:
                 continue
             current_price = market_prices.get(slug, pos.entry_price)
-            if current_price <= pos.stop_loss_price:
-                LOG.warning(f"🛑 STOP LOSS triggered | {slug[:35]} | "
-                           f"${pos.entry_price:.4f} → ${current_price:.4f} "
-                           f"(stop=${pos.stop_loss_price:.4f})")
-                self.force_exit_position(slug, current_price, "stop_loss")
+
+            if pos.side == "LONG":
+                # Long: stop if price drops below stop
+                if current_price <= pos.stop_loss_price:
+                    LOG.warning(f"🛑 STOP LOSS (LONG) | {slug[:35]} | "
+                               f"${pos.entry_price:.4f} → ${current_price:.4f} "
+                               f"(stop=${pos.stop_loss_price:.4f})")
+                    self.force_exit_position(slug, current_price, "stop_loss")
+            elif pos.side == "SHORT":
+                # Short: stop if price rises above stop
+                if current_price >= pos.stop_loss_price:
+                    LOG.warning(f"🛑 STOP LOSS (SHORT) | {slug[:35]} | "
+                               f"${pos.entry_price:.4f} → ${current_price:.4f} "
+                               f"(stop=${pos.stop_loss_price:.4f})")
+                    self.force_exit_position(slug, current_price, "stop_loss")
 
     def check_timeouts(self, market_prices: Dict[str, float]):
         now = time.time()
@@ -1812,16 +1881,46 @@ class Scalper:
                         self.om.fill_order(order, order.price)
 
     async def _reprice(self):
-        # Cancel all live orders
-        for oid, order in list(self.om.orders.items()):
-            if order.status == "live":
-                await self.om.cancel_order(order)
+        # Upgrade 2: In market making mode, don't cancel orders on markets
+        # where we already have a resting bid/ask pair — let them work
+        if self.cfg.strategy == "both_sides":
+            # Only cancel orders on markets where BOTH orders are stale
+            # or where we have no resting pair
+            markets_with_pairs = defaultdict(list)
+            for oid, order in self.om.orders.items():
+                if order.status == "live":
+                    markets_with_pairs[order.slug].append(order)
+
+            for slug, orders in markets_with_pairs.items():
+                if len(orders) >= 2:
+                    # We have a bid+ask pair — check if either is stale
+                    oldest = min(o.created for o in orders)
+                    if time.time() - oldest > self._get_gtd_seconds(slug):
+                        # Both are stale, cancel and reprice
+                        for o in orders:
+                            await self.om.cancel_order(o)
+                    # else: let the pair work, skip repricing this market
+                    continue
+                # Single order — cancel and let the full reprice logic handle it
+                for o in orders:
+                    await self.om.cancel_order(o)
+        else:
+            # One-side mode: cancel all live orders
+            for oid, order in list(self.om.orders.items()):
+                if order.status == "live":
+                    await self.om.cancel_order(order)
 
         for slug, market in self.markets.items():
             if market.best_bid <= 0 or market.best_ask >= 1:
                 continue
             if market.spread < self.cfg.min_spread:
                 continue
+
+            # Skip markets that already have a resting order pair
+            live_on_market = [o for o in self.om.orders.values()
+                            if o.status == "live" and o.slug == slug]
+            if self.cfg.strategy == "both_sides" and len(live_on_market) >= 2:
+                continue  # pair is working, don't disturb
 
             # Upgrade 1: Check if news affects this market before repricing
             affected, reason = self.news.is_market_affected(market.question)
@@ -1883,55 +1982,144 @@ class Scalper:
         await self.om.place_limit(slug, market.yes_token, "BUY", buy_price, size, market, gtd)
 
     async def _place_both_sides(self, slug: str, market: Market, mid: float):
-        """Upgrade 2: Market making — place orders on both bid and ask."""
-        # Check if we already have a position
+        """
+        TRUE market making: place simultaneous BUY and SELL orders inside the spread.
+        Earn the spread regardless of which direction the market moves.
+
+        If BUY fills → we own YES, SELL is still resting (we profit when SELL fills).
+        If SELL fills first → we're short YES, BUY is still resting (we cover when BUY fills).
+        Either way: we capture the spread between our two orders.
+        """
+        spread = market.spread
+        if spread < self.cfg.min_spread:
+            return
+
+        # ─── Inventory tracking ──────────────────────────────
+        # Track net position: positive = long YES, negative = short YES
+        inventory = self.om.get_net_inventory(slug)
+
+        # ─── If we have a significant position, manage it ────
         if slug in self.om.positions:
-            # Just exit (same as one_side)
             pos = self.om.positions[slug]
-            exit_price = round(mid + 0.003, 4) if mid > pos.entry_price else round(market.best_bid, 4)
+            hold_sec = time.time() - pos.opened
+
+            # If holding too long or inventory too skewed, exit aggressively
+            aggression = 0.5
+            if self.brain:
+                aggression = self.brain.get_exit_aggressiveness(slug)
+
+            if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
+                exit_price = round(market.best_bid, 4)
+            elif mid > pos.entry_price + 0.005:
+                # In profit — place sell above mid to capture spread
+                exit_price = round(mid + 0.003, 4)
+            elif mid < pos.entry_price - 0.01:
+                # Underwater — cut at bid
+                exit_price = round(market.best_bid, 4)
+            else:
+                # Near breakeven — place at mid
+                exit_price = round(mid, 4)
+
             gtd = self._get_gtd_seconds(slug)
+            size = self.om.get_brain_adjusted_size(slug, market)
+
+            # Flow-adjusted exit
+            flow_stats = self.flow.get_stats(market.yes_token)
+            if flow_stats.get("buy_pressure", 0) > 0.5:
+                # Buyers stepping in — raise our sell price
+                exit_price = round(min(exit_price + 0.003, market.best_ask - 0.001), 4)
+
             await self.om.place_limit(slug, market.yes_token, "SELL",
                 exit_price, pos.cost, market, gtd)
             return
 
+        # ─── No position: place SIMULTANEOUS bid and ask ─────
         ok, _ = self.om.can_enter()
         if not ok:
             return
 
         size = self.om.get_brain_adjusted_size(slug, market)
         gtd = self._get_gtd_seconds(slug)
+        tick = market.tick_size
 
-        # Place BUY inside the spread
-        buy_price = round(mid - max(0.005, market.spread / 3), 4)
-        buy_price = max(buy_price, round(market.best_bid + 0.001, 4))
+        # Calculate bid and ask inside the spread
+        # Target: capture ~60% of the spread (leave room for others to hit us)
+        half_capture = max(0.005, spread * 0.3)
 
-        # Place SELL inside the spread (if we had shares — but we don't yet,
-        # so for both_sides we place buy on yes_token and buy on no_token equivalent)
-        # Actually, for market making we need to be able to sell something we don't own.
-        # Polymarket doesn't allow short selling easily, so "both sides" here means:
-        # Place buy orders on multiple markets in the same event (neg risk)
-        # OR: place buy at bid level, and if filled, immediately place sell at ask level
+        bid_price = round(mid - half_capture, 4)
+        ask_price = round(mid + half_capture, 4)
 
-        if 0 < buy_price < 1:
-            # Upgrade 5: Adjust aggressiveness based on flow
-            flow_stats = self.flow.get_stats(market.yes_token)
-            if flow_stats.get("buy_pressure", 0) > 0.5:
-                # Strong buy pressure — be more aggressive (closer to ask)
-                buy_price = round(mid - 0.003, 4)
-            elif flow_stats.get("buy_pressure", 0) < -0.5:
-                # Strong sell pressure — be more patient (closer to bid)
-                buy_price = round(market.best_bid + 0.001, 4)
+        # Don't cross existing levels
+        bid_price = max(bid_price, round(market.best_bid + tick, 4))
+        ask_price = min(ask_price, round(market.best_ask - tick, 4))
 
-            buy_price = self.om.snap_to_tick(buy_price, market.tick_size)
-            await self.om.place_limit(slug, market.yes_token, "BUY",
-                buy_price, size, market, gtd)
+        # ─── Inventory skew: if we're net long, lower bid / raise ask ───
+        # If net short, raise bid / lower ask
+        # This naturally reduces unwanted inventory
+        skew = inventory * 0.005  # 0.5¢ skew per unit of inventory
+        bid_price = round(bid_price - skew, 4)
+        ask_price = round(ask_price - skew, 4)
 
-        # Upgrade 7: If neg risk, also consider NO side
+        # ─── Flow adjustment ─────────────────────────────────
+        flow_stats = self.flow.get_stats(market.yes_token)
+        buy_pressure = flow_stats.get("buy_pressure", 0)
+
+        if buy_pressure > 0.3:
+            # Buyers dominating — tighten our ask (we want to sell to them)
+            ask_price = round(ask_price - 0.002, 4)
+        elif buy_pressure < -0.3:
+            # Sellers dominating — tighten our bid (we want to buy from them)
+            bid_price = round(bid_price + 0.002, 4)
+
+        # ─── Snap to ticks ───────────────────────────────────
+        bid_price = self.om.snap_to_tick(bid_price, tick)
+        ask_price = self.om.snap_to_tick(ask_price, tick)
+
+        # ─── Validate ────────────────────────────────────────
+        if bid_price <= 0 or bid_price >= 1 or ask_price <= 0 or ask_price >= 1:
+            return
+        if bid_price >= ask_price:
+            # Spread too tight — can't fit both orders
+            return
+        if (ask_price - bid_price) < tick * 2:
+            # Need at least 2 ticks between bid and ask
+            return
+
+        # ─── Place both orders ───────────────────────────────
+        # Size split: put more on the side that's more likely to fill
+        bid_size = size
+        ask_size = size
+
+        # Place the BID (BUY order below mid)
+        await self.om.place_limit(slug, market.yes_token, "BUY",
+            bid_price, bid_size, market, gtd)
+
+        # Place the ASK (SELL order above mid)
+        # This works even if we don't own shares — Polymarket CLOB
+        # handles it as a limit order that rests on the book
+        await self.om.place_limit(slug, market.yes_token, "SELL",
+            ask_price, ask_size, market, gtd)
+
+        LOG.info(f"🔄 MARKET MAKE | {slug[:35]} | "
+                f"BID ${bid_price:.4f} × ${bid_size:.0f} | "
+                f"ASK ${ask_price:.4f} × ${ask_size:.0f} | "
+                f"Spread captured: ${(ask_price-bid_price):.4f}")
+
+        # ─── Neg risk: also quote the NO side ────────────────
         if market.neg_risk and market.no_token:
-            no_price = round(1 - mid, 4)
-            no_buy = round(no_price - 0.02, 4)
-            if 0 < no_buy < 1:
-                LOG.debug(f"🔄 NEG RISK | {slug[:30]} | NO buy @ ${no_buy:.3f}")
+            no_mid = round(1 - mid, 4)
+            no_bid = round(no_mid - half_capture, 4)
+            no_ask = round(no_mid + half_capture, 4)
+            no_bid = max(no_bid, tick)
+            no_ask = min(no_ask, round(1 - tick, 4))
+            no_bid = self.om.snap_to_tick(no_bid, tick)
+            no_ask = self.om.snap_to_tick(no_ask, tick)
+
+            if 0 < no_bid < no_ask < 1:
+                await self.om.place_limit(slug + "_NO", market.no_token, "BUY",
+                    no_bid, round(size * 0.5, 2), market, gtd)
+                LOG.debug(f"🔄 NEG RISK NO | {slug[:30]} | "
+                         f"BID ${no_bid:.3f} | ASK ${no_ask:.3f}")
 
     def _final_report(self):
         wins = [t for t in self.om.trades if t.pnl > 0]
