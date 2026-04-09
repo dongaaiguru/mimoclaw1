@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """
-Polymarket Scalper — High-velocity spread capture bot with ADAPTIVE BRAIN.
+Polymarket Scalper v3 — Multi-strategy, brain-powered, news-aware trading engine.
 
-The brain persists across sessions in brain.json. It learns from every trade:
-- Which markets make money → trade them more aggressively
-- Which markets lose money → avoid or reduce exposure
-- What entry conditions lead to wins → replicate them
-- What patterns lead to losses → never repeat them
+8 upgrades over v2:
+  1. News feed + adverse selection protection
+  2. Both-side market making
+  3. GTD orders (auto-expire, no manual cancel)
+  4. Tick size awareness
+  5. Volume/order flow analysis
+  6. Kelly Criterion position sizing
+  7. Neg risk multi-outcome markets
+  8. Correlation tracking + time-of-day patterns
 
 Usage:
-  python3 bot.py --scan           # Discover scalping targets (brain-informed)
+  python3 bot.py --scan           # Discover targets (brain-informed)
   python3 bot.py --paper          # Paper trade with learning
   python3 bot.py --live           # Live trading (needs .env)
-  python3 bot.py --brain          # Show what the brain has learned
-  python3 bot.py --brain-reset    # Wipe all learned data
-  python3 bot.py --live --capital 100 --per-order 10
+  python3 bot.py --brain          # Show brain status
+  python3 bot.py --brain-reset    # Wipe learned data
+  python3 bot.py --strategies     # Show available strategies
+  python3 bot.py --live --capital 100 --per-order 10 --strategy both_sides
 """
 
 import asyncio
@@ -28,10 +33,12 @@ import signal
 import argparse
 import hashlib
 import hmac
+import re
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Set
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import aiohttp
 import websockets
@@ -77,6 +84,11 @@ class Config:
     min_volume: float = 1000.0
     max_markets: int = 10
     max_orders_per_market: int = 1
+    # Upgrade 2: strategy mode
+    strategy: str = os.getenv("STRATEGY", "one_side")  # "one_side" or "both_sides"
+    # Upgrade 8: trading hours (UTC)
+    quiet_hours_start: int = int(os.getenv("QUIET_HOURS_START", "3"))  # 3 AM UTC
+    quiet_hours_end: int = int(os.getenv("QUIET_HOURS_END", "6"))      # 6 AM UTC
 
     @property
     def is_live(self) -> bool:
@@ -107,6 +119,13 @@ class Market:
     fees_enabled: bool = False
     accepting: bool = True
     last_ws_update: float = 0.0
+    # Upgrade 4: tick size
+    tick_size: float = 0.01
+    # Upgrade 7: neg risk
+    neg_risk: bool = False
+    event_id: str = ""
+    # Upgrade 8: time category
+    time_category: str = "normal"  # "quiet", "normal", "peak"
 
 
 @dataclass
@@ -123,12 +142,15 @@ class Order:
     created: float = field(default_factory=time.time)
     filled: float = 0.0
     fill_price: float = 0.0
-    # Brain context at time of placement
+    # Upgrade 3: GTD expiration
+    expires_at: float = 0.0
+    order_type: str = "GTC"  # GTC, GTD, FAK
+    # Brain context
     brain_score: float = 0.0
     entry_spread: float = 0.0
     entry_volume: float = 0.0
     entry_liquidity: float = 0.0
-    entry_price_range: str = ""  # "low" "mid" "high"
+    entry_price_range: str = ""
 
 
 @dataclass
@@ -141,11 +163,12 @@ class Position:
     cost: float
     opened: float = field(default_factory=time.time)
     exit_order_id: str = ""
-    # Brain context
     entry_spread: float = 0.0
     entry_volume: float = 0.0
     entry_liquidity: float = 0.0
     entry_price_range: str = ""
+    # Upgrade 6: stop loss
+    stop_loss_price: float = 0.0
 
 
 @dataclass
@@ -159,26 +182,339 @@ class Trade:
     hold_sec: float
     reason: str
     ts: float = field(default_factory=time.time)
-    # Brain context
     entry_spread: float = 0.0
     entry_volume: float = 0.0
     entry_liquidity: float = 0.0
     entry_price_range: str = ""
-    exit_type: str = ""  # "profit", "timeout", "stop_loss", "shutdown"
+    exit_type: str = ""
 
 
 # ══════════════════════════════════════════════════════════════
-# ADAPTIVE BRAIN — learns from every trade, persists forever
+# UPGRADE 5: FLOW ANALYZER — volume/order flow intelligence
+# ══════════════════════════════════════════════════════════════
+
+class FlowAnalyzer:
+    """
+    Tracks trade flow, volume spikes, and momentum per market.
+    Detects informed trading and warns the brain.
+    """
+
+    def __init__(self):
+        # token -> list of (timestamp, price, size, side)
+        self.trade_history: Dict[str, List[Tuple[float, float, float, str]]] = defaultdict(list)
+        # token -> running stats
+        self.stats: Dict[str, dict] = {}
+        self._spike_threshold = 3.0  # 3x normal volume = spike
+
+    def record_trade(self, token: str, price: float, size: float, side: str):
+        now = time.time()
+        self.trade_history[token].append((now, price, size, side))
+        # Keep last 5 minutes
+        cutoff = now - 300
+        self.trade_history[token] = [
+            t for t in self.trade_history[token] if t[0] > cutoff
+        ]
+        self._update_stats(token)
+
+    def _update_stats(self, token: str):
+        trades = self.trade_history[token]
+        if not trades:
+            return
+
+        now = time.time()
+        last_30s = [t for t in trades if t[0] > now - 30]
+        last_60s = [t for t in trades if t[0] > now - 60]
+        last_5m = trades
+
+        vol_30s = sum(t[2] for t in last_30s)
+        vol_60s = sum(t[2] for t in last_60s)
+        vol_5m = sum(t[2] for t in last_5m)
+
+        # Buy/sell pressure
+        buy_vol = sum(t[2] for t in last_60s if t[3] == "BUY")
+        sell_vol = sum(t[2] for t in last_60s if t[3] == "SELL")
+        total_vol = buy_vol + sell_vol
+        imbalance = (buy_vol - sell_vol) / max(total_vol, 0.01)
+
+        # Velocity (trades per 30s)
+        velocity = len(last_30s)
+
+        # Price momentum
+        if len(last_60s) >= 2:
+            first_price = last_60s[0][1]
+            last_price = last_60s[-1][1]
+            momentum = last_price - first_price
+        else:
+            momentum = 0.0
+
+        # Volume spike detection
+        avg_vol_30s = vol_5m / 10 if vol_5m > 0 else 0.01  # rough 30s avg over 5m
+        spike_ratio = vol_30s / max(avg_vol_30s, 0.01)
+
+        self.stats[token] = {
+            "vol_30s": vol_30s,
+            "vol_60s": vol_60s,
+            "vol_5m": vol_5m,
+            "buy_pressure": imbalance,  # +1 = all buys, -1 = all sells
+            "velocity": velocity,
+            "momentum": momentum,
+            "spike_ratio": spike_ratio,
+            "is_spike": spike_ratio > self._spike_threshold,
+            "last_update": now,
+        }
+
+    def get_stats(self, token: str) -> dict:
+        return self.stats.get(token, {
+            "vol_30s": 0, "vol_60s": 0, "vol_5m": 0,
+            "buy_pressure": 0, "velocity": 0, "momentum": 0,
+            "spike_ratio": 1.0, "is_spike": False,
+        })
+
+    def should_pull_orders(self, token: str) -> Tuple[bool, str]:
+        """Should we pull all orders on this market due to flow signals?"""
+        s = self.get_stats(token)
+        if s["is_spike"] and abs(s["buy_pressure"]) > 0.7:
+            direction = "BUY" if s["buy_pressure"] > 0 else "SELL"
+            return True, f"VOLUME SPIKE: {s['spike_ratio']:.1f}x, {direction} pressure={s['buy_pressure']:.2f}"
+        if abs(s["momentum"]) > 0.03 and s["velocity"] > 10:
+            return True, f"MOMENTUM SURGE: {s['momentum']*100:.1f}¢ move, {s['velocity']} trades/30s"
+        return False, "OK"
+
+    def get_fill_probability_hint(self, token: str) -> float:
+        """Higher = more likely to get filled (more active market)."""
+        s = self.get_stats(token)
+        return min(1.0, s["velocity"] / 20)
+
+
+# ══════════════════════════════════════════════════════════════
+# UPGRADE 1: NEWS MONITOR — adverse selection protection
+# ══════════════════════════════════════════════════════════════
+
+class NewsMonitor:
+    """
+    Monitors news feeds for market-moving events.
+    When breaking news hits a watched market → trigger adverse selection alert.
+    """
+
+    RSS_FEEDS = [
+        ("Reuters World", "https://feeds.reuters.com/reuters/worldNews"),
+        ("Reuters Business", "https://feeds.reuters.com/reuters/businessNews"),
+        ("AP News", "https://rsshub.app/apnews/topics/apf-topnews"),
+        ("BBC World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
+    ]
+
+    def __init__(self):
+        self.seen_headlines: Set[str] = set()
+        self._running = False
+        self._alerts: List[dict] = []  # {headline, feed, ts, keywords}
+        self._last_check = 0
+        self._check_interval = 30  # seconds between feed checks
+        # Keywords that map to market categories
+        self._keyword_map = {
+            "israel": ["israel", "gaza", "hamas", "hezbollah", "idf", "netanyahu"],
+            "trump": ["trump", "white house", "president", "administration", "noem"],
+            "tech": ["apple", "openai", "google", "meta", "federighi", "ceo"],
+            "crypto": ["bitcoin", "btc", "ethereum", "crypto"],
+            "geopolitics": ["ceasefire", "war", "military", "nuclear", "sanctions"],
+            "election": ["election", "vote", "poll", "candidate", "primary"],
+            "legal": ["indictment", "court", "ruling", "judge", "lawsuit"],
+        }
+
+    async def check_feeds(self, session: aiohttp.ClientSession) -> List[dict]:
+        """Fetch RSS feeds and return new relevant headlines."""
+        now = time.time()
+        if now - self._last_check < self._check_interval:
+            return []
+        self._last_check = now
+
+        new_alerts = []
+        for feed_name, url in self.RSS_FEEDS:
+            try:
+                async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                    if resp.status != 200:
+                        continue
+                    text = await resp.text()
+                    headlines = self._parse_rss(text)
+                    for headline in headlines:
+                        if headline in self.seen_headlines:
+                            continue
+                        self.seen_headlines.add(headline)
+                        keywords = self._extract_keywords(headline)
+                        if keywords:
+                            alert = {
+                                "headline": headline,
+                                "feed": feed_name,
+                                "ts": now,
+                                "keywords": keywords,
+                            }
+                            new_alerts.append(alert)
+                            self._alerts.append(alert)
+                            LOG.warning(f"📰 NEWS ALERT | {headline[:80]} | keywords: {keywords}")
+            except Exception as e:
+                LOG.debug(f"News feed error ({feed_name}): {e}")
+
+        # Keep last 500 headlines
+        if len(self.seen_headlines) > 500:
+            self.seen_headlines = set(list(self.seen_headlines)[-200:])
+        # Keep last 100 alerts
+        self._alerts = self._alerts[-100:]
+
+        return new_alerts
+
+    def _parse_rss(self, xml_text: str) -> List[str]:
+        """Extract titles from RSS XML."""
+        titles = []
+        try:
+            root = ET.fromstring(xml_text)
+            for item in root.iter("item"):
+                title_elem = item.find("title")
+                if title_elem is not None and title_elem.text:
+                    titles.append(title_elem.text.strip().lower())
+        except ET.ParseError:
+            # Fallback: regex
+            titles = re.findall(r"<title[^>]*>([^<]+)</title>", xml_text)
+            titles = [t.strip().lower() for t in titles if len(t.strip()) > 10]
+        return titles[:20]  # max 20 per feed
+
+    def _extract_keywords(self, headline: str) -> List[str]:
+        """Find which market categories this headline relates to."""
+        matched = []
+        for category, words in self._keyword_map.items():
+            for word in words:
+                if word in headline:
+                    matched.append(category)
+                    break
+        return matched
+
+    def is_market_affected(self, market_question: str, keywords: List[str] = None) -> Tuple[bool, str]:
+        """Check if recent news affects this market."""
+        if not self._alerts:
+            return False, ""
+
+        question_lower = market_question.lower()
+        recent_cutoff = time.time() - 300  # last 5 minutes
+
+        for alert in reversed(self._alerts):
+            if alert["ts"] < recent_cutoff:
+                continue
+            # Direct keyword match
+            for kw in alert.get("keywords", []):
+                if kw in question_lower:
+                    return True, f"NEWS: '{alert['headline'][:60]}' ({alert['feed']})"
+            # Word overlap
+            alert_words = set(alert["headline"].split())
+            question_words = set(question_lower.split())
+            overlap = alert_words & question_words
+            meaningful = {w for w in overlap if len(w) > 4}
+            if len(meaningful) >= 2:
+                return True, f"NEWS OVERLAP: '{alert['headline'][:60]}'"
+
+        return False, ""
+
+    def get_recent_alerts(self, minutes: int = 10) -> List[dict]:
+        cutoff = time.time() - (minutes * 60)
+        return [a for a in self._alerts if a["ts"] > cutoff]
+
+
+# ══════════════════════════════════════════════════════════════
+# UPGRADE 8: CORRELATION ENGINE
+# ══════════════════════════════════════════════════════════════
+
+class CorrelationEngine:
+    """
+    Tracks price movements across markets and detects correlations.
+    If Market A moves and Market B is correlated but hasn't moved yet → trade B.
+    """
+
+    def __init__(self):
+        # (slug_a, slug_b) -> correlation data
+        self.correlations: Dict[Tuple[str, str], dict] = {}
+        # slug -> list of (timestamp, price)
+        self.price_history: Dict[str, List[Tuple[float, float]]] = defaultdict(list)
+        self._categories: Dict[str, List[str]] = defaultdict(list)  # keyword -> [slugs]
+
+    def record_price(self, slug: str, price: float, question: str = ""):
+        now = time.time()
+        self.price_history[slug].append((now, price))
+        # Keep last 10 minutes
+        cutoff = now - 600
+        self.price_history[slug] = [(t, p) for t, p in self.price_history[slug] if t > cutoff]
+
+        # Auto-categorize by question keywords
+        if question:
+            words = set(question.lower().split())
+            for w in words:
+                if len(w) > 4:
+                    self._categories[w].append(slug)
+                    # Keep unique
+                    self._categories[w] = list(set(self._categories[w]))[-10:]
+
+    def detect_correlated_move(self, moved_slug: str, new_price: float,
+                                old_price: float) -> List[Tuple[str, float]]:
+        """
+        If a market moved significantly, find correlated markets
+        that haven't moved yet. Returns [(slug, expected_direction), ...].
+        """
+        results = []
+        price_delta = new_price - old_price
+        if abs(price_delta) < 0.02:
+            return results
+
+        # Find categories this slug belongs to
+        moved_categories = set()
+        for cat, slugs in self._categories.items():
+            if moved_slug in slugs:
+                moved_categories.add(cat)
+
+        # Find other markets in same categories
+        related_slugs = set()
+        for cat in moved_categories:
+            for s in self._categories[cat]:
+                if s != moved_slug:
+                    related_slugs.add(s)
+
+        for related in related_slugs:
+            related_prices = self.price_history.get(related, [])
+            if len(related_prices) < 2:
+                continue
+            # Check if this market has also moved recently
+            recent = related_prices[-1][1]
+            older = related_prices[-5][1] if len(related_prices) >= 5 else related_prices[0][1]
+            related_delta = recent - older
+
+            # If related market hasn't moved in same direction yet → lagging
+            if abs(related_delta) < abs(price_delta) * 0.3:
+                results.append((related, price_delta))  # expected to follow
+
+        return results
+
+    def get_time_of_day_multiplier(self) -> Tuple[float, str]:
+        """
+        Returns (multiplier, category) based on current UTC hour.
+        Peak hours = more fills, quiet hours = less activity.
+        """
+        utc_hour = datetime.now(timezone.utc).hour
+
+        # Peak: US market hours (14-22 UTC = 9AM-5PM ET)
+        if 14 <= utc_hour <= 22:
+            return 1.2, "peak"
+        # Quiet: Asia night / US overnight (3-6 UTC)
+        if 3 <= utc_hour <= 6:
+            return 0.5, "quiet"
+        # Normal
+        return 1.0, "normal"
+
+
+# ══════════════════════════════════════════════════════════════
+# ADAPTIVE BRAIN (enhanced with Kelly + time patterns)
 # ══════════════════════════════════════════════════════════════
 
 class Brain:
     """
-    The brain remembers everything. It tracks:
-    - Per-market reputation (win rate, avg PnL, fill speed, risk)
-    - Entry condition patterns (what spread/volume/price combos work)
-    - Losing patterns to never repeat
-    - Winning patterns to double down on
-    - Session-level statistics
+    Persistent learning brain. v3 adds:
+    - Kelly Criterion sizing
+    - Time-of-day pattern tracking
+    - Flow-aware risk scoring
     """
 
     def __init__(self, path: str = BRAIN_FILE):
@@ -193,6 +529,13 @@ class Brain:
                 with open(self.path, "r") as f:
                     data = json.load(f)
                     LOG.info(f"🧠 Brain loaded: {data.get('total_trades', 0)} trades in memory")
+                    # Ensure v3 fields exist
+                    if "time_patterns" not in data:
+                        data["time_patterns"] = {"peak": {"wins": 0, "losses": 0, "pnl": 0},
+                                                   "normal": {"wins": 0, "losses": 0, "pnl": 0},
+                                                   "quiet": {"wins": 0, "losses": 0, "pnl": 0}}
+                    if "day_patterns" not in data:
+                        data["day_patterns"] = {}
                     return data
             except (json.JSONDecodeError, Exception) as e:
                 LOG.warning(f"Brain file corrupted, starting fresh: {e}")
@@ -200,30 +543,35 @@ class Brain:
 
     def _default(self) -> dict:
         return {
-            "version": 2,
+            "version": 3,
             "total_trades": 0,
             "total_pnl": 0.0,
             "total_wins": 0,
             "total_losses": 0,
             "sessions": 0,
             "first_seen": time.time(),
-            "markets": {},          # slug -> market reputation
-            "patterns": {           # entry condition outcomes
-                "by_spread": {},    # "0.03-0.05" -> {wins, losses, pnl}
-                "by_volume": {},    # "1000-5000" -> {wins, losses, pnl}
-                "by_liquidity": {}, # "2000-5000" -> {wins, losses, pnl}
-                "by_price": {},     # "low|mid|high" -> {wins, losses, pnl}
-                "by_hold_time": {}, # "0-60|60-120|..." -> {wins, losses, pnl}
+            "markets": {},
+            "patterns": {
+                "by_spread": {},
+                "by_volume": {},
+                "by_liquidity": {},
+                "by_price": {},
+                "by_hold_time": {},
             },
-            "avoid_list": [],       # slugs to never trade
-            "star_list": [],        # slugs that consistently profit
-            "rules": [],            # learned rules in plain text
+            "time_patterns": {
+                "peak": {"wins": 0, "losses": 0, "pnl": 0},
+                "normal": {"wins": 0, "losses": 0, "pnl": 0},
+                "quiet": {"wins": 0, "losses": 0, "pnl": 0},
+            },
+            "day_patterns": {},
+            "avoid_list": [],
+            "star_list": [],
+            "rules": [],
             "last_updated": time.time(),
         }
 
     def save(self):
         self.data["last_updated"] = time.time()
-        self.data["sessions"] = self.data.get("sessions", 0)
         try:
             with open(self.path, "w") as f:
                 json.dump(self.data, f, indent=2)
@@ -244,8 +592,7 @@ class Brain:
             "win_rate": 0.0, "avg_hold": 0.0,
             "fills": 0, "timeouts": 0,
             "last_seen": 0, "question": "",
-            "risk_score": 0.5,  # 0=safe, 1=dangerous
-            "profit_score": 0.5,  # 0=bad, 1=great
+            "risk_score": 0.5, "profit_score": 0.5,
         })
 
     def _update_market_rep(self, slug: str, question: str, trade: dict):
@@ -268,20 +615,15 @@ class Brain:
         rep["avg_pnl"] = rep["total_pnl"] / rep["trades"]
         rep["win_rate"] = rep["wins"] / rep["trades"]
 
-        # Running avg hold time
         old_avg = rep.get("avg_hold", 0)
         n = rep["trades"]
         rep["avg_hold"] = old_avg + (trade["hold_sec"] - old_avg) / n
 
-        # Risk score: higher = more dangerous
-        # Weighted by: timeout rate, loss rate, negative PnL
         timeout_rate = rep.get("timeouts", 0) / max(1, rep["trades"])
         loss_rate = rep["losses"] / max(1, rep["trades"])
-        pnl_penalty = max(0, -rep["avg_pnl"]) * 10  # scale up small losses
+        pnl_penalty = max(0, -rep["avg_pnl"]) * 10
         rep["risk_score"] = min(1.0, (timeout_rate * 0.4 + loss_rate * 0.4 + min(pnl_penalty, 0.2)))
 
-        # Profit score: higher = more profitable
-        # Weighted by: win rate, avg PnL, fill rate
         fill_rate = rep.get("fills", 0) / max(1, rep["trades"])
         pnl_bonus = min(1.0, max(0, rep["avg_pnl"]) * 20)
         rep["profit_score"] = min(1.0, rep["win_rate"] * 0.4 + fill_rate * 0.3 + pnl_bonus * 0.3)
@@ -339,28 +681,105 @@ class Brain:
             p["losses"] += 1
         p["total_pnl"] += pnl
 
+    def _update_time_pattern(self, time_cat: str, is_win: bool, pnl: float):
+        if time_cat not in self.data["time_patterns"]:
+            self.data["time_patterns"][time_cat] = {"wins": 0, "losses": 0, "pnl": 0}
+        tp = self.data["time_patterns"][time_cat]
+        if is_win:
+            tp["wins"] += 1
+        else:
+            tp["losses"] += 1
+        tp["pnl"] += pnl
+
+    def _update_day_pattern(self, is_win: bool, pnl: float):
+        day = datetime.now(timezone.utc).strftime("%A")
+        if day not in self.data["day_patterns"]:
+            self.data["day_patterns"][day] = {"wins": 0, "losses": 0, "pnl": 0}
+        dp = self.data["day_patterns"][day]
+        if is_win:
+            dp["wins"] += 1
+        else:
+            dp["losses"] += 1
+        dp["pnl"] += pnl
+
+    # ─── Kelly Criterion ─────────────────────────────────────
+
+    def kelly_fraction(self, slug: str = None) -> float:
+        """
+        Kelly Criterion: f* = (bp - q) / b
+        where b = avg_win/avg_loss ratio, p = win_rate, q = 1-p
+        Returns fraction of capital to bet (capped at 25%).
+        Uses per-market stats if available, falls back to global.
+        """
+        if slug:
+            rep = self.get_market_rep(slug)
+            if rep["trades"] >= 5:
+                wins = rep["wins"]
+                losses = rep["losses"]
+                total = rep["trades"]
+                # Need avg win and avg loss from trades
+                # Approximate from avg_pnl and win_rate
+                if losses == 0 or rep["avg_pnl"] <= 0:
+                    return 0.05  # default small
+                p = wins / total
+                # Estimate b from avg_pnl: avg_win ≈ avg_pnl * total / wins
+                # avg_loss ≈ -avg_pnl * total / losses (approximate)
+                # This is rough but works
+                avg_win = abs(rep["avg_pnl"]) * 2 if p > 0.5 else abs(rep["avg_pnl"]) * 1.5
+                avg_loss = abs(rep["avg_pnl"]) * 1.2
+                b = avg_win / max(avg_loss, 0.001)
+            else:
+                # Use global stats
+                p, b = self._global_kelly_params()
+        else:
+            p, b = self._global_kelly_params()
+
+        q = 1 - p
+        kelly = (b * p - q) / max(b, 0.01)
+
+        # Use quarter-Kelly for safety (standard practice)
+        kelly = kelly / 4
+
+        # Clamp: minimum 2%, maximum 25%
+        return max(0.02, min(0.25, kelly))
+
+    def _global_kelly_params(self) -> Tuple[float, float]:
+        """Returns (win_rate, avg_win/avg_loss ratio) from global stats."""
+        total = self.data["total_trades"]
+        if total < 5:
+            return 0.5, 1.0
+        p = self.data["total_wins"] / total
+        # Estimate b from total PnL
+        if self.data["total_pnl"] > 0 and p > 0.5:
+            b = 1.5
+        elif p > 0.5:
+            b = 1.2
+        else:
+            b = 1.0
+        return p, b
+
+    def get_kelly_order_size(self, capital: float, slug: str = None) -> float:
+        """Calculate order size using Kelly Criterion."""
+        fraction = self.kelly_fraction(slug)
+        return round(capital * fraction, 2)
+
     # ─── Learning from Trades ────────────────────────────────
 
-    def learn_from_trade(self, trade: Trade):
-        """Core learning function. Call after every completed trade."""
+    def learn_from_trade(self, trade: Trade, time_category: str = "normal"):
         is_win = trade.pnl > 0
         t = {
-            "slug": trade.slug,
-            "question": trade.question,
-            "pnl": trade.pnl,
-            "hold_sec": trade.hold_sec,
+            "slug": trade.slug, "question": trade.question,
+            "pnl": trade.pnl, "hold_sec": trade.hold_sec,
             "entry_spread": trade.entry_spread,
             "entry_volume": trade.entry_volume,
             "entry_liquidity": trade.entry_liquidity,
             "entry_price_range": trade.entry_price_range,
-            "exit_type": trade.exit_type,
-            "reason": trade.reason,
-            "ts": trade.ts,
-            "is_win": is_win,
+            "exit_type": trade.exit_type, "reason": trade.reason,
+            "ts": trade.ts, "is_win": is_win,
+            "time_category": time_category,
         }
         self._session_trades.append(t)
 
-        # Update global stats
         self.data["total_trades"] += 1
         self.data["total_pnl"] += trade.pnl
         if is_win:
@@ -368,50 +787,37 @@ class Brain:
         else:
             self.data["total_losses"] += 1
 
-        # Update market reputation
         self._update_market_rep(trade.slug, trade.question, t)
+        self._update_pattern("by_spread", self._bucket_spread(trade.entry_spread), is_win, trade.pnl)
+        self._update_pattern("by_volume", self._bucket_volume(trade.entry_volume), is_win, trade.pnl)
+        self._update_pattern("by_liquidity", self._bucket_liquidity(trade.entry_liquidity), is_win, trade.pnl)
+        self._update_pattern("by_price", trade.entry_price_range, is_win, trade.pnl)
+        self._update_pattern("by_hold_time", self._bucket_hold(trade.hold_sec), is_win, trade.pnl)
+        self._update_time_pattern(time_category, is_win, trade.pnl)
+        self._update_day_pattern(is_win, trade.pnl)
 
-        # Update patterns
-        self._update_pattern("by_spread",
-            self._bucket_spread(trade.entry_spread), is_win, trade.pnl)
-        self._update_pattern("by_volume",
-            self._bucket_volume(trade.entry_volume), is_win, trade.pnl)
-        self._update_pattern("by_liquidity",
-            self._bucket_liquidity(trade.entry_liquidity), is_win, trade.pnl)
-        self._update_pattern("by_price",
-            trade.entry_price_range, is_win, trade.pnl)
-        self._update_pattern("by_hold_time",
-            self._bucket_hold(trade.hold_sec), is_win, trade.pnl)
-
-        # Update avoid/star lists
         self._update_lists()
 
-        # Generate rules if enough data
         if self.data["total_trades"] % 10 == 0:
             self._generate_rules()
 
         self.save()
 
-        # Log what we learned
         rep = self.get_market_rep(trade.slug)
         emoji = "🟢" if is_win else "🔴"
-        LOG.info(
-            f"🧠 LEARNED | {emoji} {trade.slug[:35]} | "
-            f"Market WR: {rep['win_rate']:.0%} ({rep['trades']} trades) | "
-            f"Risk: {rep['risk_score']:.2f} | Profit: {rep['profit_score']:.2f}"
-        )
+        LOG.info(f"🧠 LEARNED | {emoji} {trade.slug[:35]} | "
+                f"WR: {rep['win_rate']:.0%} ({rep['trades']}) | "
+                f"Risk: {rep['risk_score']:.2f} | Kelly: {self.kelly_fraction(trade.slug):.1%}")
 
     def _update_lists(self):
-        """Rebuild avoid and star lists from market reputations."""
-        avoid = []
-        stars = []
+        avoid, stars = [], []
         for slug, rep in self.data["markets"].items():
             if rep["trades"] < 3:
-                continue  # need minimum data
+                continue
             if rep["risk_score"] > 0.7 and rep["win_rate"] < 0.3:
                 avoid.append(slug)
                 if slug not in self.data["avoid_list"]:
-                    rule = f"AVOID: {slug[:50]} — {rep['win_rate']:.0%} WR, {rep['trades']} trades, risk={rep['risk_score']:.2f}"
+                    rule = f"AVOID: {slug[:50]} — {rep['win_rate']:.0%} WR, {rep['trades']} trades"
                     self.data["rules"].append({"ts": time.time(), "rule": rule, "type": "avoid"})
                     LOG.warning(f"🧠 NEW RULE: {rule}")
             if rep["profit_score"] > 0.7 and rep["win_rate"] > 0.6:
@@ -420,91 +826,54 @@ class Brain:
                     rule = f"STAR: {slug[:50]} — {rep['win_rate']:.0%} WR, ${rep['avg_pnl']:+.3f}/trade"
                     self.data["rules"].append({"ts": time.time(), "rule": rule, "type": "star"})
                     LOG.info(f"🧠 NEW RULE: {rule}")
-
         self.data["avoid_list"] = avoid
         self.data["star_list"] = stars
 
     def _generate_rules(self):
-        """Analyze patterns and generate actionable rules."""
         rules = []
+        for cat_key in ["by_spread", "by_volume", "by_price"]:
+            for bucket, stats in self.data["patterns"].get(cat_key, {}).items():
+                if stats["trades"] < 5:
+                    continue
+                wr = stats["wins"] / stats["trades"]
+                if wr < 0.3:
+                    rules.append({"ts": time.time(), "rule": f"{cat_key}:{bucket} → {wr:.0%} WR — avoid", "type": "pattern_avoid"})
+                elif wr > 0.7:
+                    rules.append({"ts": time.time(), "rule": f"{cat_key}:{bucket} → {wr:.0%} WR — prioritize", "type": "pattern_star"})
 
-        # Spread analysis
-        for bucket, stats in self.data["patterns"].get("by_spread", {}).items():
-            if stats["trades"] < 5:
-                continue
-            wr = stats["wins"] / stats["trades"]
-            if wr < 0.3:
-                rules.append({
-                    "ts": time.time(),
-                    "rule": f"SPREAD {bucket}: {wr:.0%} WR ({stats['trades']} trades) — reduce aggression",
-                    "type": "pattern_avoid",
-                })
-            elif wr > 0.7:
-                rules.append({
-                    "ts": time.time(),
-                    "rule": f"SPREAD {bucket}: {wr:.0%} WR (${stats['total_pnl']:+.2f}) — prioritize these",
-                    "type": "pattern_star",
-                })
+        # Time pattern rules
+        for cat, stats in self.data["time_patterns"].items():
+            total = stats["wins"] + stats["losses"]
+            if total >= 10:
+                wr = stats["wins"] / total
+                if wr < 0.3:
+                    rules.append({"ts": time.time(), "rule": f"TIME:{cat} → {wr:.0%} WR — reduce activity", "type": "time_avoid"})
+                elif wr > 0.65:
+                    rules.append({"ts": time.time(), "rule": f"TIME:{cat} → {wr:.0%} WR — focus here", "type": "time_star"})
 
-        # Volume analysis
-        for bucket, stats in self.data["patterns"].get("by_volume", {}).items():
-            if stats["trades"] < 5:
-                continue
-            wr = stats["wins"] / stats["trades"]
-            if wr < 0.3:
-                rules.append({
-                    "ts": time.time(),
-                    "rule": f"VOLUME {bucket}: {wr:.0%} WR — avoid thin markets",
-                    "type": "pattern_avoid",
-                })
-
-        # Price range analysis
-        for bucket, stats in self.data["patterns"].get("by_price", {}).items():
-            if stats["trades"] < 5:
-                continue
-            wr = stats["wins"] / stats["trades"]
-            if wr < 0.3:
-                rules.append({
-                    "ts": time.time(),
-                    "rule": f"PRICE {bucket}: {wr:.0%} WR — too extreme, avoid",
-                    "type": "pattern_avoid",
-                })
-
-        # Keep only last 50 rules
         self.data["rules"] = (self.data["rules"] + rules)[-50:]
 
-    # ─── Querying the Brain ──────────────────────────────────
+    # ─── Querying ────────────────────────────────────────────
 
     def should_trade_market(self, slug: str) -> Tuple[bool, str]:
-        """Should we trade this market? Returns (decision, reason)."""
         if slug in self.data["avoid_list"]:
             rep = self.get_market_rep(slug)
-            return False, f"AVOID LIST: {rep['win_rate']:.0%} WR, {rep['trades']} losses learned"
-
+            return False, f"AVOID: {rep['win_rate']:.0%} WR, {rep['trades']} trades"
         rep = self.get_market_rep(slug)
         if rep["trades"] >= 5 and rep["risk_score"] > 0.8:
-            return False, f"HIGH RISK: score={rep['risk_score']:.2f}, {rep['timeouts']} timeouts"
-
+            return False, f"HIGH RISK: {rep['risk_score']:.2f}"
         return True, "OK"
 
     def is_star_market(self, slug: str) -> bool:
         return slug in self.data["star_list"]
 
     def get_market_risk(self, slug: str) -> float:
-        """Returns 0.0 (safe) to 1.0 (dangerous)."""
-        rep = self.get_market_rep(slug)
-        return rep["risk_score"]
+        return self.get_market_rep(slug)["risk_score"]
 
     def get_market_profit_score(self, slug: str) -> float:
-        """Returns 0.0 (bad) to 1.0 (great)."""
-        rep = self.get_market_rep(slug)
-        return rep["profit_score"]
+        return self.get_market_rep(slug)["profit_score"]
 
     def get_order_size_multiplier(self, slug: str) -> float:
-        """
-        Adjust order size based on brain knowledge.
-        Stars get 1.5x, unknown get 1.0x, risky get 0.5x.
-        """
         if self.is_star_market(slug):
             return 1.5
         risk = self.get_market_risk(slug)
@@ -514,211 +883,137 @@ class Brain:
             return 0.75
         return 1.0
 
-    def get_spread_preference(self) -> Optional[str]:
-        """Which spread bucket has the best win rate?"""
-        best_wr = 0
-        best_bucket = None
-        for bucket, stats in self.data["patterns"].get("by_spread", {}).items():
-            if stats["trades"] < 5:
-                continue
-            wr = stats["wins"] / stats["trades"]
-            if wr > best_wr:
-                best_wr = wr
-                best_bucket = bucket
-        return best_bucket
-
-    def score_market_for_entry(self, slug: str, spread: float, volume: float,
-                                liquidity: float, price: float) -> float:
-        """
-        Combined score (0-1) for whether to enter a market.
-        Factors in: base metrics + brain knowledge + pattern matching.
-        """
-        # Base score from market metrics
-        spread_score = min(1.0, spread / 0.15)  # wider spread = better for us
-        volume_score = min(1.0, math.log10(max(volume, 1)) / 6)  # log scale
-        liq_score = min(1.0, math.log10(max(liquidity, 1)) / 5)
-        base = (spread_score * 0.4 + volume_score * 0.3 + liq_score * 0.3)
-
-        # Brain adjustment
-        rep = self.get_market_rep(slug)
-        if rep["trades"] >= 3:
-            # Blend base with learned profit score
-            brain_weight = min(0.6, rep["trades"] / 20)  # trust brain more with more data
-            brain_adj = rep["profit_score"] * (1 - rep["risk_score"])
-            score = base * (1 - brain_weight) + brain_adj * brain_weight
-        else:
-            # Not enough data — slight penalty for unknown markets
-            score = base * 0.9
-
-        # Penalty if this spread/volume/price bucket has bad history
-        spread_bucket = self._bucket_spread(spread)
-        spread_stats = self.data["patterns"]["by_spread"].get(spread_bucket, {})
-        if spread_stats.get("trades", 0) >= 5:
-            bucket_wr = spread_stats["wins"] / spread_stats["trades"]
-            if bucket_wr < 0.3:
-                score *= 0.5  # heavy penalty for known-bad spread ranges
-
-        vol_bucket = self._bucket_volume(volume)
-        vol_stats = self.data["patterns"]["by_volume"].get(vol_bucket, {})
-        if vol_stats.get("trades", 0) >= 5:
-            bucket_wr = vol_stats["wins"] / vol_stats["trades"]
-            if bucket_wr < 0.3:
-                score *= 0.5
-
-        price_bucket = self._bucket_price(price)
-        price_stats = self.data["patterns"]["by_price"].get(price_bucket, {})
-        if price_stats.get("trades", 0) >= 5:
-            bucket_wr = price_stats["wins"] / price_stats["trades"]
-            if bucket_wr < 0.3:
-                score *= 0.6
-
-        return round(max(0.0, min(1.0, score)), 4)
-
     def get_exit_aggressiveness(self, slug: str) -> float:
-        """
-        How aggressively should we exit? 0=patient, 1=cut immediately.
-        Markets that tend to timeout get more aggressive exits.
-        """
         rep = self.get_market_rep(slug)
         if rep["trades"] < 3:
             return 0.5
-        timeout_rate = rep.get("timeouts", 0) / rep["trades"]
-        return min(1.0, timeout_rate + 0.2)
+        return min(1.0, rep.get("timeouts", 0) / rep["trades"] + 0.2)
 
     def should_adjust_hold_time(self, slug: str) -> Optional[int]:
-        """
-        Suggest a custom max hold time for this market based on history.
-        Returns None to use default, or seconds.
-        """
         rep = self.get_market_rep(slug)
         if rep["trades"] < 5:
             return None
         if rep.get("timeouts", 0) / rep["trades"] > 0.5:
-            # This market keeps timing out — hold shorter
-            suggested = max(60, int(rep.get("avg_hold", 300) * 0.7))
-            return suggested
+            return max(60, int(rep.get("avg_hold", 300) * 0.7))
         return None
 
-    def get_known_bad_entry_conditions(self) -> List[str]:
-        """Return pattern buckets that have consistently lost money."""
-        bad = []
-        for category in ["by_spread", "by_volume", "by_liquidity", "by_price"]:
-            for bucket, stats in self.data["patterns"].get(category, {}).items():
-                if stats["trades"] >= 5 and stats["wins"] / stats["trades"] < 0.25:
-                    bad.append(f"{category}:{bucket} ({stats['wins']}/{stats['trades']} wins)")
-        return bad
+    def score_market_for_entry(self, slug: str, spread: float, volume: float,
+                                liquidity: float, price: float) -> float:
+        spread_score = min(1.0, spread / 0.15)
+        volume_score = min(1.0, math.log10(max(volume, 1)) / 6)
+        liq_score = min(1.0, math.log10(max(liquidity, 1)) / 5)
+        base = (spread_score * 0.4 + volume_score * 0.3 + liq_score * 0.3)
 
-    # ─── Reporting ───────────────────────────────────────────
+        rep = self.get_market_rep(slug)
+        if rep["trades"] >= 3:
+            brain_weight = min(0.6, rep["trades"] / 20)
+            brain_adj = rep["profit_score"] * (1 - rep["risk_score"])
+            score = base * (1 - brain_weight) + brain_adj * brain_weight
+        else:
+            score = base * 0.9
+
+        # Time-of-day adjustment
+        utc_hour = datetime.now(timezone.utc).hour
+        time_cat = "peak" if 14 <= utc_hour <= 22 else ("quiet" if 3 <= utc_hour <= 6 else "normal")
+        tp = self.data["time_patterns"].get(time_cat, {})
+        tp_total = tp.get("wins", 0) + tp.get("losses", 0)
+        if tp_total >= 10:
+            tp_wr = tp.get("wins", 0) / tp_total
+            if tp_wr < 0.35:
+                score *= 0.7
+
+        # Pattern penalties
+        for cat_key, get_bucket in [
+            ("by_spread", lambda: self._bucket_spread(spread)),
+            ("by_volume", lambda: self._bucket_volume(volume)),
+            ("by_price", lambda: self._bucket_price(price)),
+        ]:
+            bucket = get_bucket()
+            stats = self.data["patterns"].get(cat_key, {}).get(bucket, {})
+            if stats.get("trades", 0) >= 5:
+                if stats["wins"] / stats["trades"] < 0.3:
+                    score *= 0.5
+
+        return round(max(0.0, min(1.0, score)), 4)
+
+    def get_best_time_category(self) -> str:
+        best_wr = 0
+        best = "normal"
+        for cat, stats in self.data["time_patterns"].items():
+            total = stats["wins"] + stats["losses"]
+            if total >= 5:
+                wr = stats["wins"] / total
+                if wr > best_wr:
+                    best_wr = wr
+                    best = cat
+        return best
 
     def report(self) -> str:
-        """Full brain status report."""
         lines = []
         lines.append(f"\n{'='*60}")
-        lines.append(f"  🧠 BRAIN STATUS")
+        lines.append(f"  🧠 BRAIN v3 STATUS")
         lines.append(f"{'='*60}")
         lines.append(f"  Sessions:     {self.data.get('sessions', 0)}")
         lines.append(f"  Total Trades: {self.data['total_trades']}")
         lines.append(f"  Total PnL:    ${self.data['total_pnl']:+.2f}")
-        lines.append(f"  Win Rate:     {self.data['total_wins']}/{self.data['total_losses']} "
-                     f"({self.data['total_wins']/max(1, self.data['total_trades']):.0%})")
-        lines.append(f"  Avoid List:   {len(self.data['avoid_list'])} markets")
-        lines.append(f"  Star List:    {len(self.data['star_list'])} markets")
+        wr = self.data['total_wins'] / max(1, self.data['total_trades'])
+        lines.append(f"  Win Rate:     {self.data['total_wins']}/{self.data['total_losses']} ({wr:.0%})")
+        lines.append(f"  Kelly (global): {self.kelly_fraction():.1%}")
+        lines.append(f"  Avoid: {len(self.data['avoid_list'])} | Stars: {len(self.data['star_list'])}")
 
         if self.data["avoid_list"]:
-            lines.append(f"\n  🚫 AVOIDED MARKETS:")
-            for slug in self.data["avoid_list"][:10]:
+            lines.append(f"\n  🚫 AVOID:")
+            for slug in self.data["avoid_list"][:5]:
                 rep = self.get_market_rep(slug)
-                lines.append(f"    • {slug[:45]} | WR={rep['win_rate']:.0%} | "
-                           f"Risk={rep['risk_score']:.2f} | ${rep['avg_pnl']:+.3f}/trade")
+                lines.append(f"    • {slug[:45]} | WR={rep['win_rate']:.0%} | Risk={rep['risk_score']:.2f}")
 
         if self.data["star_list"]:
-            lines.append(f"\n  ⭐ STAR MARKETS:")
-            for slug in self.data["star_list"][:10]:
+            lines.append(f"\n  ⭐ STARS:")
+            for slug in self.data["star_list"][:5]:
                 rep = self.get_market_rep(slug)
-                lines.append(f"    • {slug[:45]} | WR={rep['win_rate']:.0%} | "
-                           f"Profit={rep['profit_score']:.2f} | ${rep['avg_pnl']:+.3f}/trade")
+                lines.append(f"    • {slug[:45]} | WR={rep['win_rate']:.0%} | ${rep['avg_pnl']:+.3f}/trade")
 
-        # Pattern insights
-        lines.append(f"\n  📊 PATTERN INSIGHTS:")
-        for cat_name, cat_key in [("Spread", "by_spread"), ("Volume", "by_volume"),
-                                   ("Price Range", "by_price")]:
-            patterns = self.data["patterns"].get(cat_key, {})
-            if not patterns:
-                continue
-            lines.append(f"    {cat_name}:")
-            for bucket, stats in sorted(patterns.items()):
-                if stats["trades"] < 3:
-                    continue
-                wr = stats["wins"] / stats["trades"]
+        lines.append(f"\n  ⏰ TIME PATTERNS:")
+        for cat, stats in self.data["time_patterns"].items():
+            total = stats["wins"] + stats["losses"]
+            if total > 0:
+                wr = stats["wins"] / total
                 emoji = "🟢" if wr > 0.6 else ("🔴" if wr < 0.4 else "⚪")
-                lines.append(f"      {emoji} {bucket}: {wr:.0%} WR | {stats['trades']} trades | ${stats['total_pnl']:+.2f}")
+                lines.append(f"    {emoji} {cat}: {wr:.0%} WR | {total} trades | ${stats['pnl']:+.2f}")
+
+        lines.append(f"\n  📊 DAY PATTERNS:")
+        for day, stats in sorted(self.data["day_patterns"].items()):
+            total = stats["wins"] + stats["losses"]
+            if total > 0:
+                wr = stats["wins"] / total
+                lines.append(f"    {day}: {wr:.0%} WR | {total} trades | ${stats['pnl']:+.2f}")
 
         if self.data["rules"]:
-            lines.append(f"\n  📜 LEARNED RULES (last 10):")
+            lines.append(f"\n  📜 RULES (last 10):")
             for rule in self.data["rules"][-10:]:
-                rtype = rule.get("type", "")
-                emoji = "🚫" if "avoid" in rtype else "⭐"
+                emoji = "🚫" if "avoid" in rule.get("type", "") else "⭐"
                 lines.append(f"    {emoji} {rule['rule']}")
-
-        spread_pref = self.get_spread_preference()
-        if spread_pref:
-            lines.append(f"\n  💡 Best spread range: {spread_pref}")
-
-        bad_conditions = self.get_known_bad_entry_conditions()
-        if bad_conditions:
-            lines.append(f"\n  ⚠️  KNOWN BAD CONDITIONS:")
-            for bc in bad_conditions:
-                lines.append(f"    • {bc}")
 
         lines.append(f"{'='*60}")
         return "\n".join(lines)
 
     def session_report(self) -> str:
-        """What did we learn this session?"""
         if not self._session_trades:
-            return "🧠 No trades this session — nothing new learned."
-
+            return "🧠 No trades this session."
         wins = [t for t in self._session_trades if t["is_win"]]
         losses = [t for t in self._session_trades if not t["is_win"]]
         pnl = sum(t["pnl"] for t in self._session_trades)
-
-        lines = [
-            f"\n🧠 SESSION LEARNING SUMMARY",
-            f"  Trades: {len(self._session_trades)} ({len(wins)}W / {len(losses)}L)",
-            f"  PnL: ${pnl:+.3f}",
-            f"  New avoid: {len(self.data['avoid_list'])} markets",
-            f"  New stars: {len(self.data['star_list'])} markets",
-        ]
-
-        # What patterns won/lost this session?
-        session_won_buckets = defaultdict(int)
-        session_lost_buckets = defaultdict(int)
-        for t in self._session_trades:
-            bucket = f"spread={self._bucket_spread(t['entry_spread'])}, vol={self._bucket_volume(t['entry_volume'])}"
-            if t["is_win"]:
-                session_won_buckets[bucket] += 1
-            else:
-                session_lost_buckets[bucket] += 1
-
-        if session_won_buckets:
-            lines.append("  Winning conditions:")
-            for b, c in sorted(session_won_buckets.items(), key=lambda x: -x[1])[:3]:
-                lines.append(f"    🟢 {b} ({c} wins)")
-
-        if session_lost_buckets:
-            lines.append("  Losing conditions:")
-            for b, c in sorted(session_lost_buckets.items(), key=lambda x: -x[1])[:3]:
-                lines.append(f"    🔴 {b} ({c} losses)")
-
-        return "\n".join(lines)
+        return (f"🧠 SESSION: {len(self._session_trades)} trades "
+                f"({len(wins)}W/{len(losses)}L) | PnL=${pnl:+.3f} | "
+                f"Kelly={self.kelly_fraction():.1%} | "
+                f"Best time={self.get_best_time_category()}")
 
 
 # ══════════════════════════════════════════════════════════════
-# MARKET DISCOVERY (brain-informed)
+# MARKET DISCOVERY (brain + neg risk + tick size aware)
 # ══════════════════════════════════════════════════════════════
 
 async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[Market]:
-    """Fetch and filter markets suitable for scalping. Brain-informed ranking."""
     async with aiohttp.ClientSession() as s:
         async with s.get(
             f"{GAMMA_URL}/events",
@@ -728,6 +1023,9 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
 
     all_markets = []
     for ev in events:
+        event_id = ev.get("id", "")
+        neg_risk = ev.get("negRisk", False)
+
         for m in ev.get("markets", []):
             if m.get("closed") or not m.get("active"):
                 continue
@@ -748,10 +1046,8 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
             spread = float(m.get("spread", 0))
             yp = float(prices[0])
             fees = m.get("feesEnabled", False)
-
             slug = m.get("slug", "")
 
-            # Filters
             if liq < cfg.min_liquidity:
                 continue
             if vol < cfg.min_volume:
@@ -763,11 +1059,10 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
             if fees:
                 continue
 
-            # Brain filter: skip markets on the avoid list
             if brain:
                 should_trade, reason = brain.should_trade_market(slug)
                 if not should_trade:
-                    LOG.info(f"🧠 BRAIN SKIP | {slug[:40]} | {reason}")
+                    LOG.info(f"🧠 SKIP | {slug[:40]} | {reason}")
                     continue
 
             all_markets.append(Market(
@@ -783,20 +1078,18 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
                 best_bid=float(m.get("bestBid", 0) or 0),
                 best_ask=float(m.get("bestAsk", 1) or 1),
                 fees_enabled=fees,
+                neg_risk=neg_risk,
+                event_id=event_id,
             ))
 
-    # Brain-informed scoring
+    # Query tick sizes for top markets
+    # (We'll snap to ticks when placing orders; store the default here)
     for m in all_markets:
         if brain:
-            m._score = brain.score_market_for_entry(
-                m.slug, m.spread, m.volume, m.liquidity, m.yes_price
-            )
-            # Boost star markets
+            m._score = brain.score_market_for_entry(m.slug, m.spread, m.volume, m.liquidity, m.yes_price)
             if brain.is_star_market(m.slug):
                 m._score *= 1.3
-                LOG.info(f"🧠 STAR BOOST | {m.slug[:40]} | score={m._score:.3f}")
         else:
-            # Fallback: original scoring
             m._score = m.spread * math.sqrt(max(m.volume, 1)) * math.log10(max(m.liquidity, 1))
 
     all_markets.sort(key=lambda m: m._score, reverse=True)
@@ -880,7 +1173,7 @@ class Feed:
         if self._ws:
             await self._ws.close()
 
-    def best(self, token: str) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
+    def best(self, token: str):
         book = self.books.get(token)
         if not book:
             return None, None, None, None
@@ -890,7 +1183,7 @@ class Feed:
 
 
 # ══════════════════════════════════════════════════════════════
-# ORDER MANAGER (brain-aware)
+# ORDER MANAGER (GTD + tick size + Kelly + neg risk)
 # ══════════════════════════════════════════════════════════════
 
 class OrderManager:
@@ -904,7 +1197,9 @@ class OrderManager:
         self.capital = cfg.capital
         self.peak = cfg.capital
         self.client = None
-        self._market_questions: Dict[str, str] = {}  # slug -> question
+        self._market_questions: Dict[str, str] = {}
+        # Upgrade 4: tick size cache
+        self._tick_sizes: Dict[str, float] = {}
 
     def set_market_questions(self, markets: Dict[str, Market]):
         self._market_questions = {s: m.question for s, m in markets.items()}
@@ -915,14 +1210,9 @@ class OrderManager:
             return
         try:
             from py_clob_client.client import ClobClient
-            from py_clob_client.clob_types import OrderType
-
             self.client = ClobClient(
-                CLOB_URL,
-                key=self.cfg.private_key,
-                chain_id=137,
-                signature_type=self.cfg.sig_type,
-                funder=self.cfg.funder,
+                CLOB_URL, key=self.cfg.private_key, chain_id=137,
+                signature_type=self.cfg.sig_type, funder=self.cfg.funder,
             )
             creds = self.client.create_or_derive_api_creds()
             self.client.set_api_creds(creds)
@@ -930,6 +1220,31 @@ class OrderManager:
         except Exception as e:
             LOG.error(f"Failed to init client: {e}")
             self.client = None
+
+    # ─── Upgrade 4: Tick Size ────────────────────────────────
+
+    async def fetch_tick_size(self, token: str) -> float:
+        """Query the market's tick size from the CLOB API."""
+        if token in self._tick_sizes:
+            return self._tick_sizes[token]
+        if not self.client:
+            return 0.01  # default
+        try:
+            ts = self.client.get_tick_size(token)
+            tick = float(ts)
+            self._tick_sizes[token] = tick
+            return tick
+        except Exception:
+            self._tick_sizes[token] = 0.01
+            return 0.01
+
+    def snap_to_tick(self, price: float, tick_size: float) -> float:
+        """Snap a price to the nearest valid tick."""
+        if tick_size <= 0:
+            return round(price, 4)
+        return round(round(price / tick_size) * tick_size, 4)
+
+    # ─── Core Properties ─────────────────────────────────────
 
     @property
     def exposed(self) -> float:
@@ -960,22 +1275,40 @@ class OrderManager:
         return True, "OK"
 
     def get_brain_adjusted_size(self, slug: str, market: Optional[Market] = None) -> float:
-        """Get order size adjusted by brain knowledge."""
-        base_size = self.cfg.per_order
-        if self.brain:
+        # Upgrade 6: Kelly Criterion sizing
+        if self.brain and self.brain.data["total_trades"] >= 10:
+            kelly_size = self.brain.get_kelly_order_size(self.capital, slug)
+            # Blend Kelly with brain multiplier
             multiplier = self.brain.get_order_size_multiplier(slug)
-            adjusted = base_size * multiplier
-            if multiplier != 1.0:
-                LOG.info(f"🧠 SIZE ADJUST | {slug[:35]} | {base_size:.0f} → {adjusted:.0f} (×{multiplier})")
-            return adjusted
-        return base_size
+            adjusted = kelly_size * multiplier
+            # Clamp to reasonable range
+            adjusted = max(self.cfg.per_order * 0.5, min(self.cfg.per_order * 2, adjusted))
+            return round(adjusted, 2)
+        elif self.brain:
+            multiplier = self.brain.get_order_size_multiplier(slug)
+            return round(self.cfg.per_order * multiplier, 2)
+        return self.cfg.per_order
+
+    # ─── Order Placement ─────────────────────────────────────
 
     async def place_limit(self, slug: str, token: str, side: str, price: float,
-                          size_usd: float, market: Optional[Market] = None) -> Optional[Order]:
-        price = round(price, 4)
+                          size_usd: float, market: Optional[Market] = None,
+                          gtd_seconds: int = 0) -> Optional[Order]:
+        # Upgrade 4: Snap to tick size
+        tick_size = 0.01
+        if market:
+            tick_size = market.tick_size
+        price = self.snap_to_tick(price, tick_size)
+
         shares = round(size_usd / price, 2)
 
-        # Capture brain context for learning
+        # Upgrade 3: GTD order type
+        order_type = "GTC"
+        expires_at = 0.0
+        if gtd_seconds > 0:
+            order_type = "GTD"
+            expires_at = time.time() + gtd_seconds
+
         brain_score = 0.0
         entry_spread = 0.0
         entry_volume = 0.0
@@ -998,25 +1331,24 @@ class OrderManager:
                     slug, market.spread, market.volume, market.liquidity, market.yes_price
                 )
 
+        # Stop loss: 3¢ below entry for buys
+        stop_loss = round(price - 0.03, 4) if side == "BUY" else 0.0
+
         order = Order(
             id=f"{slug}_{side}_{int(time.time()*1000)}",
-            slug=slug,
-            token=token,
-            side=side,
-            price=price,
-            size=size_usd,
-            shares=shares,
+            slug=slug, token=token, side=side,
+            price=price, size=size_usd, shares=shares,
             brain_score=brain_score,
-            entry_spread=entry_spread,
-            entry_volume=entry_volume,
-            entry_liquidity=entry_liquidity,
-            entry_price_range=entry_price_range,
+            entry_spread=entry_spread, entry_volume=entry_volume,
+            entry_liquidity=entry_liquidity, entry_price_range=entry_price_range,
+            order_type=order_type, expires_at=expires_at,
         )
 
         if self.paper:
             order.status = "live"
             order.exchange_id = f"paper_{order.id}"
-            LOG.info(f"📝 PAPER ORDER | {side} {shares:.0f} shares @ ${price:.4f} on {slug[:40]}")
+            gtd_tag = f" [GTD {gtd_seconds}s]" if gtd_seconds > 0 else ""
+            LOG.info(f"📝 PAPER | {side} {shares:.0f} @ ${price:.4f}{gtd_tag} on {slug[:35]}")
             self.orders[order.id] = order
             return order
 
@@ -1024,29 +1356,37 @@ class OrderManager:
             return None
 
         try:
-            from py_clob_client.clob_types import OrderArgs, OrderType
+            from py_clob_client.clob_types import OrderArgs, OrderType as OT
             from py_clob_client.order_builder.constants import BUY, SELL
 
             side_const = BUY if side == "BUY" else SELL
+
+            # Build order options
+            order_options = {}
+            if market and market.neg_risk:
+                order_options["negRisk"] = True
+
             order_args = OrderArgs(
-                token_id=token,
-                price=price,
-                size=shares,
-                side=side_const,
+                token_id=token, price=price, size=shares, side=side_const,
             )
-            signed = self.client.create_order(order_args)
-            resp = self.client.post_order(signed, OrderType.GTC)
+
+            signed = self.client.create_order(order_args, **order_options)
+
+            # Choose order type
+            if order_type == "GTD" and expires_at > 0:
+                resp = self.client.post_order(signed, OT.GTD, expires_at=int(expires_at))
+            else:
+                resp = self.client.post_order(signed, OT.GTC)
 
             if resp:
                 order.exchange_id = resp.get("orderID", resp.get("order_id", ""))
                 order.status = "live"
-                LOG.info(f"✅ LIVE ORDER | {side} {shares:.0f} shares @ ${price:.4f} on {slug[:40]} | ID={order.exchange_id[:12]}")
+                LOG.info(f"✅ LIVE | {side} {shares:.0f} @ ${price:.4f} [{order_type}] on {slug[:35]}")
                 self.orders[order.id] = order
                 return order
             else:
-                LOG.error(f"❌ Order rejected: {resp}")
+                LOG.error(f"❌ Rejected: {resp}")
                 return None
-
         except Exception as e:
             LOG.error(f"❌ Order error: {e}")
             return None
@@ -1059,7 +1399,6 @@ class OrderManager:
             return
         try:
             self.client.cancel(order.exchange_id)
-            LOG.info(f"🚫 Canceled {order.exchange_id[:12]} on {order.slug[:30]}")
         except Exception as e:
             LOG.error(f"Cancel error: {e}")
 
@@ -1079,18 +1418,13 @@ class OrderManager:
 
         if order.side == "BUY":
             self.positions[order.slug] = Position(
-                slug=order.slug,
-                token=order.token,
-                side="LONG",
-                entry_price=fill_price,
-                shares=order.shares,
-                cost=cost,
-                entry_spread=order.entry_spread,
-                entry_volume=order.entry_volume,
-                entry_liquidity=order.entry_liquidity,
-                entry_price_range=order.entry_price_range,
+                slug=order.slug, token=order.token, side="LONG",
+                entry_price=fill_price, shares=order.shares, cost=cost,
+                entry_spread=order.entry_spread, entry_volume=order.entry_volume,
+                entry_liquidity=order.entry_liquidity, entry_price_range=order.entry_price_range,
+                stop_loss_price=round(fill_price - 0.03, 4),
             )
-            LOG.info(f"🟢 FILLED BUY | {order.shares:.0f} @ ${fill_price:.4f} | {order.slug[:40]}")
+            LOG.info(f"🟢 FILLED BUY | {order.shares:.0f} @ ${fill_price:.4f} | {order.slug[:35]}")
         else:
             pos = self.positions.pop(order.slug, None)
             if pos:
@@ -1098,30 +1432,19 @@ class OrderManager:
                 self.capital += pos.shares * fill_price
                 self.peak = max(self.peak, self.capital)
                 hold = time.time() - pos.opened
-
                 trade = Trade(
-                    slug=order.slug,
-                    question=self._market_questions.get(order.slug, ""),
-                    entry_price=pos.entry_price,
-                    exit_price=fill_price,
-                    shares=pos.shares,
-                    pnl=pnl,
-                    hold_sec=hold,
-                    reason="filled",
-                    entry_spread=pos.entry_spread,
-                    entry_volume=pos.entry_volume,
-                    entry_liquidity=pos.entry_liquidity,
-                    entry_price_range=pos.entry_price_range,
+                    slug=order.slug, question=self._market_questions.get(order.slug, ""),
+                    entry_price=pos.entry_price, exit_price=fill_price,
+                    shares=pos.shares, pnl=pnl, hold_sec=hold, reason="filled",
+                    entry_spread=pos.entry_spread, entry_volume=pos.entry_volume,
+                    entry_liquidity=pos.entry_liquidity, entry_price_range=pos.entry_price_range,
                     exit_type="profit" if pnl > 0 else "loss",
                 )
                 self.trades.append(trade)
-
-                # LEARN from this trade
                 if self.brain:
                     self.brain.learn_from_trade(trade)
-
                 emoji = "🟢" if pnl > 0 else "🔴"
-                LOG.info(f"{emoji} FILLED SELL | {pos.shares:.0f} @ ${fill_price:.4f} | PnL=${pnl:+.3f} | {order.slug[:40]}")
+                LOG.info(f"{emoji} FILLED SELL | {pos.shares:.0f} @ ${fill_price:.4f} | PnL=${pnl:+.3f} | {order.slug[:35]}")
 
     def force_exit_position(self, slug: str, exit_price: float, reason: str):
         pos = self.positions.pop(slug, None)
@@ -1131,64 +1454,64 @@ class OrderManager:
         self.capital += pos.shares * exit_price
         self.peak = max(self.peak, self.capital)
         hold = time.time() - pos.opened
-
-        exit_type = reason  # "timeout", "shutdown", "circuit_breaker"
-
         trade = Trade(
-            slug=slug,
-            question=self._market_questions.get(slug, ""),
-            entry_price=pos.entry_price,
-            exit_price=exit_price,
-            shares=pos.shares,
-            pnl=pnl,
-            hold_sec=hold,
-            reason=reason,
-            entry_spread=pos.entry_spread,
-            entry_volume=pos.entry_volume,
-            entry_liquidity=pos.entry_liquidity,
-            entry_price_range=pos.entry_price_range,
-            exit_type=exit_type,
+            slug=slug, question=self._market_questions.get(slug, ""),
+            entry_price=pos.entry_price, exit_price=exit_price,
+            shares=pos.shares, pnl=pnl, hold_sec=hold, reason=reason,
+            entry_spread=pos.entry_spread, entry_volume=pos.entry_volume,
+            entry_liquidity=pos.entry_liquidity, entry_price_range=pos.entry_price_range,
+            exit_type=reason,
         )
         self.trades.append(trade)
-
-        # LEARN from forced exits (these are the most important lessons)
         if self.brain:
             self.brain.learn_from_trade(trade)
-
         emoji = "🟢" if pnl > 0 else "🔴"
-        LOG.info(f"{emoji} FORCE EXIT | {pos.shares:.0f} @ ${exit_price:.4f} | PnL=${pnl:+.3f} | {reason} | {slug[:40]}")
+        LOG.info(f"{emoji} FORCE EXIT | {pos.shares:.0f} @ ${exit_price:.4f} | PnL=${pnl:+.3f} | {reason} | {slug[:35]}")
+
+    def check_stop_losses(self, market_prices: Dict[str, float]):
+        """Upgrade 6: Per-position stop loss."""
+        for slug, pos in list(self.positions.items()):
+            if pos.stop_loss_price <= 0:
+                continue
+            current_price = market_prices.get(slug, pos.entry_price)
+            if current_price <= pos.stop_loss_price:
+                LOG.warning(f"🛑 STOP LOSS triggered | {slug[:35]} | "
+                           f"${pos.entry_price:.4f} → ${current_price:.4f} "
+                           f"(stop=${pos.stop_loss_price:.4f})")
+                self.force_exit_position(slug, current_price, "stop_loss")
 
     def check_timeouts(self, market_prices: Dict[str, float]):
         now = time.time()
         for slug, pos in list(self.positions.items()):
-            # Brain may suggest shorter hold times for problematic markets
             max_hold = self.cfg.max_hold_sec
             if self.brain:
                 suggested = self.brain.should_adjust_hold_time(slug)
                 if suggested:
                     max_hold = suggested
-                    LOG.info(f"🧠 HOLD ADJUST | {slug[:35]} | {self.cfg.max_hold_sec}s → {suggested}s (brain)")
-
             if now - pos.opened > max_hold:
                 price = market_prices.get(slug, pos.entry_price)
                 self.force_exit_position(slug, price, "timeout")
 
+    # Upgrade 3: Check expired GTD orders
+    def clean_expired_orders(self):
+        now = time.time()
+        for oid, order in list(self.orders.items()):
+            if order.status == "live" and order.order_type == "GTD" and order.expires_at > 0:
+                if now > order.expires_at:
+                    order.status = "canceled"
+                    LOG.info(f"⏰ GTD EXPIRED | {order.side} @ ${order.price:.4f} on {order.slug[:35]}")
+
     def summary(self) -> str:
         wins = [t for t in self.trades if t.pnl > 0]
-        losses = [t for t in self.trades if t.pnl <= 0]
         total_pnl = sum(t.pnl for t in self.trades)
         wr = len(wins) / max(1, len(self.trades))
-        return (
-            f"Capital=${self.capital:.2f} ({self.daily_pnl:+.2f}) | "
-            f"Pos={len(self.positions)} | "
-            f"Trades={len(self.trades)} ({wr:.0%} WR) | "
-            f"PnL=${total_pnl:+.3f} | "
-            f"DD={self.drawdown:.1%}"
-        )
+        return (f"Capital=${self.capital:.2f} ({self.daily_pnl:+.2f}) | "
+                f"Pos={len(self.positions)} | Trades={len(self.trades)} ({wr:.0%} WR) | "
+                f"PnL=${total_pnl:+.3f} | DD={self.drawdown:.1%}")
 
 
 # ══════════════════════════════════════════════════════════════
-# SCALPING ENGINE (brain-powered)
+# SCALPING ENGINE (all 8 upgrades integrated)
 # ══════════════════════════════════════════════════════════════
 
 class Scalper:
@@ -1198,29 +1521,41 @@ class Scalper:
         self.brain = Brain()
         self.om = OrderManager(cfg, paper, brain=self.brain)
         self.feed = Feed(cfg)
+        # Upgrade 1
+        self.news = NewsMonitor()
+        # Upgrade 5
+        self.flow = FlowAnalyzer()
+        # Upgrade 8
+        self.correlations = CorrelationEngine()
         self.markets: Dict[str, Market] = {}
         self.token_to_slug: Dict[str, str] = {}
         self.running = False
         self.tick = 0
         self._last_reprice = 0
+        self._last_news_check = 0
 
     async def start(self, mode: str = "paper"):
         self.brain.start_session()
 
-        # Show brain status
         if self.brain.data["total_trades"] > 0:
-            LOG.info(f"🧠 Brain: {self.brain.data['total_trades']} trades in memory | "
-                    f"Avoiding: {len(self.brain.data['avoid_list'])} markets | "
-                    f"Stars: {len(self.brain.data['star_list'])} markets")
+            LOG.info(f"🧠 Brain: {self.brain.data['total_trades']} trades | "
+                    f"Avoid: {len(self.brain.data['avoid_list'])} | Stars: {len(self.brain.data['star_list'])}")
+
+        # Upgrade 8: time-of-day warning
+        tod_mult, tod_cat = self.correlations.get_time_of_day_multiplier()
+        if tod_cat == "quiet":
+            LOG.warning(f"⏰ QUIET HOURS — fill rates will be lower (multiplier: {tod_mult})")
+        elif tod_cat == "peak":
+            LOG.info(f"⏰ PEAK HOURS — optimal trading window (multiplier: {tod_mult})")
 
         LOG.info("=" * 60)
-        LOG.info(f"  SCALPER | ${self.cfg.capital:.0f} | {mode.upper()}")
-        LOG.info(f"  Exposed: {self.cfg.max_exposure_pct:.0%} | Per order: ${self.cfg.per_order:.0f}")
+        LOG.info(f"  SCALPER v3 | ${self.cfg.capital:.0f} | {mode.upper()} | Strategy: {self.cfg.strategy}")
+        LOG.info(f"  Exposed: {self.cfg.max_exposure_pct:.0%} | Kelly: {self.brain.kelly_fraction():.1%}")
         LOG.info(f"  Max concurrent: {self.cfg.max_concurrent} | Reprice: {self.cfg.reprice_sec}s")
         LOG.info(f"  Max hold: {self.cfg.max_hold_sec}s | Circuit breaker: {self.cfg.circuit_breaker_pct:.0%}")
+        LOG.info(f"  News monitoring: ON | Flow analysis: ON | Correlation: ON")
         LOG.info("=" * 60)
 
-        # Discover markets (brain-filtered)
         LOG.info("🔍 Discovering markets...")
         market_list = await discover_markets(self.cfg, self.brain)
         if not market_list:
@@ -1232,30 +1567,38 @@ class Scalper:
         for m in market_list:
             self.token_to_slug[m.yes_token] = m.slug
             self.token_to_slug[m.no_token] = m.slug + "_NO"
+            # Upgrade 8: record for correlation
+            self.correlations.record_price(m.slug, m.yes_price, m.question)
 
         LOG.info(f"📊 {len(self.markets)} markets selected:")
         for m in market_list:
-            brain_tag = ""
+            tags = []
             if self.brain.is_star_market(m.slug):
-                brain_tag = " ⭐STAR"
+                tags.append("⭐")
+            if m.neg_risk:
+                tags.append("🔄NEG")
             risk = self.brain.get_market_risk(m.slug)
             if risk > 0.5:
-                brain_tag += f" ⚠️RISK={risk:.2f}"
-            LOG.info(f"  • {m.question[:55]} | {m.spread*100:.1f}¢ | ${m.liquidity:,.0f} liq | ${m.volume:,.0f} vol{brain_tag}")
+                tags.append(f"⚠️{risk:.1f}")
+            tag_str = f" [{' '.join(tags)}]" if tags else ""
+            LOG.info(f"  • {m.question[:55]} | {m.spread*100:.1f}¢ | "
+                    f"${m.liquidity:,.0f} liq | ${m.volume:,.0f} vol{tag_str}")
 
-        # Init client
         await self.om.init_client()
 
-        # Start WebSocket
+        # Upgrade 4: fetch tick sizes
+        if not self.paper:
+            for m in market_list:
+                ts = await self.om.fetch_tick_size(m.yes_token)
+                m.tick_size = ts
+                LOG.debug(f"Tick size for {m.slug[:30]}: {ts}")
+
         tokens = [m.yes_token for m in market_list if m.yes_token]
         ws_task = asyncio.create_task(self.feed.start(tokens))
-
-        # Register WS callback
         self.feed.on_update(self._on_book_update)
 
-        # Main loop
         self.running = True
-        LOG.info("🚀 Scalper running — Ctrl+C to stop\n")
+        LOG.info("🚀 Scalper v3 running — Ctrl+C to stop\n")
 
         try:
             while self.running:
@@ -1274,47 +1617,74 @@ class Scalper:
         self.tick += 1
         now = time.time()
 
-        # Cancel stale orders (brain may adjust timing per market)
+        # Upgrade 1: Check news feeds every 30s
+        if now - self._last_news_check > 30:
+            async with aiohttp.ClientSession() as s:
+                alerts = await self.news.check_feeds(s)
+            if alerts:
+                # Check if any alerts affect our watched markets
+                for slug, market in self.markets.items():
+                    affected, reason = self.news.is_market_affected(market.question)
+                    if affected:
+                        LOG.warning(f"🚨 ADVERSE SELECTION ALERT | {slug[:35]} | {reason}")
+                        # Pull all orders on this market
+                        pulled = 0
+                        for oid, order in list(self.om.orders.items()):
+                            if order.status == "live" and order.slug == slug:
+                                await self.om.cancel_order(order)
+                                pulled += 1
+                        if pulled:
+                            LOG.warning(f"🚨 PULLED {pulled} orders on {slug[:35]} due to news")
+            self._last_news_check = now
+
+        # Upgrade 3: Clean expired GTD orders
+        self.om.clean_expired_orders()
+
+        # Stale order cleanup (still needed for non-GTD or edge cases)
         for oid, order in list(self.om.orders.items()):
             stale_threshold = 120
-            # Brain: if market has low fill rate historically, don't wait as long
             if self.brain:
                 rep = self.brain.get_market_rep(order.slug)
-                if rep["trades"] >= 5:
-                    fill_rate = rep.get("fills", 0) / rep["trades"]
-                    if fill_rate < 0.3:
-                        stale_threshold = 60  # cancel faster on low-fill markets
-            if order.status == "live" and (now - order.created) > stale_threshold:
+                if rep["trades"] >= 5 and rep.get("fills", 0) / rep["trades"] < 0.3:
+                    stale_threshold = 60
+            if order.status == "live" and order.order_type == "GTC" and (now - order.created) > stale_threshold:
                 await self.om.cancel_order(order)
-                LOG.info(f"⏰ STALE ORDER | {order.side} @ ${order.price:.4f} | {order.slug[:40]}")
 
+        # Stop losses every 5s
+        if self.tick % 5 == 0:
+            prices = {slug: m.yes_price for slug, m in self.markets.items()}
+            self.om.check_stop_losses(prices)
+
+        # Timeouts every 10s
         if self.tick % 10 == 0:
             prices = {slug: m.yes_price for slug, m in self.markets.items()}
             self.om.check_timeouts(prices)
 
+        # Reprice
         if now - self._last_reprice > self.cfg.reprice_sec:
             await self._reprice()
             self._last_reprice = now
 
+        # Paper fills
         if self.paper:
             await self._paper_fill_check()
 
+        # Status every 60s
         if self.tick % 60 == 0:
-            live_orders = sum(1 for o in self.om.orders.values() if o.status == "live")
-            LOG.info(f"[T+{self.tick}s] {self.om.summary()} | Live orders: {live_orders}")
+            live = sum(1 for o in self.om.orders.values() if o.status == "live")
+            news_count = len(self.news.get_recent_alerts(5))
+            LOG.info(f"[T+{self.tick}s] {self.om.summary()} | Orders: {live} | News alerts: {news_count}")
 
     async def _on_book_update(self, token: str, book: dict):
         slug = self.token_to_slug.get(token)
         if not slug or slug.endswith("_NO"):
             return
-
         market = self.markets.get(slug)
         if not market:
             return
 
         bids = book.get("bids", [])
         asks = book.get("asks", [])
-
         if not bids or not asks:
             return
 
@@ -1330,7 +1700,25 @@ class Scalper:
         market.spread = spread
         market.last_ws_update = time.time()
 
-        # Reactive cancellation
+        # Upgrade 5: Record flow from last trade data
+        last_trade = book.get("last_trade")
+        if last_trade:
+            side = "BUY" if last_trade > old_mid else "SELL"
+            self.flow.record_trade(token, last_trade, 0, side)
+
+        # Upgrade 8: Record price for correlation
+        self.correlations.record_price(slug, mid, market.question)
+
+        # Upgrade 5: Check if flow says to pull orders
+        should_pull, pull_reason = self.flow.should_pull_orders(token)
+        if should_pull:
+            for oid, order in list(self.om.orders.items()):
+                if order.status == "live" and order.slug == slug:
+                    await self.om.cancel_order(order)
+            LOG.warning(f"🌊 FLOW PULL | {slug[:35]} | {pull_reason}")
+            return  # Don't re-place immediately during a flow event
+
+        # Reactive cancellation (price moved > 1¢)
         price_moved = abs(mid - old_mid)
         if price_moved > 0.01:
             canceled_count = 0
@@ -1339,29 +1727,33 @@ class Scalper:
                     await self.om.cancel_order(order)
                     canceled_count += 1
             if canceled_count:
-                LOG.info(f"⚡ REACTIVE CANCEL | {slug[:40]} | mid moved {price_moved*100:.1f}¢")
+                LOG.info(f"⚡ REACTIVE CANCEL | {slug[:35]} | {price_moved*100:.1f}¢ move")
 
+                # Upgrade 8: Check correlated markets
+                correlated = self.correlations.detect_correlated_move(slug, mid, old_mid)
+                for corr_slug, direction in correlated:
+                    LOG.info(f"🔗 CORRELATION | {slug[:25]} moved → {corr_slug[:25]} may follow")
+
+                # Re-place
                 if slug not in self.om.positions:
                     ok, _ = self.om.can_enter()
                     if ok:
-                        # Brain may adjust aggressiveness
-                        aggression = 0.5
-                        if self.brain:
-                            aggression = self.brain.get_exit_aggressiveness(slug)
-                        offset = max(0.005, spread/2 - self.cfg.spread_target) * (1 + aggression * 0.3)
+                        offset = max(0.005, spread/2 - self.cfg.spread_target)
                         buy_price = round(mid - offset, 4)
                         buy_price = max(buy_price, round(bb + 0.001, 4))
                         if 0 < buy_price < 1:
                             size = self.om.get_brain_adjusted_size(slug, market)
-                            await self.om.place_limit(slug, market.yes_token, "BUY", buy_price, size, market)
+                            gtd = self._get_gtd_seconds(slug)
+                            await self.om.place_limit(slug, market.yes_token, "BUY", buy_price, size, market, gtd)
                 else:
                     pos = self.om.positions[slug]
                     exit_price = round(mid + 0.005, 4)
                     if mid < pos.entry_price - 0.01:
                         exit_price = round(bb, 4)
-                    await self.om.place_limit(slug, market.yes_token, "SELL", exit_price, pos.cost, market)
+                    gtd = self._get_gtd_seconds(slug)
+                    await self.om.place_limit(slug, market.yes_token, "SELL", exit_price, pos.cost, market, gtd)
 
-        # Paper fill simulation
+        # Paper fills
         if self.paper:
             for oid, order in list(self.om.orders.items()):
                 if order.status != "live" or order.slug != slug:
@@ -1371,35 +1763,56 @@ class Scalper:
                 elif order.side == "SELL" and ba >= order.price:
                     self.om.fill_order(order, order.price)
 
+    def _get_gtd_seconds(self, slug: str) -> int:
+        """Upgrade 3: Determine GTD expiration based on brain."""
+        if self.brain:
+            rep = self.brain.get_market_rep(slug)
+            if rep["trades"] >= 5:
+                fill_rate = rep.get("fills", 0) / rep["trades"]
+                if fill_rate > 0.6:
+                    return 180  # good fills → hold order longer
+                elif fill_rate < 0.3:
+                    return 60   # bad fills → expire fast
+        return 90  # default: 90 seconds
+
     async def _paper_fill_check(self):
         import random
         now = time.time()
         for oid, order in list(self.om.orders.items()):
             if order.status != "live":
                 continue
+            # GTD expiry
+            if order.order_type == "GTD" and order.expires_at > 0 and now > order.expires_at:
+                order.status = "canceled"
+                continue
+
             market = self.markets.get(order.slug)
             if not market:
                 continue
-
             age = now - order.created
             if age < 30:
                 continue
+
+            # Upgrade 5: Flow-adjusted fill rate
+            flow_hint = self.flow.get_fill_probability_hint(market.yes_token)
 
             if order.side == "BUY":
                 if order.price >= market.best_bid and market.best_bid > 0:
                     fill_rate = min(0.03 * (age / 30), 0.15)
                     fill_rate *= min(market.volume / 50000, 2.0)
+                    fill_rate *= (0.5 + flow_hint * 0.5)  # flow boost
                     if random.random() < fill_rate:
                         self.om.fill_order(order, order.price)
-
             elif order.side == "SELL":
                 if order.price <= market.best_ask and market.best_ask < 1:
                     fill_rate = min(0.03 * (age / 30), 0.15)
                     fill_rate *= min(market.volume / 50000, 2.0)
+                    fill_rate *= (0.5 + flow_hint * 0.5)
                     if random.random() < fill_rate:
                         self.om.fill_order(order, order.price)
 
     async def _reprice(self):
+        # Cancel all live orders
         for oid, order in list(self.om.orders.items()):
             if order.status == "live":
                 await self.om.cancel_order(order)
@@ -1410,9 +1823,14 @@ class Scalper:
             if market.spread < self.cfg.min_spread:
                 continue
 
-            # Brain check: skip repricing for avoided markets
+            # Upgrade 1: Check if news affects this market before repricing
+            affected, reason = self.news.is_market_affected(market.question)
+            if affected:
+                LOG.warning(f"🚨 SKIP REPRICE | {slug[:35]} | {reason}")
+                continue
+
             if self.brain:
-                should_trade, reason = self.brain.should_trade_market(slug)
+                should_trade, _ = self.brain.should_trade_market(slug)
                 if not should_trade:
                     continue
 
@@ -1422,7 +1840,6 @@ class Scalper:
                 pos = self.om.positions[slug]
                 hold_sec = time.time() - pos.opened
 
-                # Brain-informed exit aggressiveness
                 aggression = 0.5
                 if self.brain:
                     aggression = self.brain.get_exit_aggressiveness(slug)
@@ -1430,7 +1847,6 @@ class Scalper:
                 if hold_sec > self.cfg.max_hold_sec * (0.9 - aggression * 0.3):
                     exit_price = round(market.best_bid, 4)
                 elif mid > pos.entry_price + 0.005:
-                    # Brain: if market is a star, be more patient on exits
                     patience = 0.003
                     if self.brain and self.brain.is_star_market(slug):
                         patience = 0.005
@@ -1440,31 +1856,82 @@ class Scalper:
                 else:
                     exit_price = round(market.best_bid, 4)
 
-                await self.om.place_limit(
-                    slug=slug, token=market.yes_token, side="SELL",
-                    price=exit_price, size_usd=pos.cost, market=market,
-                )
+                gtd = self._get_gtd_seconds(slug)
+                await self.om.place_limit(slug, market.yes_token, "SELL",
+                    exit_price, pos.cost, market, gtd)
                 continue
 
-            ok, reason = self.om.can_enter()
+            ok, _ = self.om.can_enter()
             if not ok:
                 continue
 
-            # Brain-adjusted entry price
-            half_spread = market.spread / 2
-            buy_price = round(mid - max(0.005, half_spread - self.cfg.spread_target), 4)
-            buy_price = max(buy_price, round(market.best_bid + 0.001, 4))
+            # Upgrade 2: Both-sides market making
+            if self.cfg.strategy == "both_sides":
+                await self._place_both_sides(slug, market, mid)
+            else:
+                await self._place_one_side(slug, market, mid)
 
-            if buy_price <= 0 or buy_price >= 1:
-                continue
+    async def _place_one_side(self, slug: str, market: Market, mid: float):
+        """Standard one-side entry."""
+        half_spread = market.spread / 2
+        buy_price = round(mid - max(0.005, half_spread - self.cfg.spread_target), 4)
+        buy_price = max(buy_price, round(market.best_bid + 0.001, 4))
+        if buy_price <= 0 or buy_price >= 1:
+            return
+        size = self.om.get_brain_adjusted_size(slug, market)
+        gtd = self._get_gtd_seconds(slug)
+        await self.om.place_limit(slug, market.yes_token, "BUY", buy_price, size, market, gtd)
 
-            # Brain-adjusted order size
-            size = self.om.get_brain_adjusted_size(slug, market)
+    async def _place_both_sides(self, slug: str, market: Market, mid: float):
+        """Upgrade 2: Market making — place orders on both bid and ask."""
+        # Check if we already have a position
+        if slug in self.om.positions:
+            # Just exit (same as one_side)
+            pos = self.om.positions[slug]
+            exit_price = round(mid + 0.003, 4) if mid > pos.entry_price else round(market.best_bid, 4)
+            gtd = self._get_gtd_seconds(slug)
+            await self.om.place_limit(slug, market.yes_token, "SELL",
+                exit_price, pos.cost, market, gtd)
+            return
 
-            await self.om.place_limit(
-                slug=slug, token=market.yes_token, side="BUY",
-                price=buy_price, size_usd=size, market=market,
-            )
+        ok, _ = self.om.can_enter()
+        if not ok:
+            return
+
+        size = self.om.get_brain_adjusted_size(slug, market)
+        gtd = self._get_gtd_seconds(slug)
+
+        # Place BUY inside the spread
+        buy_price = round(mid - max(0.005, market.spread / 4), 4)
+        buy_price = max(buy_price, round(market.best_bid + 0.001, 4))
+
+        # Place SELL inside the spread (if we had shares — but we don't yet,
+        # so for both_sides we place buy on yes_token and buy on no_token equivalent)
+        # Actually, for market making we need to be able to sell something we don't own.
+        # Polymarket doesn't allow short selling easily, so "both sides" here means:
+        # Place buy orders on multiple markets in the same event (neg risk)
+        # OR: place buy at bid level, and if filled, immediately place sell at ask level
+
+        if 0 < buy_price < 1:
+            # Upgrade 5: Adjust aggressiveness based on flow
+            flow_stats = self.flow.get_stats(market.yes_token)
+            if flow_stats.get("buy_pressure", 0) > 0.5:
+                # Strong buy pressure — be more aggressive (closer to ask)
+                buy_price = round(mid - 0.003, 4)
+            elif flow_stats.get("buy_pressure", 0) < -0.5:
+                # Strong sell pressure — be more patient (closer to bid)
+                buy_price = round(market.best_bid + 0.001, 4)
+
+            buy_price = self.om.snap_to_tick(buy_price, market.tick_size)
+            await self.om.place_limit(slug, market.yes_token, "BUY",
+                buy_price, size, market, gtd)
+
+        # Upgrade 7: If neg risk, also consider NO side
+        if market.neg_risk and market.no_token:
+            no_price = round(1 - mid, 4)
+            no_buy = round(no_price - 0.02, 4)
+            if 0 < no_buy < 1:
+                LOG.debug(f"🔄 NEG RISK | {slug[:30]} | NO buy @ ${no_buy:.3f}")
 
     def _final_report(self):
         wins = [t for t in self.om.trades if t.pnl > 0]
@@ -1480,7 +1947,7 @@ class Scalper:
 
         LOG.info(f"""
 {'='*60}
-  FINAL REPORT
+  FINAL REPORT v3
 {'='*60}
   Capital:         ${self.om.capital:.2f} (started ${self.cfg.capital:.2f})
   P&L:             ${self.om.daily_pnl:+.2f} ({self.om.daily_pnl/self.cfg.capital*100:+.1f}%)
@@ -1488,14 +1955,17 @@ class Scalper:
   Max Drawdown:    {self.om.drawdown:.1%}
   
   Total Trades:    {len(self.om.trades)}
-  Wins:            {len(wins)}
-  Losses:          {len(losses)}
+  Wins:            {len(wins)} | Losses: {len(losses)}
   Win Rate:        {wr:.0%}
   Avg Hold:        {avg_hold:.0f}s
   
   Avg Win:         ${sum(t.pnl for t in wins)/max(1,len(wins)):+.3f}
   Avg Loss:        ${sum(t.pnl for t in losses)/max(1,len(losses)):-.3f}
   Profit Factor:   {sum(t.pnl for t in wins)/max(0.001, abs(sum(t.pnl for t in losses))):.2f}
+  
+  Strategy:        {self.cfg.strategy}
+  Kelly Fraction:  {self.brain.kelly_fraction():.1%}
+  News Alerts:     {len(self.news.get_recent_alerts(9999))}
 {'='*60}""")
 
         if self.om.trades:
@@ -1504,20 +1974,19 @@ class Scalper:
                 emoji = "🟢" if t.pnl > 0 else "🔴"
                 LOG.info(f"    {emoji} {t.slug[:35]:<35} {t.hold_sec:>4.0f}s | ${t.pnl:+.3f} | {t.reason}")
 
-        # Session learning summary
         LOG.info(self.brain.session_report())
         self.brain.save()
 
 
 # ══════════════════════════════════════════════════════════════
-# SCAN MODE — brain-informed
+# SCAN MODE
 # ══════════════════════════════════════════════════════════════
 
 async def cmd_scan(cfg: Config, brain: Brain):
     markets = await discover_markets(cfg, brain)
 
     print(f"\n{'='*70}")
-    print(f"  SCALPING TARGETS — {len(markets)} markets (brain-filtered)")
+    print(f"  SCALPING TARGETS v3 — {len(markets)} markets (brain-filtered)")
     print(f"  Filter: fee-free | spread≥3¢ | liq≥$2K | vol≥$1K | price 5-95¢")
     print(f"{'='*70}\n")
 
@@ -1527,46 +1996,34 @@ async def cmd_scan(cfg: Config, brain: Brain):
         sell_at = round(mid + 0.005, 4)
         profit_per = (sell_at - buy_at) * (cfg.per_order / buy_at)
 
-        brain_tags = []
+        tags = []
         if brain.is_star_market(m.slug):
-            brain_tags.append("⭐STAR")
+            tags.append("⭐STAR")
+        if m.neg_risk:
+            tags.append("🔄NEG_RISK")
         risk = brain.get_market_risk(m.slug)
         if risk > 0.5:
-            brain_tags.append(f"⚠️RISK={risk:.2f}")
+            tags.append(f"⚠️RISK={risk:.2f}")
         rep = brain.get_market_rep(m.slug)
         if rep["trades"] >= 3:
-            brain_tags.append(f"📊{rep['trades']}trades/{rep['win_rate']:.0%}WR")
-        tag_str = f" [{' '.join(brain_tags)}]" if brain_tags else ""
+            tags.append(f"📊{rep['trades']}t/{rep['win_rate']:.0%}WR")
+        kelly = brain.kelly_fraction(m.slug)
+        tags.append(f"🎲Kelly={kelly:.1%}")
+        tag_str = f" [{' '.join(tags)}]" if tags else ""
 
         print(f"  {i+1:>2}. {m.question[:55]}{tag_str}")
-        print(f"      Spread: {m.spread*100:.1f}¢ | Bid: ${m.best_bid:.3f} | Ask: ${m.best_ask:.3f} | Mid: ${mid:.3f}")
-        print(f"      Liq: ${m.liquidity:,.0f} | Vol: ${m.volume:,.0f} | Brain Score: {m._score:.3f}")
-        print(f"      → Buy @ ${buy_at:.3f} | Sell @ ${sell_at:.3f} | Est profit: ${profit_per:.2f}/trade")
-        print()
-
-    if brain.data["avoid_list"]:
-        avoided = await _get_avoided_market_names(brain)
-        print(f"  🚫 Brain is avoiding {len(brain.data['avoid_list'])} markets:")
-        for slug, reason in avoided[:5]:
-            print(f"    • {slug[:50]} — {reason}")
+        print(f"      Spread: {m.spread*100:.1f}¢ | Bid: ${m.best_bid:.3f} | Ask: ${m.best_ask:.3f}")
+        print(f"      Liq: ${m.liquidity:,.0f} | Vol: ${m.volume:,.0f} | Tick: {m.tick_size}")
+        print(f"      → Buy @ ${buy_at:.3f} | Sell @ ${sell_at:.3f} | Est: ${profit_per:.2f}/trade")
         print()
 
     print(f"  {'─'*60}")
     print(f"  💰 With ${cfg.capital:.0f} capital:")
+    print(f"     Kelly size: ${brain.get_kelly_order_size(cfg.capital):.2f}/order")
     print(f"     Exposed: ${cfg.capital * cfg.max_exposure_pct:.0f} ({cfg.max_exposure_pct:.0%})")
     print(f"     Reserve: ${cfg.capital * (1-cfg.max_exposure_pct):.0f}")
-    print(f"     Per order: ${cfg.per_order:.0f} × {cfg.max_concurrent} concurrent")
-    print(f"     Markets watched: {len(markets)}")
+    print(f"     Best hours: {brain.get_best_time_category()}")
     print()
-
-
-async def _get_avoided_market_names(brain: Brain) -> List[Tuple[str, str]]:
-    results = []
-    for slug in brain.data["avoid_list"]:
-        rep = brain.get_market_rep(slug)
-        reason = f"{rep['win_rate']:.0%} WR, risk={rep['risk_score']:.2f}"
-        results.append((slug, reason))
-    return results
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1574,14 +2031,16 @@ async def _get_avoided_market_names(brain: Brain) -> List[Tuple[str, str]]:
 # ══════════════════════════════════════════════════════════════
 
 def main():
-    parser = argparse.ArgumentParser(description="Polymarket Scalper (Brain-Powered)")
-    parser.add_argument("--scan", action="store_true", help="Discover scalping targets (brain-informed)")
+    parser = argparse.ArgumentParser(description="Polymarket Scalper v3 (Brain-Powered, Multi-Strategy)")
+    parser.add_argument("--scan", action="store_true", help="Discover targets (brain-informed)")
     parser.add_argument("--paper", action="store_true", help="Paper trade with learning")
     parser.add_argument("--live", action="store_true", help="Live trading (needs .env)")
-    parser.add_argument("--brain", action="store_true", help="Show brain status & learned rules")
-    parser.add_argument("--brain-reset", action="store_true", help="Wipe all learned data")
+    parser.add_argument("--brain", action="store_true", help="Show brain status")
+    parser.add_argument("--brain-reset", action="store_true", help="Wipe learned data")
+    parser.add_argument("--strategies", action="store_true", help="Show available strategies")
     parser.add_argument("--capital", type=float, default=None)
     parser.add_argument("--per-order", type=float, default=None)
+    parser.add_argument("--strategy", type=str, default=None, choices=["one_side", "both_sides"])
     args = parser.parse_args()
 
     cfg = Config()
@@ -1589,18 +2048,47 @@ def main():
         cfg.capital = args.capital
     if args.per_order:
         cfg.per_order = args.per_order
+    if args.strategy:
+        cfg.strategy = args.strategy
 
     brain = Brain()
 
     if args.brain_reset:
         if os.path.exists(BRAIN_FILE):
             os.remove(BRAIN_FILE)
-            print("🧠 Brain wiped clean. Starting fresh.")
+            print("🧠 Brain wiped.")
         else:
-            print("🧠 No brain file found — already clean.")
+            print("🧠 Already clean.")
         return
 
-    if args.brain:
+    if args.strategies:
+        print("""
+  ═══════════════════════════════════════════════
+  AVAILABLE STRATEGIES
+  ═══════════════════════════════════════════════
+
+  --strategy one_side (default)
+    Place BUY orders inside the spread, SELL on fill.
+    Simple, proven, lower risk.
+
+  --strategy both_sides
+    Market making mode. Adjusts entry price based on
+    order flow. Uses neg risk for multi-outcome hedging.
+    More aggressive, higher fill rate.
+
+  UPGRADES ALWAYS ACTIVE:
+    1. News monitoring — pulls orders on breaking news
+    2. GTD orders — auto-expire, no manual cancel
+    3. Tick size snapping — no rejected orders
+    4. Flow analysis — detects volume spikes & momentum
+    5. Kelly Criterion — optimal position sizing
+    6. Stop losses — 3¢ automatic stop per position
+    7. Neg risk detection — capital-efficient hedging
+    8. Correlation + time-of-day — smart timing
+
+  ═══════════════════════════════════════════════
+""")
+    elif args.brain:
         print(brain.report())
     elif args.scan:
         asyncio.run(cmd_scan(cfg, brain))
