@@ -992,6 +992,11 @@ class ScalperV5:
                     exit_price = round(mid, 4)
 
                 exit_price = min(exit_price, 0.99)
+                # Skip tiny positions
+                if pos.cost < 1.0 or pos.shares < 1:
+                    self.om.positions.pop(slug, None)
+                    self.om.stops.remove_stop(slug)
+                    continue
                 gtd = self._get_gtd_seconds(slug, market.spread)
                 await self.om.place_limit(slug, market.yes_token, "SELL",
                     exit_price, pos.cost, market, gtd, post_only=self.cfg.post_only)

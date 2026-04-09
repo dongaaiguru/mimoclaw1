@@ -1,27 +1,185 @@
 {
   "version": 4,
-  "total_trades": 0,
-  "total_pnl": 0.0,
-  "total_wins": 0,
+  "total_trades": 9,
+  "total_pnl": 10.2782,
+  "total_wins": 9,
   "total_losses": 0,
-  "sessions": 0,
+  "sessions": 1,
   "first_seen": 0,
-  "markets": {},
+  "markets": {
+    "will-siga-batista-win-the-2025-guinea-bissau-presidential-election": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "total_pnl": 3.7662,
+      "avg_pnl": 3.7662,
+      "win_rate": 1.0,
+      "avg_hold": 8.242264986038208,
+      "fills": 1,
+      "timeouts": 0,
+      "last_seen": 1775776390.048904,
+      "question": "Will Siga Batista win the 2025 Guinea-Bissau presidential election?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "foreign-intervention-in-gaza-by-june-30": {
+      "trades": 2,
+      "wins": 2,
+      "losses": 0,
+      "total_pnl": 3.4074,
+      "avg_pnl": 1.7037,
+      "win_rate": 1.0,
+      "avg_hold": 63.512699007987976,
+      "fills": 2,
+      "timeouts": 0,
+      "last_seen": 1775776475.3324955,
+      "question": "Foreign intervention in Gaza by June 30?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-trump-sell-0-gold-cards-in-2026": {
+      "trades": 5,
+      "wins": 5,
+      "losses": 0,
+      "total_pnl": 1.1838,
+      "avg_pnl": 0.23676,
+      "win_rate": 1.0,
+      "avg_hold": 99.91028141975403,
+      "fills": 5,
+      "timeouts": 0,
+      "last_seen": 1775776558.7049534,
+      "question": "Will Trump sell 0 Gold Cards in 2026?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "total_pnl": 1.9207999999999996,
+      "avg_pnl": 1.9207999999999996,
+      "win_rate": 1.0,
+      "avg_hold": 112.8060052394867,
+      "fills": 1,
+      "timeouts": 0,
+      "last_seen": 1775776549.621844,
+      "question": "Will Fernando Dias da Costa win the 2025 Guinea-Bissau presidential election?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    }
+  },
   "patterns": {
-    "by_spread": {},
-    "by_volume": {},
-    "by_liquidity": {},
-    "by_price": {},
-    "by_hold_time": {}
+    "by_spread": {
+      "0.10-0.20": {
+        "wins": 7,
+        "losses": 0,
+        "total_pnl": 6.870800000000001,
+        "trades": 7
+      },
+      "0.20+": {
+        "wins": 2,
+        "losses": 0,
+        "total_pnl": 3.4074,
+        "trades": 2
+      }
+    },
+    "by_volume": {
+      "5K-50K": {
+        "wins": 9,
+        "losses": 0,
+        "total_pnl": 10.2782,
+        "trades": 9
+      }
+    },
+    "by_liquidity": {
+      "3K-7K": {
+        "wins": 4,
+        "losses": 0,
+        "total_pnl": 9.0944,
+        "trades": 4
+      },
+      "7K-15K": {
+        "wins": 5,
+        "losses": 0,
+        "total_pnl": 1.1838,
+        "trades": 5
+      }
+    },
+    "by_price": {
+      "low": {
+        "wins": 1,
+        "losses": 0,
+        "total_pnl": 3.7662,
+        "trades": 1
+      },
+      "mid_low": {
+        "wins": 8,
+        "losses": 0,
+        "total_pnl": 6.5120000000000005,
+        "trades": 8
+      }
+    },
+    "by_hold_time": {
+      "0-30s": {
+        "wins": 2,
+        "losses": 0,
+        "total_pnl": 4.7892,
+        "trades": 2
+      },
+      "30-60s": {
+        "wins": 2,
+        "losses": 0,
+        "total_pnl": 2.0732999999999997,
+        "trades": 2
+      },
+      "60-120s": {
+        "wins": 3,
+        "losses": 0,
+        "total_pnl": 3.4090999999999996,
+        "trades": 3
+      },
+      "120-300s": {
+        "wins": 2,
+        "losses": 0,
+        "total_pnl": 0.0066,
+        "trades": 2
+      }
+    }
   },
   "time_patterns": {
-    "peak": {"wins": 0, "losses": 0, "pnl": 0},
-    "normal": {"wins": 0, "losses": 0, "pnl": 0},
-    "quiet": {"wins": 0, "losses": 0, "pnl": 0}
+    "peak": {
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0
+    },
+    "normal": {
+      "wins": 9,
+      "losses": 0,
+      "pnl": 10.2782
+    },
+    "quiet": {
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0
+    }
   },
-  "day_patterns": {},
+  "day_patterns": {
+    "Thursday": {
+      "wins": 9,
+      "losses": 0,
+      "pnl": 10.2782
+    }
+  },
   "avoid_list": [],
-  "star_list": [],
-  "rules": [],
-  "last_updated": 0
+  "star_list": [
+    "will-trump-sell-0-gold-cards-in-2026"
+  ],
+  "rules": [
+    {
+      "ts": 1775776497.861939,
+      "rule": "STAR: will-trump-sell-0-gold-cards-in-2026 \u2014 100% WR, $+0.392/trade",
+      "type": "star"
+    }
+  ],
+  "last_updated": 1775776558.704974
 }
