@@ -67,6 +67,8 @@ from modules.arbitrage import ArbitrageEngine
 from modules.ml_predictor import MLPredictor
 from modules.analytics import AnalyticsDB
 from modules.hedging import HedgingEngine
+from modules.bankroll import BankrollManager
+from modules.risk_guard import RiskGuard
 
 load_dotenv()
 
@@ -114,6 +116,7 @@ class OrderManagerV5:
         self.gas = GasTracker()
         self.stops = DynamicStopLoss()
         self.analytics = AnalyticsDB()
+        self.bankroll = BankrollManager(starting_capital=cfg.capital)
         self._session_id = f"session_{int(time.time())}"
 
     def set_market_questions(self, markets: Dict[str, Market]):
@@ -169,35 +172,58 @@ class OrderManagerV5:
         return max(0, (self._peak_equity - equity) / self._peak_equity)
 
     def can_enter(self, count_sell_orders: bool = False) -> Tuple[bool, str]:
-        if self.drawdown >= self.cfg.circuit_breaker_pct:
-            return False, "CIRCUIT_BREAKER"
+        # v5: Use bankroll's dynamic circuit breaker (rolling drawdown, not flat)
+        dynamic_breaker = self.bankroll.get_circuit_breaker_pct(self._realized_pnl)
+        current_drawdown = self.bankroll.get_drawdown(self._realized_pnl)
+        if current_drawdown >= dynamic_breaker:
+            return False, f"CIRCUIT_BREAKER (DD {current_drawdown:.1%} >= {dynamic_breaker:.0%})"
         if count_sell_orders:
             open_orders = sum(1 for o in self.orders.values() if o.status == "live")
         else:
             open_orders = sum(1 for o in self.orders.values()
                             if o.status == "live" and o.side == "BUY")
-        if len(self.positions) + open_orders >= self.cfg.max_concurrent:
-            return False, "MAX_CONCURRENT"
-        if self._committed >= self.cfg.max_exposure:
+        # v5: Dynamic max concurrent based on current capital
+        max_concurrent = self.bankroll.get_max_concurrent(self._realized_pnl)
+        if len(self.positions) + open_orders >= max_concurrent:
+            return False, f"MAX_CONCURRENT ({max_concurrent})"
+        # v5: Dynamic exposure based on current capital
+        effective_capital = self.bankroll.get_trading_capital(self._realized_pnl)
+        max_exposure = effective_capital * self.cfg.max_exposure_pct
+        if self._committed >= max_exposure:
             return False, "MAX_EXPOSURE"
-        if self.free_capital < self.cfg.per_order:
+        # v5: Dynamic per-order minimum
+        per_order = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order)
+        if self.free_capital < per_order:
             return False, "INSUFFICIENT_CAPITAL"
         return True, "OK"
 
     def get_brain_adjusted_size(self, slug: str, market: Optional[Market] = None,
-                                 is_market_making: bool = False) -> float:
-        base_size = self.cfg.per_order
+                                 is_market_making: bool = False,
+                                 risk_multiplier: float = 1.0) -> float:
+        # v5: Dynamic base size from bankroll (compounds with gains, shrinks with losses)
+        base_size = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order)
+        # Apply bankroll growth/shrink multiplier
+        compound_mult = self.bankroll.get_combined_multiplier(self._realized_pnl)
+        base_size *= compound_mult
+        # Apply risk guard multiplier (daily performance)
+        base_size *= risk_multiplier
+        # Brain adjustments
         if self.brain and self.brain.data["total_trades"] >= 10:
-            kelly_size = self.brain.get_kelly_order_size(self._starting_capital, slug)
-            multiplier = self.brain.get_order_size_multiplier(slug)
-            base_size = kelly_size * multiplier
-            base_size = max(self.cfg.per_order * 0.5, min(self.cfg.per_order * 2, base_size))
+            kelly_size = self.brain.get_kelly_order_size(
+                self.bankroll.get_trading_capital(self._realized_pnl), slug)
+            brain_mult = self.brain.get_order_size_multiplier(slug)
+            # Blend bankroll size and Kelly size
+            base_size = (base_size * 0.4 + kelly_size * brain_mult * 0.6)
+            # Clamp to reasonable range
+            per_order_floor = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order) * 0.3
+            per_order_cap = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order) * 3
+            base_size = max(per_order_floor, min(per_order_cap, base_size))
         elif self.brain:
-            multiplier = self.brain.get_order_size_multiplier(slug)
-            base_size = self.cfg.per_order * multiplier
+            brain_mult = self.brain.get_order_size_multiplier(slug)
+            base_size *= brain_mult
         if is_market_making:
             base_size *= 0.5
-        return round(base_size, 2)
+        return round(max(1.0, base_size), 2)
 
     # ─── Tick Size ──────────────────────────────────────────
 
@@ -399,6 +425,10 @@ class OrderManagerV5:
                     "session_id": self._session_id,
                     "adverse_fill": adverse,
                 })
+                # v5: Bankroll daily PnL tracking
+                self.bankroll.record_daily_pnl(trade.pnl)
+                # v5: Risk guard trade recording
+                self.risk_guard.record_trade(trade.pnl, trade.slug, trade.exit_type)
 
                 emoji = "🟢" if pnl > 0 else "🔴"
                 LOG.info(f"{emoji} FILLED SELL | {order.shares:.0f} @ ${fill_price:.4f} | "
@@ -461,6 +491,11 @@ class OrderManagerV5:
             "strategy": self.cfg.strategy,
             "session_id": self._session_id,
         })
+        # v5: Bankroll + risk guard tracking
+        self.bankroll.record_daily_pnl(pnl)
+        self.risk_guard.record_trade(pnl, slug, reason)
+        if reason in ("stop_loss", "dynamic_stop", "adverse_selection", "supervisor_emergency", "timeout"):
+            self.risk_guard.record_forced_exit(slug, reason)
 
         emoji = "🟢" if pnl > 0 else "🔴"
         LOG.info(f"{emoji} FORCE EXIT | {pos.shares:.0f} @ ${exit_price:.4f} | PnL=${pnl:+.3f} | {reason} | {slug[:35]}")
@@ -545,6 +580,15 @@ class ScalperV5:
         self.arb = ArbitrageEngine()
         self.ml = MLPredictor()
         self.hedge = HedgingEngine()
+        self.risk_guard = RiskGuard({
+            "quiet_hours_start": cfg.quiet_hours_start,
+            "quiet_hours_end": cfg.quiet_hours_end,
+            "max_daily_loss_pct": cfg.circuit_breaker_pct,
+            "daily_profit_target_pct": 0.10,
+            "losing_streak_limit": 3,
+            "cooldown_after_forced_exit": 120,
+            "min_resolution_hours": 4.0,
+        })
 
         self.markets: Dict[str, Market] = {}
         self.token_to_slug: Dict[str, str] = {}
@@ -555,6 +599,7 @@ class ScalperV5:
         self._last_reconcile = 0
         self._last_equity_snapshot = 0
         self._last_arb_scan = 0
+        self._current_size_mult = 1.0  # updated each tick by risk guard
 
         # Supervisor
         self._supervised = cfg.supervised
@@ -563,6 +608,8 @@ class ScalperV5:
 
     async def start(self, mode: str = "paper"):
         self.brain.start_session()
+        self.om.bankroll.start_session()
+        self.risk_guard.reset_daily()
 
         LOG.info("=" * 60)
         LOG.info(f"  SCALPER v5 | ${self.cfg.capital:.0f} | {mode.upper()} | Strategy: {self.cfg.strategy}")
@@ -635,6 +682,12 @@ class ScalperV5:
     async def _tick(self):
         self.tick += 1
         now = time.time()
+
+        # ── Risk guard master check ──
+        can_trade, trade_reason = self.risk_guard.can_trade(
+            self.om.bankroll.get_trading_capital(self.om._realized_pnl),
+            self.om.bankroll.effective_capital,
+        )
 
         # Load supervisor rules
         if self._supervised and now - self._last_rules_load > 60:
@@ -916,6 +969,18 @@ class ScalperV5:
             if order.status == "live":
                 await self.om.cancel_order(order)
 
+        # v5: Risk guard — skip all new entries if blocked
+        can_trade, trade_reason = self.risk_guard.can_trade(
+            self.om.bankroll.get_trading_capital(self.om._realized_pnl),
+            self.om.bankroll.effective_capital,
+        )
+
+        # v5: Get dynamic size multiplier from risk guard
+        self._current_size_mult = self.risk_guard.get_size_multiplier(
+            self.risk_guard._daily_pnl,
+            self.om.bankroll.get_trading_capital(self.om._realized_pnl),
+        )
+
         for slug, market in self.markets.items():
             if market.best_bid <= 0 or market.best_ask >= 1:
                 continue
@@ -935,6 +1000,12 @@ class ScalperV5:
             if self._supervised:
                 blocked, _ = self._is_market_blocked(slug)
                 if blocked:
+                    continue
+
+            # v5: Risk guard — resolution time filter, quiet hours, losing streak
+            if not can_trade:
+                # Still allow exits, just not new entries
+                if slug not in self.om.positions:
                     continue
 
             mid = (market.best_bid + market.best_ask) / 2
@@ -984,7 +1055,7 @@ class ScalperV5:
         if buy_price <= 0 or buy_price >= 1:
             return
 
-        size = self.om.get_brain_adjusted_size(slug, market)
+        size = self.om.get_brain_adjusted_size(slug, market, risk_multiplier=size_mult)
         if self._supervised:
             size = self._apply_supervisor_limits(slug, size)
 
@@ -1012,7 +1083,8 @@ class ScalperV5:
                 exit_price = round(mid, 4)
 
             gtd = self._get_gtd_seconds(slug, market.spread)
-            size = self.om.get_brain_adjusted_size(slug, market, is_market_making=True)
+            size = self.om.get_brain_adjusted_size(slug, market, is_market_making=True,
+                                                     risk_multiplier=self._current_size_mult)
 
             flow_stats = self.flow.get_stats(market.yes_token)
             if flow_stats.get("buy_pressure", 0) > 0.5:
@@ -1027,7 +1099,8 @@ class ScalperV5:
         if not ok:
             return
 
-        size = self.om.get_brain_adjusted_size(slug, market, is_market_making=True)
+        size = self.om.get_brain_adjusted_size(slug, market, is_market_making=True,
+                                                 risk_multiplier=self._current_size_mult)
         gtd = self._get_gtd_seconds(slug, market.spread)
         tick = market.tick_size
 
@@ -1173,9 +1246,12 @@ class ScalperV5:
         LOG.info(self.sentiment.report())
         LOG.info(self.arb.report())
         LOG.info(self.ml.report())
+        LOG.info(self.om.bankroll.report(self.om._realized_pnl))
+        LOG.info(self.risk_guard.report(self.om.bankroll.get_trading_capital(self.om._realized_pnl)))
         LOG.info(self.om.analytics.full_report())
 
         self.brain.save()
+        self.om.bankroll.save()
         self.om.analytics.close()
 
 
