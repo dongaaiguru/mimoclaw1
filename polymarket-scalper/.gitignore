@@ -1,1 +1,5 @@
+.env
+brain.json
 scalper.log
+__pycache__/
+*.pyc

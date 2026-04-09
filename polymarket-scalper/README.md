@@ -1,6 +1,20 @@
-# Polymarket Scalper
+# Polymarket Scalper v3
 
-High-velocity spread capture bot for Polymarket. Places aggressive limit orders inside the spread on fee-free markets, cancels & reprices every 30 seconds, and auto-exits positions held > 5 minutes.
+Brain-powered, multi-strategy trading engine for Polymarket. Learns from every trade to avoid repeating losses and double down on winners.
+
+## Features
+
+- **Adaptive Brain** — persists learning across sessions in `brain.json`. Tracks per-market win rates, risk scores, optimal entry conditions, and time-of-day patterns
+- **True Market Making** — simultaneous bid+ask orders inside the spread with inventory skew and flow-aware quoting
+- **News Monitoring** — polls Reuters/AP/BBC RSS feeds, pulls orders on breaking news to avoid adverse selection
+- **Order Flow Analysis** — detects volume spikes, buy/sell pressure, and momentum surges
+- **Kelly Criterion** — optimal position sizing based on historical win rate and win/loss ratio
+- **GTD Orders** — auto-expiring orders tuned per market fill rate
+- **Tick Size Awareness** — snaps prices to valid market ticks, no rejected orders
+- **Neg Risk Detection** — capital-efficient trading on multi-outcome events
+- **Correlation Tracking** — detects when related markets haven't moved yet
+- **Time-of-Day Patterns** — learns which hours/days produce the best results
+- **Stop Losses** — 2¢ automatic stops on every position (long and short)
 
 ## Setup
 
@@ -21,36 +35,57 @@ cp .env.example .env
 ## Usage
 
 ```bash
-# Discover scalping targets (no API key needed)
+# Discover scalping targets (brain-informed, no API key needed)
 python3 bot.py --scan
 
-# Paper trade with live prices (simulated fills)
+# Paper trade with live prices and learning
 python3 bot.py --paper
+
+# Paper trade with market making strategy
+python3 bot.py --paper --strategy both_sides
 
 # Live trading
 python3 bot.py --live
 
-# Custom capital
-python3 bot.py --live --capital 100 --per-order 10
+# Custom capital and strategy
+python3 bot.py --live --capital 1000 --per-order 30 --strategy both_sides
+
+# View brain status and learned rules
+python3 bot.py --brain
+
+# Show available strategies
+python3 bot.py --strategies
+
+# Reset brain (start fresh)
+python3 bot.py --brain-reset
 ```
 
-## How it works
+## Strategies
 
-1. **Discover**: Finds 10 best fee-free markets (spread ≥ 3¢, liq ≥ $2K)
-2. **Connect**: WebSocket for real-time order book updates
-3. **Place**: Limit BUY orders 1-2¢ inside the spread
-4. **Fill**: When someone sells into your bid, you own shares
-5. **Exit**: Immediately place SELL order at mid + 0.5¢
-6. **Reprice**: Cancel all, re-place at current best every 30s
-7. **Timeout**: Force-exit any position held > 5 minutes
+### `--strategy one_side` (default)
+Place BUY orders inside the spread, SELL on fill. Simple, lower risk.
 
-## Risk controls
+### `--strategy both_sides`
+True market making. Places simultaneous BUY and SELL orders inside the spread. Earns the spread regardless of direction. Uses inventory skew and flow analysis to adjust quotes.
+
+## How It Works
+
+1. **Discover** — Finds best fee-free markets (spread ≥ 3¢, liq ≥ $3K, vol ≥ $2K), brain-filtered
+2. **Connect** — WebSocket for real-time order book updates
+3. **Quote** — Places bid+ask inside the spread (market making) or bid-only (one-side)
+4. **Fill** — Brain records entry conditions, adjusts sizing via Kelly Criterion
+5. **Exit** — Brain-informed exit timing, stop losses, flow-aware repricing
+6. **Learn** — Every trade updates market reputation, pattern buckets, time patterns, avoid/star lists
+
+## Risk Controls
 
 - **Circuit breaker**: Stops at 10% daily drawdown
 - **Max exposure**: 50% of capital at risk
-- **Max positions**: 5 concurrent
-- **Max hold**: 5 minutes per position
-- **Reserve**: Always 50% cash free for rebalancing
+- **Stop losses**: 2¢ automatic per position
+- **News protection**: Pulls orders on breaking news
+- **Flow protection**: Pulls orders on 3x volume spikes
+- **Max hold**: 5 minutes per position (brain-adjustable)
+- **Quiet hours**: Warns during low-liquidity windows (3-6 AM UTC)
 
 ## Disclaimer
 

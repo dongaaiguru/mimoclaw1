@@ -29,10 +29,7 @@ import os
 import sys
 import time
 import logging
-import signal
 import argparse
-import hashlib
-import hmac
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
@@ -126,6 +123,8 @@ class Market:
     event_id: str = ""
     # Upgrade 8: time category
     time_category: str = "normal"  # "quiet", "normal", "peak"
+    # Internal scoring (set during discovery)
+    _score: float = 0.0
 
 
 @dataclass
