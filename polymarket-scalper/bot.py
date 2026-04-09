@@ -1686,7 +1686,7 @@ class Scalper:
         now = time.time()
 
         # Upgrade 1: Check news feeds every 30s
-        if now - self._last_news_check > 30:
+        if now - self._last_news_check > 15:
             async with aiohttp.ClientSession() as s:
                 alerts = await self.news.check_feeds(s)
             if alerts:
