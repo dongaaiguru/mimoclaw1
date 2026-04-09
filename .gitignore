@@ -1,19 +1,22 @@
 # Environment
 .env
-*.env
-
-# Python
 __pycache__/
 *.pyc
 *.pyo
 *.egg-info/
 dist/
 build/
-
-# State
-state.json
-*.log
+.venv/
+venv/
 
 # IDE
 .vscode/
 .idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Trading logs
+*.log
+trade_log.json

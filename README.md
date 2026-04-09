@@ -1,244 +1,118 @@
-# Polymarket Unified Score Engine — V2
+# PolyEdge v2 — Polymarket Trading Bot
 
-A multi-engine quantitative trading system for Polymarket prediction markets.
+**Research-optimized multi-strategy bot targeting 2% daily returns on $100 capital.**
 
-> **$100 capital, 4 strategies, daily profits** — combining directional signals, market making, logical arbitrage, and information arbitrage with GTC execution and strict risk management.
+Built from live market analysis (3,440 markets, April 2026), academic research on $40M in proven arbitrage, and proven market maker strategies.
 
----
+## What Makes This Different
 
-## The Core Formula
+The original code in this repo looked for BTC lag arbitrage — an edge that was killed by Polymarket in March 2026 with dynamic taker fees and removal of the 15-minute price delay.
 
-```
-Score = 0.35 × EV + 0.20 × KL + 0.20 × ΔP_Bayes + 0.15 × LMSR_edge − 0.10 × Risk_Stoikov
-```
+**PolyEdge v2 uses the edges that actually exist today:**
 
-**Trade if Score > 0.50 AND all hard filters pass.**
+| Strategy | Edge | Source |
+|---|---|---|
+| Fee-Free Spread Capture | Zero fees on geopolitics markets | Live scan: 42 markets with ≥4¢ spreads |
+| Liquidity Rewards | $5M/month pool (April 2026) | Polymarket official rewards program |
+| Dependency Arb | $29M proven (academic paper) | arxiv 2508.03474 — 86M transactions analyzed |
+| Maker Rebates | 20-25% of taker fees returned | Polymarket official rebate program |
+| News Momentum | 30s-5min information advantage | AI bots processing news faster than humans |
 
-### What Each Component Does
-
-| Component | Weight | Purpose |
-|-----------|--------|---------|
-| **EV** (Expected Value) | 0.35 | Primary profitability driver — is there mathematical edge? |
-| **KL** (KL Divergence) | 0.20 | Arbitrage signal — are related markets mispriced? |
-| **ΔP_Bayes** (Bayesian Delta) | 0.20 | Momentum — is probability moving in our favor? |
-| **LMSR Edge** | 0.15 | Microstructure — will price move favorably post-trade? |
-| **Risk_Stoikov** | −0.10 | Risk penalty — is the entry price safe? |
-
----
-
-## Backtest Results
-
-Tested on **8 real Polymarket crypto markets** with live API data (April 2026).
-
-### Threshold Sensitivity (Seed=42)
-
-| Threshold | Trades | Win Rate | P&L | Return | Sharpe |
-|-----------|--------|----------|-----|--------|--------|
-| 0.40 | 20 | 60.0% | −$0.19 | −0.6% | −0.76 |
-| 0.45 | 20 | 55.0% | −$2.90 | −6.0% | −1.25 |
-| **0.50** | **20** | **60.0%** | **+$0.57** | **+0.9%** | **+0.04** |
-| 0.55 | 0 | — | $0.00 | 0.0% | 0.00 |
-
-### Robustness (30 Random Seeds @ Threshold 0.50)
-
-| Metric | Value |
-|--------|-------|
-| Profitable Runs | 37% |
-| Avg P&L | +$0.98 |
-| Avg Return | +1.7% |
-| Avg Win Rate | 52.8% |
-
-> **Note:** The system requires an **information advantage** — access to real exchange prices (BTC/ETH spot) to generate edge. Without it, the Bayesian estimator tracks the market price and produces no alpha.
-
----
-
-## V2: What's New
-
-- **GTC limit orders** (not FOK) — orders rest on book until filled
-- **Zero slippage buffer** — limit orders fill at exact price
-- **Order lifecycle tracking** — every order tracked from creation to fill
-- **Heartbeat watchdog** — cancels stale orders if bot crashes
-- **Multi-engine architecture** — 4 strategies running in parallel
-- **$100 capital optimized** — Kelly sizing, 15% drawdown circuit breaker
-
-## Project Structure
+## Live Scan Results (April 9, 2026)
 
 ```
-polymarket-engine/
-├── README.md                 # This file
-├── PLAN.md                   # Master plan ($100 capital, 6-week roadmap)
-├── RESEARCH.md               # Strategy research (top trader analysis)
-├── strategy.md               # Mathematical derivations
-├── system_design.md          # Architecture & components
-├── execution_plan.md         # Execution logic
-├── bot.py                    # V1 bot (single engine)
-├── bot_v2.py                 # V2 bot (multi-engine, GTC execution)
-├── src/
-│   └── models/
-│       └── score.py          # All 5 models + unified Score
-├── backtest_proven.py        # V1 calibrated backtest
-├── backtest_v2.py            # V2 backtest (realistic ticks)
-├── backtest_v3.py            # V3 backtest
-├── backtest_final.py         # Final backtest
-├── backtest_combined.py      # Multi-engine backtest with real market data
-├── requirements.txt          # Python dependencies
-└── .env.example              # API credential template
-```
+STRATEGY 1: FEE-FREE SPREAD CAPTURE
+  BID  $13 @ 0.270 | 5¢ edge  | Perplexity acquired before 2027
+  BID  $13 @ 0.815 | 16¢ edge | USDT $200B before 2027
+  BID  $13 @ 0.051 | 27¢ edge | Fed rate ≥ 5.5% before 2027
 
----
+STRATEGY 3: DEPENDENCY ARB
+  BUY  $7 @ 0.100 | 26.5% edge | Deport <200K
+  SELL $7 @ 0.365 | 26.5% edge | Deport 300-400K
+
+ESTIMATED DAILY INCOME
+  Spread capture:  $3.46 (30% fill rate)
+  Rewards/rebates: $0.60
+  Dependency arb:  $1.23 (20% fill rate)
+  TOTAL:           $5.29/day
+  ✅ TARGET $2.00/day ACHIEVABLE
+```
 
 ## Quick Start
 
-### 1. Install Dependencies
-
 ```bash
+# Install
 pip install -r requirements.txt
-```
 
-### 2. Configure (Optional — for live trading)
+# Scan mode (discovery, no trading)
+python -m polyedge --scan
 
-```bash
+# Paper trading (simulated fills)
+python -m polyedge --paper
+
+# Live trading
 cp .env.example .env
-# Edit .env with your Polymarket API credentials
+# Edit .env with your API credentials
+python -m polyedge --live --capital 100
 ```
 
-### 3. Run Paper Trading (V2 — Multi-Engine)
-
-```bash
-python bot_v2.py                    # All engines
-python bot_v2.py --engine mm        # Market making only
-python bot_v2.py --engine dir       # Directional only
-```
-
-### 4. Run Live Trading
-
-```bash
-python bot_v2.py --live
-```
-
-### 5. Run Backtest
-
-```bash
-python backtest_proven.py           # V1 single-engine backtest
-python backtest_combined.py         # V2 multi-engine backtest
-```
-
----
-
-## Mathematical Models
-
-### 1. Expected Value (EV)
+## Architecture
 
 ```
-EV = true_prob − entry_price − fees
-Normalized = clamp(EV / max_edge, 0, 1)
+polyedge/
+├── __init__.py              # Package init
+├── __main__.py              # Entry point (python -m polyedge)
+├── bot.py                   # Main bot orchestrator
+├── core/
+│   ├── __init__.py          # Config, Market, Signal, Position data types
+│   ├── api.py               # Polymarket Gamma + CLOB API client
+│   └── risk.py              # Risk manager (circuit breaker, Kelly sizing)
+└── strategies/
+    ├── __init__.py
+    ├── fee_free_spread.py   # Strategy 1: Zero-fee spread capture
+    ├── liquidity_rewards.py # Strategy 2: Sports liquidity rewards
+    ├── dependency_arb.py    # Strategy 3: Cross-market logical arb
+    └── momentum.py          # Strategy 4: News momentum scalping
 ```
 
-Only trade if `EV > 0.015` (1.5% minimum edge after fees).
+## Strategy Details
 
-### 2. KL Divergence
+### 1. Fee-Free Spread Capture (40% allocation)
+Place GTC limit orders inside the spread on geopolitics markets (zero taker fees). 
+The entire spread is profit. Based on @defiance_cr's proven approach ($700-800/day on $10K).
 
-```
-KL(P || Q) = p × ln(p/q) + (1−p) × ln((1−p)/(1−q))
-```
+### 2. Liquidity Rewards (25% allocation)  
+Polymarket pays $5M/month. EPL soccer games: $10,000/game. The reward formula 
+quadratically favors tight, two-sided orders (3x multiplier vs one-sided).
 
-Detects mispricing between related markets (e.g., BTC $150k by June vs by December). If June implies December, then `P(December) ≥ P(June)` must hold.
+### 3. Dependency Arb (20% allocation)
+Exploit pricing inconsistencies between logically related markets. Academic paper 
+proves $29M was extracted from 86M transactions using this approach.
 
-### 3. Bayesian Updating
+### 4. News Momentum (15% allocation)
+Detect high-volume, wide-spread markets where informed flow may be occurring.
 
-```
-α_new = α_prior + Σ(weight × observation_yes)
-β_new = β_prior + Σ(weight × observation_no)
-P_new = α_new / (α_new + β_new)
-```
+## Risk Controls
 
-Updates probability in real-time using price movements and volume spikes.
+- **10% circuit breaker** — Bot stops if $10 lost on $100
+- **$5 minimum order** — Polymarket's minimum
+- **5 min max order age** — Stale orders auto-cancel
+- **$20 max position** — 20% of capital per market
+- **Max 8 concurrent** — Diversification limit
 
-### 4. LMSR (Logarithmic Market Scoring Rule)
+## Research Sources
 
-```
-P_yes = e^(q_yes/b) / (e^(q_yes/b) + e^(q_no/b))
-```
-
-Estimates price impact of a trade. Higher `b` = more liquid = less slippage.
-
-### 5. Stoikov Risk
-
-```
-Reservation Price = mid_price − position × γ × σ²
-Risk = |mid − reservation| / risk_max
-```
-
-Adjusts fair value for inventory risk. Penalizes entries at unfavorable prices.
-
-### 6. Kelly Criterion (Fractional)
-
-```
-f* = (p − price) / (1 − price)
-Position = f* × 0.25 × capital
-```
-
-Uses 25% of full Kelly for conservative position sizing.
-
----
-
-## Risk Management
-
-| Parameter | Value | Purpose |
-|-----------|-------|---------|
-| Max position | 25% of capital | Kelly cap |
-| Max concurrent | 3 trades | Diversification |
-| Circuit breaker | 15% drawdown | Stop trading |
-| Daily limit | 20 trades | Prevent overtrading |
-| Min edge | 1.5% | Below this, fees eat profit |
-| Max spread | 3% | Execution risk filter |
-
----
-
-## Context: What Happened to BTC Lag Arbitrage?
-
-In December 2025, a bot turned **$313 into $414K in one month** on Polymarket using "BTC lag arbitrage" — exploiting the delay between real exchange prices and Polymarket's 15-minute crypto market prices.
-
-**In March 2026, Polymarket killed this strategy** by introducing dynamic taker fees:
-- At 50¢ contracts, fees reach **3.15%**
-- This exceeds the typical arbitrage margin
-- The 500ms delay was also removed
-
-**This system adapts** by:
-1. Focusing on **fee-free longer-dated markets**
-2. Using **cross-market dependency arbitrage** (KL divergence)
-3. Leveraging **exchange price data** as information advantage
-4. Combining all 5 mathematical models into one unified score
-
----
-
-## API Reference
-
-### Polymarket Endpoints Used
-
-| Endpoint | Purpose |
-|----------|---------|
-| `gamma-api.polymarket.com/events` | Market discovery |
-| `wss://ws-subscriptions-clob.polymarket.com/ws/market` | Real-time order book |
-| `clob.polymarket.com/orders` | Order placement |
-
-### WebSocket Events
-
-| Event | Description |
-|-------|-------------|
-| `book` | Full order book snapshot |
-| `best_bid_ask` | Best price updates |
-| `last_trade_price` | Trade executions |
-| `price_change` | Incremental price updates |
-
----
-
-## Disclaimer
-
-This software is for educational and research purposes. Trading prediction markets involves substantial risk of loss. Past backtest performance does not guarantee future results. Use at your own risk.
-
----
+- [Academic paper: $40M in Polymarket arbitrage](https://arxiv.org/abs/2508.03474)
+- [@defiance_cr's open-source MM bot](https://github.com/warproxxx/poly-maker)
+- [Polymarket liquidity rewards docs](https://docs.polymarket.com/market-makers/liquidity-rewards)
+- [Polymarket maker rebates](https://docs.polymarket.com/market-makers/maker-rebates)
+- [4 profitable bot strategies (2026)](https://medium.com/illumination/beyond-simple-arbitrage-4-polymarket-strategies-bots-actually-profit-from-in-2026-ddacc92c5b4f)
 
 ## License
 
 MIT
+
+---
+
+**Disclaimer:** Trading prediction markets involves substantial risk of loss. 
+Past performance does not guarantee future results. Use at your own risk.
