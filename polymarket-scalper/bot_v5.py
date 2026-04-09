@@ -54,19 +54,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 from bot import (
     Config, Market, Order, Position, Trade,
     FlowAnalyzer, NewsMonitor, CorrelationEngine, Brain,
-    Feed, discover_markets, GAMMA_URL, CLOB_URL, WS_URL
+    Feed, discover_markets
 )
 
 # ─── Import v5 modules ─────────────────────────────────────
 from modules.token_manager import TokenManager
 from modules.fill_simulator import FillSimulator
-from modules.gas_tracker import GasTracker
 from modules.dynamic_stops import DynamicStopLoss
 from modules.sentiment import SentimentTrader
-from modules.arbitrage import ArbitrageEngine
-from modules.ml_predictor import MLPredictor
 from modules.analytics import AnalyticsDB
-from modules.hedging import HedgingEngine
 from modules.bankroll import BankrollManager
 from modules.risk_guard import RiskGuard
 
@@ -113,7 +109,6 @@ class OrderManagerV5:
         # v5 modules
         self.token_mgr = TokenManager(paper=paper)
         self.fill_sim = FillSimulator()
-        self.gas = GasTracker()
         self.stops = DynamicStopLoss()
         self.analytics = AnalyticsDB()
         self.bankroll = BankrollManager(starting_capital=cfg.capital)
@@ -577,9 +572,6 @@ class ScalperV5:
 
         # v5 modules
         self.sentiment = SentimentTrader(head_start_seconds=15.0)
-        self.arb = ArbitrageEngine()
-        self.ml = MLPredictor()
-        self.hedge = HedgingEngine()
         self.risk_guard = RiskGuard({
             "quiet_hours_start": cfg.quiet_hours_start,
             "quiet_hours_end": cfg.quiet_hours_end,
@@ -598,7 +590,6 @@ class ScalperV5:
         self._last_news_check = 0
         self._last_reconcile = 0
         self._last_equity_snapshot = 0
-        self._last_arb_scan = 0
         self._current_size_mult = 1.0  # updated each tick by risk guard
 
         # Supervisor
@@ -634,17 +625,6 @@ class ScalperV5:
             self.token_to_slug[m.yes_token] = m.slug
             self.token_to_slug[m.no_token] = m.slug + "_NO"
             self.correlations.record_price(m.slug, m.yes_price, m.question)
-            self.ml.record(m.slug, m.yes_price, volume=m.volume, spread=m.spread,
-                          bid=m.best_bid, ask=m.best_ask)
-
-            # Register with hedge engine
-            self.hedge.register_market(m.slug, m.event_id, m.yes_price, m.no_price, m.liquidity)
-
-            # Register with arb engine
-            self.arb.update_market(m.slug, m.yes_price, m.no_price,
-                                   event_id=m.event_id, neg_risk=m.neg_risk,
-                                   fees_enabled=m.fees_enabled, spread=m.spread,
-                                   liquidity=m.liquidity)
 
         LOG.info(f"📊 {len(self.markets)} markets selected")
         for m in market_list:
@@ -751,15 +731,6 @@ class ScalperV5:
                 await self._reconcile_fills()
                 self._last_reconcile = now
 
-        # v5: Arbitrage scan every 30s
-        if now - self._last_arb_scan > 30:
-            opps = self.arb.scan(self.om.free_capital)
-            if opps:
-                best = opps[0]
-                LOG.info(f"🔄 ARB OPP | {best.type} | {best.description[:50]} | "
-                        f"profit=${best.guaranteed_profit:.3f} ({best.profit_pct:.1f}%)")
-            self._last_arb_scan = now
-
         # v5: Equity snapshot every 60s
         if now - self._last_equity_snapshot > 60:
             self.om.snapshot_equity()
@@ -859,12 +830,6 @@ class ScalperV5:
 
         self.correlations.record_price(slug, mid, market.question)
         self.om.stops.record_price(token, mid, spread)
-        self.ml.record(slug, mid, volume=market.volume, spread=spread,
-                      bid=bb_price, ask=ba_price)
-        self.arb.update_market(slug, market.yes_price, market.no_price,
-                               event_id=market.event_id, neg_risk=market.neg_risk,
-                               fees_enabled=market.fees_enabled, spread=spread,
-                               liquidity=market.liquidity)
 
         # Flow pull check
         should_pull, pull_reason = self.flow.should_pull_orders(token)
@@ -1241,11 +1206,8 @@ class ScalperV5:
 
         # v5 module reports
         LOG.info(self.om.fill_sim.report())
-        LOG.info(self.om.gas.report())
         LOG.info(self.om.stops.report())
         LOG.info(self.sentiment.report())
-        LOG.info(self.arb.report())
-        LOG.info(self.ml.report())
         LOG.info(self.om.bankroll.report(self.om._realized_pnl))
         LOG.info(self.risk_guard.report(self.om.bankroll.get_trading_capital(self.om._realized_pnl)))
         LOG.info(self.om.analytics.full_report())
