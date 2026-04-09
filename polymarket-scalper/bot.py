@@ -78,10 +78,10 @@ class Config:
     circuit_breaker_pct: float = float(os.getenv("CIRCUIT_BREAKER_PCT", "10")) / 100
     max_hold_sec: int = int(os.getenv("MAX_HOLD_SECONDS", "300"))
     spread_target: float = float(os.getenv("SPREAD_CAPTURE_TARGET", "0.02"))
-    reprice_sec: int = int(os.getenv("REPRICE_INTERVAL", "30"))
+    reprice_sec: int = int(os.getenv("REPRICE_INTERVAL", "15"))
     min_spread: float = 0.03
-    min_liquidity: float = 2000.0
-    min_volume: float = 1000.0
+    min_liquidity: float = 3000.0
+    min_volume: float = 2000.0
     max_markets: int = 10
     max_orders_per_market: int = 1
     # Upgrade 2: strategy mode
@@ -204,7 +204,7 @@ class FlowAnalyzer:
         self.trade_history: Dict[str, List[Tuple[float, float, float, str]]] = defaultdict(list)
         # token -> running stats
         self.stats: Dict[str, dict] = {}
-        self._spike_threshold = 3.0  # 3x normal volume = spike
+        self._spike_threshold = 2.0  # 2x normal volume = spike (research: news gaps 10-40¢ instantly)
 
     def record_trade(self, token: str, price: float, size: float, side: str):
         now = time.time()
@@ -276,7 +276,7 @@ class FlowAnalyzer:
         if s["is_spike"] and abs(s["buy_pressure"]) > 0.7:
             direction = "BUY" if s["buy_pressure"] > 0 else "SELL"
             return True, f"VOLUME SPIKE: {s['spike_ratio']:.1f}x, {direction} pressure={s['buy_pressure']:.2f}"
-        if abs(s["momentum"]) > 0.03 and s["velocity"] > 10:
+        if abs(s["momentum"]) > 0.03 and s["velocity"] > 8:
             return True, f"MOMENTUM SURGE: {s['momentum']*100:.1f}¢ move, {s['velocity']} trades/30s"
         return False, "OK"
 
@@ -308,7 +308,7 @@ class NewsMonitor:
         self._running = False
         self._alerts: List[dict] = []  # {headline, feed, ts, keywords}
         self._last_check = 0
-        self._check_interval = 30  # seconds between feed checks
+        self._check_interval = 15  # seconds between feed checks (research: arb window is 2.7s)
         # Keywords that map to market categories
         self._keyword_map = {
             "israel": ["israel", "gaza", "hamas", "hezbollah", "idf", "netanyahu"],
@@ -500,7 +500,7 @@ class CorrelationEngine:
             return 1.2, "peak"
         # Quiet: Asia night / US overnight (3-6 UTC)
         if 3 <= utc_hour <= 6:
-            return 0.5, "quiet"
+            return 0.3, "quiet"
         # Normal
         return 1.0, "normal"
 
@@ -737,8 +737,8 @@ class Brain:
         q = 1 - p
         kelly = (b * p - q) / max(b, 0.01)
 
-        # Use quarter-Kelly for safety (standard practice)
-        kelly = kelly / 4
+        # Use third-Kelly for safety (still conservative while brain builds data)
+        kelly = kelly / 3
 
         # Clamp: minimum 2%, maximum 25%
         return max(0.02, min(0.25, kelly))
@@ -902,7 +902,7 @@ class Brain:
         spread_score = min(1.0, spread / 0.15)
         volume_score = min(1.0, math.log10(max(volume, 1)) / 6)
         liq_score = min(1.0, math.log10(max(liquidity, 1)) / 5)
-        base = (spread_score * 0.4 + volume_score * 0.3 + liq_score * 0.3)
+        base = (spread_score * 0.5 + volume_score * 0.3 + liq_score * 0.2)
 
         rep = self.get_market_rep(slug)
         if rep["trades"] >= 3:
@@ -1332,7 +1332,7 @@ class OrderManager:
                 )
 
         # Stop loss: 3¢ below entry for buys
-        stop_loss = round(price - 0.03, 4) if side == "BUY" else 0.0
+        stop_loss = round(price - 0.02, 4) if side == "BUY" else 0.0
 
         order = Order(
             id=f"{slug}_{side}_{int(time.time()*1000)}",
@@ -1422,7 +1422,7 @@ class OrderManager:
                 entry_price=fill_price, shares=order.shares, cost=cost,
                 entry_spread=order.entry_spread, entry_volume=order.entry_volume,
                 entry_liquidity=order.entry_liquidity, entry_price_range=order.entry_price_range,
-                stop_loss_price=round(fill_price - 0.03, 4),
+                stop_loss_price=round(fill_price - 0.02, 4),
             )
             LOG.info(f"🟢 FILLED BUY | {order.shares:.0f} @ ${fill_price:.4f} | {order.slug[:35]}")
         else:
@@ -1642,7 +1642,7 @@ class Scalper:
 
         # Stale order cleanup (still needed for non-GTD or edge cases)
         for oid, order in list(self.om.orders.items()):
-            stale_threshold = 120
+            stale_threshold = 60
             if self.brain:
                 rep = self.brain.get_market_rep(order.slug)
                 if rep["trades"] >= 5 and rep.get("fills", 0) / rep["trades"] < 0.3:
@@ -1770,10 +1770,10 @@ class Scalper:
             if rep["trades"] >= 5:
                 fill_rate = rep.get("fills", 0) / rep["trades"]
                 if fill_rate > 0.6:
-                    return 180  # good fills → hold order longer
+                    return 120  # good fills → hold order longer
                 elif fill_rate < 0.3:
-                    return 60   # bad fills → expire fast
-        return 90  # default: 90 seconds
+                    return 45   # bad fills → expire fast
+        return 75  # default: 75 seconds
 
     async def _paper_fill_check(self):
         import random
@@ -1790,7 +1790,7 @@ class Scalper:
             if not market:
                 continue
             age = now - order.created
-            if age < 30:
+            if age < 20:
                 continue
 
             # Upgrade 5: Flow-adjusted fill rate
@@ -1798,14 +1798,14 @@ class Scalper:
 
             if order.side == "BUY":
                 if order.price >= market.best_bid and market.best_bid > 0:
-                    fill_rate = min(0.03 * (age / 30), 0.15)
+                    fill_rate = min(0.03 * (age / 20), 0.15)
                     fill_rate *= min(market.volume / 50000, 2.0)
                     fill_rate *= (0.5 + flow_hint * 0.5)  # flow boost
                     if random.random() < fill_rate:
                         self.om.fill_order(order, order.price)
             elif order.side == "SELL":
                 if order.price <= market.best_ask and market.best_ask < 1:
-                    fill_rate = min(0.03 * (age / 30), 0.15)
+                    fill_rate = min(0.03 * (age / 20), 0.15)
                     fill_rate *= min(market.volume / 50000, 2.0)
                     fill_rate *= (0.5 + flow_hint * 0.5)
                     if random.random() < fill_rate:
@@ -1844,7 +1844,7 @@ class Scalper:
                 if self.brain:
                     aggression = self.brain.get_exit_aggressiveness(slug)
 
-                if hold_sec > self.cfg.max_hold_sec * (0.9 - aggression * 0.3):
+                if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
                     exit_price = round(market.best_bid, 4)
                 elif mid > pos.entry_price + 0.005:
                     patience = 0.003
@@ -1902,7 +1902,7 @@ class Scalper:
         gtd = self._get_gtd_seconds(slug)
 
         # Place BUY inside the spread
-        buy_price = round(mid - max(0.005, market.spread / 4), 4)
+        buy_price = round(mid - max(0.005, market.spread / 3), 4)
         buy_price = max(buy_price, round(market.best_bid + 0.001, 4))
 
         # Place SELL inside the spread (if we had shares — but we don't yet,
@@ -1987,7 +1987,7 @@ async def cmd_scan(cfg: Config, brain: Brain):
 
     print(f"\n{'='*70}")
     print(f"  SCALPING TARGETS v3 — {len(markets)} markets (brain-filtered)")
-    print(f"  Filter: fee-free | spread≥3¢ | liq≥$2K | vol≥$1K | price 5-95¢")
+    print(f"  Filter: fee-free | spread≥3¢ | liq≥$3K | vol≥$2K | price 5-95¢")
     print(f"{'='*70}\n")
 
     for i, m in enumerate(markets):
