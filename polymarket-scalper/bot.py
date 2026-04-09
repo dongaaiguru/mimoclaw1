@@ -2019,7 +2019,7 @@ class Scalper:
                             if self._supervised:
                                 blocked, reason = self._is_market_blocked(slug)
                                 if blocked:
-                                    continue
+                                    return
                                 size = self._apply_supervisor_limits(slug, size)
                             gtd = self._get_gtd_seconds(slug, spread)
                             await self.om.place_limit(slug, market.yes_token, "BUY",
