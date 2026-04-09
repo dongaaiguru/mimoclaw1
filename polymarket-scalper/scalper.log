@@ -1,0 +1,1070 @@
+2026-04-10 03:23:19,305 [INFO] 🧠 Session #1 started
+2026-04-10 03:23:19,305 [INFO] ⏰ PEAK HOURS — optimal trading window (multiplier: 1.2)
+2026-04-10 03:23:19,305 [INFO] ============================================================
+2026-04-10 03:23:19,305 [INFO]   SCALPER v3 | $100 | PAPER | Strategy: both_sides
+2026-04-10 03:23:19,305 [INFO]   Exposed: 50% | Kelly: 2.0%
+2026-04-10 03:23:19,305 [INFO]   Max concurrent: 5 | Reprice: 15s
+2026-04-10 03:23:19,305 [INFO]   Max hold: 300s | Circuit breaker: 10%
+2026-04-10 03:23:19,305 [INFO]   News monitoring: ON | Flow analysis: ON | Correlation: ON
+2026-04-10 03:23:19,305 [INFO] ============================================================
+2026-04-10 03:23:19,305 [INFO] 🔍 Discovering markets...
+2026-04-10 03:23:20,049 [INFO] 📊 10 markets selected:
+2026-04-10 03:23:20,050 [INFO]   • Will Porto win the 2025-26 UEFA Europa League? | 16.4¢ | $21,778 liq | $60,870 vol [🔄NEG]
+2026-04-10 03:23:20,050 [INFO]   • Will Kristi Noem leave the Trump administration before  | 18.0¢ | $5,791 liq | $85,661 vol
+2026-04-10 03:23:20,050 [INFO]   • Will Fernando Dias da Costa win the 2025 Guinea-Bissau  | 20.8¢ | $4,884 liq | $35,381 vol [🔄NEG]
+2026-04-10 03:23:20,050 [INFO]   • Will PT win the most seats in the 2025 Guinea-Bissau Na | 22.7¢ | $4,819 liq | $16,980 vol [🔄NEG]
+2026-04-10 03:23:20,050 [INFO]   • Will Siga Batista win the 2025 Guinea-Bissau presidenti | 14.5¢ | $5,416 liq | $20,038 vol [🔄NEG]
+2026-04-10 03:23:20,050 [INFO]   • Will the Republicans win the South Dakota governor race | 50.0¢ | $11,053 liq | $4,539 vol [🔄NEG]
+2026-04-10 03:23:20,050 [INFO]   • SCOTUS accepts sports event contract case by December 3 | 15.0¢ | $3,564 liq | $6,104 vol
+2026-04-10 03:23:20,050 [INFO]   • Will Donald Trump visit the United Kingdom in 2026? | 18.0¢ | $5,216 liq | $4,465 vol
+2026-04-10 03:23:20,050 [INFO]   • Will Waymo launch in London by June 30 2026? | 26.9¢ | $3,520 liq | $5,150 vol
+2026-04-10 03:23:20,050 [INFO]   • Will Trump sell 0 Gold Cards in 2026? | 13.0¢ | $14,655 liq | $26,383 vol [🔄NEG]
+2026-04-10 03:23:20,050 [INFO] No API keys — paper mode
+2026-04-10 03:23:20,050 [INFO] 🚀 Scalper v3 running — Ctrl+C to stop
+
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | trump criticises nato as alliance chief describes meeting as 'very frank' | keywords: ['trump']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | at least 182 killed across lebanon in large wave of israeli strikes | keywords: ['israel']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | al jazeera condemns killing of journalist in israeli strike in gaza | keywords: ['israel']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | israeli strikes in lebanon 'grave violation' of ceasefire, iran minister tells b | keywords: ['israel', 'geopolitics']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | he's australia's most decorated soldier. now he's at the centre of a historic wa | keywords: ['geopolitics']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | petrol and diesel prices rise again as concerns grow over ceasefire | keywords: ['geopolitics']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | ships remain cautious approaching strait of hormuz amid fragile ceasefire | keywords: ['geopolitics']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | germany suspends military approval for long stays abroad for men under 45 | keywords: ['geopolitics']
+2026-04-10 03:23:20,130 [WARNING] 📰 NEWS ALERT | cameroon 'military contractors' killed in russia-ukraine war - bbc confirms leak | keywords: ['geopolitics']
+2026-04-10 03:23:20,130 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:20,131 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:20,131 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:20,131 [INFO] 📝 PAPER | BUY 112 @ $0.1000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:23:20,131 [INFO] 📝 PAPER | SELL 56 @ $0.2000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:23:20,131 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $11 | ASK $0.2000 × $11 | Spread captured: $0.1000
+2026-04-10 03:23:20,131 [INFO] 📝 PAPER | BUY 7 @ $0.8000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:23:20,131 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:20,131 [INFO] 📝 PAPER | BUY 70 @ $0.1600 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:23:20,131 [INFO] 📝 PAPER | SELL 40 @ $0.2800 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:23:20,131 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $11 | ASK $0.2800 × $11 | Spread captured: $0.1200
+2026-04-10 03:23:20,131 [INFO] 📝 PAPER | BUY 8 @ $0.7200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:23:20,132 [INFO] 📝 PAPER | BUY 62 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:23:20,132 [INFO] 📝 PAPER | SELL 35 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:23:20,132 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $11 | ASK $0.3200 × $11 | Spread captured: $0.1400
+2026-04-10 03:23:20,132 [INFO] 📝 PAPER | BUY 8 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:23:20,132 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:20,132 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:20,437 [INFO] WS: subscribed to 10 tokens
+2026-04-10 03:23:35,201 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:35,202 [INFO] 📝 PAPER | BUY 281 @ $0.0400 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:23:35,202 [INFO] 📝 PAPER | SELL 87 @ $0.1300 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:23:35,202 [INFO] 🔄 MARKET MAKE | will-siga-batista-win-the-2025-guin | BID $0.0400 × $11 | ASK $0.1300 × $11 | Spread captured: $0.0900
+2026-04-10 03:23:35,202 [INFO] 📝 PAPER | BUY 6 @ $0.8700 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:23:35,202 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:35,202 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:50,272 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:50,272 [INFO] 📝 PAPER | BUY 21 @ $0.5400 [GTD 75s] on will-the-republicans-win-the-south-
+2026-04-10 03:23:50,272 [INFO] 📝 PAPER | SELL 13 @ $0.8400 [GTD 75s] on will-the-republicans-win-the-south-
+2026-04-10 03:23:50,272 [INFO] 🔄 MARKET MAKE | will-the-republicans-win-the-south- | BID $0.5400 × $11 | ASK $0.8400 × $11 | Spread captured: $0.3000
+2026-04-10 03:23:50,272 [INFO] 📝 PAPER | BUY 35 @ $0.1600 [GTD 75s] on will-the-republicans-win-the-south-
+2026-04-10 03:23:50,272 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:50,273 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:23:53,275 [INFO] 🟢 FILLED BUY | 112 @ $0.1000 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:24:01,284 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (1) | Risk: 0.00 | Kelly: 2.0%
+2026-04-10 03:24:01,284 [INFO] 🟢 FILLED SELL | 56 @ $0.2000 | PnL=$+5.625 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:24:05,348 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:24:05,348 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:05,349 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:05,349 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:05,349 [INFO] 🟢 FILLED BUY | 70 @ $0.1600 | will-fernando-dias-da-costa-win-the
+2026-04-10 03:24:19,364 [INFO] [T+60s] Capital=$77.50 (-22.50) | Pos=2 | Trades=1 (100% WR) | PnL=$+5.625 | DD=22.5% | Orders: 8 | News alerts: 9
+2026-04-10 03:24:20,414 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:24:20,415 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:20,415 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:24:20,415 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:20,415 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:29,426 [INFO] 🔴 SHORT SELL | 87 @ $0.1300 | Will cover with BUY | will-siga-batista-win-the-2025-guin
+2026-04-10 03:24:35,479 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1800 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:24:35,479 [INFO] ⏰ GTD EXPIRED | SELL @ $0.3200 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:24:35,480 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:24:35,480 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:35,480 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:24:35,480 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:24:35,480 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:35,480 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:50,556 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:24:50,556 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:50,556 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:24:50,556 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:24:50,556 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:24:50,556 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:05,628 [INFO] ⏰ GTD EXPIRED | BUY @ $0.5400 on will-the-republicans-win-the-south-
+2026-04-10 03:25:05,628 [INFO] ⏰ GTD EXPIRED | SELL @ $0.8400 on will-the-republicans-win-the-south-
+2026-04-10 03:25:05,628 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:25:05,628 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:05,628 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:25:05,628 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:25:05,628 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:05,628 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:19,642 [INFO] [T+120s] Capital=$77.50 (-22.50) | Pos=3 | Trades=1 (100% WR) | PnL=$+5.625 | DD=22.5% | Orders: 3 | News alerts: 9
+2026-04-10 03:25:20,695 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:25:20,695 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:20,695 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:25:20,696 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:25:20,696 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:20,696 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:35,758 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:25:35,758 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:35,758 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:25:35,758 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:25:35,759 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:35,759 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:50,826 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:25:50,827 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:50,829 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:25:50,829 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:25:50,829 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:25:50,829 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:05,892 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:26:05,892 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:05,892 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:26:05,893 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:26:05,893 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:05,893 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:19,907 [INFO] [T+180s] Capital=$77.50 (-22.50) | Pos=3 | Trades=1 (100% WR) | PnL=$+5.625 | DD=22.5% | Orders: 3 | News alerts: 9
+2026-04-10 03:26:20,956 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:26:20,956 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:20,956 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:26:20,956 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:26:20,956 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:20,956 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:36,020 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:26:36,020 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:36,020 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:26:36,020 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:26:36,020 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:36,020 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:51,104 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:26:51,104 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:51,104 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:26:51,104 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:26:51,105 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:26:51,105 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:06,369 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:27:06,369 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:06,369 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:27:06,369 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:27:06,369 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:06,369 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:20,379 [INFO] [T+240s] Capital=$77.50 (-22.50) | Pos=3 | Trades=1 (100% WR) | PnL=$+5.625 | DD=22.5% | Orders: 3 | News alerts: 9
+2026-04-10 03:27:21,438 [INFO] 📝 PAPER | SELL 38 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:27:21,438 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:21,438 [INFO] 📝 PAPER | SELL 51 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:27:21,438 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:27:21,438 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:21,438 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:36,512 [INFO] 📝 PAPER | SELL 80 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:27:36,512 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:36,512 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:27:36,512 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:27:36,512 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:36,512 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:51,579 [INFO] 📝 PAPER | SELL 80 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:27:51,579 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:51,579 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:27:51,579 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:27:51,579 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:27:51,579 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:28:06,642 [INFO] 📝 PAPER | SELL 80 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:28:06,642 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:28:06,642 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:28:06,642 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:28:06,642 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:28:06,642 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump criticises nato as alliance chief describes meeting as' (BBC World)
+2026-04-10 03:28:20,657 [INFO] [T+300s] Capital=$77.50 (-22.50) | Pos=3 | Trades=1 (100% WR) | PnL=$+5.625 | DD=22.5% | Orders: 3 | News alerts: 0
+2026-04-10 03:28:21,708 [INFO] 📝 PAPER | SELL 80 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:28:21,708 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:28:21,708 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:28:36,773 [INFO] 📝 PAPER | SELL 80 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:28:36,773 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:28:36,773 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:28:51,867 [INFO] 📝 PAPER | SELL 80 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:28:51,867 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:28:51,867 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:00,880 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (2) | Risk: 0.20 | Kelly: 2.0%
+2026-04-10 03:29:00,880 [INFO] 🟢 FORCE EXIT | 56 @ $0.1500 | PnL=$+2.812 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:29:06,933 [INFO] 📝 PAPER | SELL 94 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:29:06,933 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:10,941 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (1) | Risk: 0.40 | Kelly: 2.0%
+2026-04-10 03:29:10,941 [INFO] 🟢 FORCE EXIT | 70 @ $0.2190 | PnL=$+4.148 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 03:29:20,951 [INFO] [T+360s] Capital=$101.34 (+1.34) | Pos=1 | Trades=3 (100% WR) | PnL=$+12.586 | DD=0.0% | Orders: 2 | News alerts: 0
+2026-04-10 03:29:21,999 [INFO] 📝 PAPER | BUY 150 @ $0.1000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:29:21,999 [INFO] 📝 PAPER | SELL 75 @ $0.2000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:29:21,999 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $15 | ASK $0.2000 × $15 | Spread captured: $0.1000
+2026-04-10 03:29:21,999 [INFO] 📝 PAPER | BUY 9 @ $0.8000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:29:21,999 [INFO] 📝 PAPER | BUY 18 @ $0.6200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:29:21,999 [INFO] 📝 PAPER | SELL 16 @ $0.7200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:29:21,999 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $11 | ASK $0.7200 × $11 | Spread captured: $0.1000
+2026-04-10 03:29:22,000 [INFO] 📝 PAPER | BUY 94 @ $0.1600 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:29:22,000 [INFO] 📝 PAPER | SELL 54 @ $0.2800 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:29:22,000 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $15 | ASK $0.2800 × $15 | Spread captured: $0.1200
+2026-04-10 03:29:22,000 [INFO] 📝 PAPER | BUY 10 @ $0.7200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:29:22,000 [INFO] 📝 PAPER | SELL 1125 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:31,010 [INFO] 🧠 LEARNED | 🟢 will-siga-batista-win-the-2025-guin | WR: 100% (1) | Risk: 0.40 | Kelly: 2.0%
+2026-04-10 03:29:31,010 [INFO] 🟢 FORCE EXIT | -87 @ $0.0845 | PnL=$+3.938 | timeout | will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:37,066 [INFO] 📝 PAPER | BUY 62 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:29:37,066 [INFO] 📝 PAPER | SELL 35 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:29:37,066 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $11 | ASK $0.3200 × $11 | Spread captured: $0.1400
+2026-04-10 03:29:37,066 [INFO] 📝 PAPER | BUY 8 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:29:52,134 [INFO] 📝 PAPER | BUY 375 @ $0.0400 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:52,134 [INFO] 📝 PAPER | SELL 115 @ $0.1300 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:52,134 [INFO] 🔄 MARKET MAKE | will-siga-batista-win-the-2025-guin | BID $0.0400 × $15 | ASK $0.1300 × $15 | Spread captured: $0.0900
+2026-04-10 03:29:52,134 [INFO] 📝 PAPER | BUY 9 @ $0.8700 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:29:52,134 [INFO] 🟢 FILLED BUY | 18 @ $0.6200 | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:30:00,142 [INFO] 🟢 FILLED BUY | 150 @ $0.1000 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:30:07,199 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:30:07,199 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:30:21,210 [INFO] [T+420s] Capital=$90.27 (-9.73) | Pos=2 | Trades=4 (100% WR) | PnL=$+16.523 | DD=22.5% | Orders: 8 | News alerts: 0
+2026-04-10 03:30:22,260 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:30:22,260 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:30:26,264 [INFO] 🟢 FILLED BUY | 94 @ $0.1600 | will-fernando-dias-da-costa-win-the
+2026-04-10 03:30:28,266 [INFO] 🟢 FILLED BUY | 375 @ $0.0400 | will-siga-batista-win-the-2025-guin
+2026-04-10 03:30:32,271 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (2) | Risk: 0.20 | Kelly: 25.0%
+2026-04-10 03:30:32,271 [INFO] 🟢 FILLED SELL | 54 @ $0.2800 | PnL=$+6.428 | will-fernando-dias-da-costa-win-the
+2026-04-10 03:30:37,337 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:30:37,337 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:30:37,337 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:30:37,337 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:30:47,344 [INFO] 🔴 SHORT SELL | 35 @ $0.3200 | Will cover with BUY | will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:30:52,403 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1800 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:30:52,403 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:30:52,403 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:30:52,403 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:30:52,403 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:30:52,403 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:31:07,464 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:31:07,464 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:31:07,464 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:31:07,464 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:31:07,464 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:31:21,476 [INFO] [T+480s] Capital=$60.27 (-39.73) | Pos=5 | Trades=5 (100% WR) | PnL=$+22.952 | DD=48.3% | Orders: 5 | News alerts: 0
+2026-04-10 03:31:22,529 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:31:22,529 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:31:22,530 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:31:22,530 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:31:22,530 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:31:37,588 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:31:37,588 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:31:37,588 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:31:37,588 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:31:37,588 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:31:52,649 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:31:52,649 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:31:52,649 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:31:52,649 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:31:52,649 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:32:07,712 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:32:07,712 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:32:07,712 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:32:07,712 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:32:07,712 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:32:21,729 [INFO] [T+540s] Capital=$60.27 (-39.73) | Pos=5 | Trades=5 (100% WR) | PnL=$+22.952 | DD=48.3% | Orders: 5 | News alerts: 0
+2026-04-10 03:32:22,788 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:32:22,789 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:32:22,789 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:32:22,789 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:32:22,789 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:32:37,854 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:32:37,854 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:32:37,854 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:32:37,854 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:32:37,854 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:32:52,926 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:32:52,926 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:32:52,926 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:32:52,926 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:32:52,926 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:33:07,998 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:33:07,998 [INFO] 📝 PAPER | SELL 17 @ $0.6700 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:33:07,998 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:33:07,998 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:33:07,998 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:33:22,017 [INFO] [T+600s] Capital=$60.27 (-39.73) | Pos=5 | Trades=5 (100% WR) | PnL=$+22.952 | DD=48.3% | Orders: 5 | News alerts: 0
+2026-04-10 03:33:23,064 [INFO] 📝 PAPER | SELL 100 @ $0.1500 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:33:23,064 [INFO] 📝 PAPER | SELL 19 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:33:23,064 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:33:23,064 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:33:23,065 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:33:38,136 [INFO] 📝 PAPER | SELL 214 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:33:38,136 [INFO] 📝 PAPER | SELL 19 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:33:38,136 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:33:38,136 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:33:38,136 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:33:53,210 [INFO] 📝 PAPER | SELL 214 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:33:53,210 [INFO] 📝 PAPER | SELL 19 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:33:53,210 [INFO] 📝 PAPER | SELL 29 @ $0.2200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:33:53,210 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:33:53,210 [INFO] 📝 PAPER | SELL 167 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:34:08,280 [INFO] 📝 PAPER | SELL 214 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:34:08,281 [INFO] 📝 PAPER | SELL 19 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:34:08,281 [INFO] 📝 PAPER | SELL 54 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:34:08,281 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:34:08,281 [INFO] 📝 PAPER | SELL 1500 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:34:22,302 [INFO] [T+660s] Capital=$60.27 (-39.73) | Pos=5 | Trades=5 (100% WR) | PnL=$+22.952 | DD=48.3% | Orders: 5 | News alerts: 0
+2026-04-10 03:34:23,565 [INFO] 📝 PAPER | SELL 214 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:34:23,565 [INFO] 📝 PAPER | SELL 19 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:34:23,565 [INFO] 📝 PAPER | SELL 54 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:34:23,565 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:34:23,565 [INFO] 📝 PAPER | SELL 1500 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:34:38,658 [INFO] 📝 PAPER | SELL 214 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:34:38,658 [INFO] 📝 PAPER | SELL 19 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:34:38,658 [INFO] 📝 PAPER | SELL 54 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:34:38,658 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:34:38,658 [INFO] 📝 PAPER | SELL 1500 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:34:52,675 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (1) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:34:52,675 [INFO] 🟢 FORCE EXIT | 18 @ $0.6700 | PnL=$+0.908 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:34:53,746 [INFO] 📝 PAPER | SELL 214 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:34:53,747 [INFO] 📝 PAPER | SELL 54 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:34:53,747 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:34:53,747 [INFO] 📝 PAPER | SELL 1500 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:35:02,756 [INFO] 🧠 NEW RULE: STAR: will-porto-win-the-2025-26-uefa-europa-league — 100% WR, $+5.312/trade
+2026-04-10 03:35:02,756 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (3) | Risk: 0.27 | Kelly: 25.0%
+2026-04-10 03:35:02,756 [INFO] 🟢 FORCE EXIT | 150 @ $0.1500 | PnL=$+7.500 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:35:08,819 [INFO] 📝 PAPER | SELL 54 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:35:08,819 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:35:08,819 [INFO] 📝 PAPER | SELL 1500 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:35:22,833 [INFO] [T+720s] Capital=$94.93 (-5.07) | Pos=3 | Trades=7 (100% WR) | PnL=$+31.359 | DD=18.5% | Orders: 3 | News alerts: 0
+2026-04-10 03:35:23,890 [INFO] 📝 PAPER | SELL 54 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:35:23,891 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:35:23,891 [INFO] 📝 PAPER | SELL 1500 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:35:32,902 [INFO] 🧠 LEARNED | 🟢 will-siga-batista-win-the-2025-guin | WR: 100% (2) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:35:32,902 [INFO] 🟢 FORCE EXIT | 375 @ $0.0845 | PnL=$+16.688 | timeout | will-siga-batista-win-the-2025-guin
+2026-04-10 03:35:32,902 [INFO] 🧠 NEW RULE: STAR: will-fernando-dias-da-costa-win-the-2025-guinea-bi — 100% WR, $+4.316/trade
+2026-04-10 03:35:32,903 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (3) | Risk: 0.27 | Kelly: 25.0%
+2026-04-10 03:35:32,903 [INFO] 🟢 FORCE EXIT | 40 @ $0.2190 | PnL=$+2.371 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 03:35:38,973 [INFO] 📝 PAPER | BUY 225 @ $0.1000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:35:38,973 [INFO] 📝 PAPER | SELL 112 @ $0.2000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:35:38,973 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $22 | ASK $0.2000 × $22 | Spread captured: $0.1000
+2026-04-10 03:35:38,973 [INFO] 📝 PAPER | BUY 14 @ $0.8000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:35:38,973 [INFO] 📝 PAPER | BUY 24 @ $0.6200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:35:38,973 [INFO] 📝 PAPER | SELL 21 @ $0.7200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:35:38,973 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $15 | ASK $0.7200 × $15 | Spread captured: $0.1000
+2026-04-10 03:35:38,974 [INFO] 📝 PAPER | BUY 141 @ $0.1600 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:35:38,974 [INFO] 📝 PAPER | SELL 80 @ $0.2800 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:35:38,974 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $22 | ASK $0.2800 × $22 | Spread captured: $0.1200
+2026-04-10 03:35:38,974 [INFO] 📝 PAPER | BUY 16 @ $0.7200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:35:38,974 [INFO] 📝 PAPER | SELL 80 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:35:52,992 [INFO] 🧠 LEARNED | 🟢 will-pt-win-the-most-seats-in-the-2 | WR: 100% (1) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:35:52,992 [INFO] 🟢 FORCE EXIT | -35 @ $0.2485 | PnL=$+2.514 | timeout | will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:35:54,043 [INFO] 📝 PAPER | BUY 167 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:35:54,043 [INFO] 📝 PAPER | SELL 94 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:35:54,043 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $30 | ASK $0.3200 × $30 | Spread captured: $0.1400
+2026-04-10 03:35:54,043 [INFO] 📝 PAPER | BUY 22 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:36:09,145 [INFO] 📝 PAPER | BUY 750 @ $0.0400 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:36:09,145 [INFO] 📝 PAPER | SELL 231 @ $0.1300 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:36:09,145 [INFO] 🔄 MARKET MAKE | will-siga-batista-win-the-2025-guin | BID $0.0400 × $30 | ASK $0.1300 × $30 | Spread captured: $0.0900
+2026-04-10 03:36:09,145 [INFO] 📝 PAPER | BUY 17 @ $0.8700 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:36:16,154 [INFO] 🔴 SHORT SELL | 21 @ $0.7200 | Will cover with BUY | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:36:21,160 [INFO] 🔴 SHORT SELL | 112 @ $0.2000 | Will cover with BUY | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:36:23,162 [INFO] [T+780s] Capital=$149.18 (+49.18) | Pos=2 | Trades=10 (100% WR) | PnL=$+52.931 | DD=0.0% | Orders: 9 | News alerts: 0
+2026-04-10 03:36:24,214 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:36:24,214 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:36:31,224 [INFO] 🔴 SHORT SELL | 80 @ $0.2800 | Will cover with BUY | will-fernando-dias-da-costa-win-the
+2026-04-10 03:36:32,225 [INFO] 🟢 FILLED BUY | 750 @ $0.0400 | will-siga-batista-win-the-2025-guin
+2026-04-10 03:36:39,281 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:36:39,281 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:36:39,281 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:36:39,281 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:36:54,340 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:36:54,340 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:36:54,340 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:36:54,340 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:37:09,407 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1800 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:37:09,407 [INFO] ⏰ GTD EXPIRED | SELL @ $0.3200 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:37:09,408 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:37:09,408 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:37:09,408 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:37:09,408 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:37:23,422 [INFO] [T+840s] Capital=$119.18 (+19.18) | Pos=4 | Trades=10 (100% WR) | PnL=$+52.931 | DD=20.1% | Orders: 4 | News alerts: 0
+2026-04-10 03:37:24,490 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:37:24,490 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:37:24,490 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:37:24,490 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:37:39,559 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:37:39,559 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:37:39,559 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:37:39,559 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:37:54,629 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:37:54,629 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:37:54,629 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:37:54,629 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:38:09,697 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:38:09,698 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:38:09,698 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:38:09,698 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:38:23,714 [INFO] [T+900s] Capital=$119.18 (+19.18) | Pos=4 | Trades=10 (100% WR) | PnL=$+52.931 | DD=20.1% | Orders: 4 | News alerts: 0
+2026-04-10 03:38:24,773 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:38:24,774 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:38:24,774 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:38:24,774 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:38:39,915 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:38:39,915 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:38:39,916 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:38:39,916 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:38:54,981 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:38:54,981 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:38:54,981 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:38:54,981 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:39:10,247 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:39:10,247 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:39:10,247 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:39:10,247 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:39:24,265 [INFO] [T+960s] Capital=$119.18 (+19.18) | Pos=4 | Trades=10 (100% WR) | PnL=$+52.931 | DD=20.1% | Orders: 4 | News alerts: 0
+2026-04-10 03:39:25,313 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:39:25,314 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:39:25,314 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:39:25,314 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:39:40,384 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:39:40,384 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:39:40,384 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:39:40,384 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:39:55,490 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:39:55,490 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:39:55,490 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:39:55,490 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:40:10,554 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:40:10,555 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:40:10,555 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:40:10,555 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:40:24,571 [INFO] [T+1020s] Capital=$119.18 (+19.18) | Pos=4 | Trades=10 (100% WR) | PnL=$+52.931 | DD=20.1% | Orders: 4 | News alerts: 0
+2026-04-10 03:40:25,620 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:40:25,620 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:40:25,620 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:40:25,620 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:40:40,688 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:40:40,688 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:40:40,688 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:40:40,688 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:40:55,771 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:40:55,771 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:40:55,771 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:40:55,771 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:41:10,838 [INFO] 📝 PAPER | SELL 321 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:41:10,838 [INFO] 📝 PAPER | SELL 26 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:41:10,838 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:41:10,838 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:41:24,855 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (2) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:41:24,855 [INFO] 🟢 FORCE EXIT | -21 @ $0.6700 | PnL=$+1.041 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:41:24,856 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (4) | Risk: 0.30 | Kelly: 25.0%
+2026-04-10 03:41:24,856 [INFO] 🟢 FORCE EXIT | -112 @ $0.1500 | PnL=$+5.625 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:41:24,856 [INFO] [T+1080s] Capital=$163.35 (+63.35) | Pos=2 | Trades=12 (100% WR) | PnL=$+59.598 | DD=0.0% | Orders: 4 | News alerts: 0
+2026-04-10 03:41:25,905 [INFO] 📝 PAPER | SELL 188 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:41:25,905 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 03:41:34,917 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (4) | Risk: 0.30 | Kelly: 25.0%
+2026-04-10 03:41:34,918 [INFO] 🟢 FORCE EXIT | -80 @ $0.2190 | PnL=$+4.902 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 03:41:34,918 [INFO] 🧠 LEARNED | 🟢 will-siga-batista-win-the-2025-guin | WR: 100% (3) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:41:34,918 [INFO] 🟢 FORCE EXIT | 750 @ $0.0845 | PnL=$+33.375 | timeout | will-siga-batista-win-the-2025-guin
+2026-04-10 03:41:40,978 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:41:40,978 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:41:40,978 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 03:41:40,978 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:41:40,979 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:41:40,979 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:41:40,979 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 03:41:40,979 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:41:40,979 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:41:40,979 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 03:41:40,979 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:41:56,219 [INFO] 📝 PAPER | BUY 167 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:41:56,219 [INFO] 📝 PAPER | SELL 94 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:41:56,219 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $30 | ASK $0.3200 × $30 | Spread captured: $0.1400
+2026-04-10 03:41:56,219 [INFO] 📝 PAPER | BUY 22 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:42:02,227 [INFO] 🟢 FILLED BUY | 300 @ $0.1000 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:42:11,285 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:42:25,303 [INFO] [T+1140s] Capital=$224.12 (+124.12) | Pos=1 | Trades=14 (100% WR) | PnL=$+97.875 | DD=11.8% | Orders: 7 | News alerts: 0
+2026-04-10 03:42:26,352 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:42:27,354 [INFO] 🟢 FILLED BUY | 48 @ $0.6200 | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:42:27,354 [INFO] 🔴 SHORT SELL | 107 @ $0.2800 | Will cover with BUY | will-fernando-dias-da-costa-win-the
+2026-04-10 03:42:30,358 [INFO] 🔴 SHORT SELL | 94 @ $0.3200 | Will cover with BUY | will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:42:36,364 [INFO] 🧠 NEW RULE: STAR: will-kristi-noem-leave-the-trump-administration-be — 100% WR, $+2.039/trade
+2026-04-10 03:42:36,365 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (3) | Risk: 0.27 | Kelly: 25.0%
+2026-04-10 03:42:36,365 [INFO] 🟢 FILLED SELL | 42 @ $0.7200 | PnL=$+4.167 | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:42:41,429 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:42:41,429 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:42:41,429 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:42:41,429 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:42:56,501 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:42:56,501 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:42:56,501 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:42:56,501 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:43:11,566 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:43:11,566 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:43:11,566 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:43:11,567 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:43:25,584 [INFO] [T+1200s] Capital=$194.12 (+94.12) | Pos=4 | Trades=15 (100% WR) | PnL=$+102.042 | DD=23.6% | Orders: 4 | News alerts: 0
+2026-04-10 03:43:26,640 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:43:26,640 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:43:26,640 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:43:26,640 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:43:41,707 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:43:41,707 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:43:41,707 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:43:41,707 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:43:56,772 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:43:56,772 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:43:56,772 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:43:56,772 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:44:11,836 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:44:11,836 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:44:11,836 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:44:11,836 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:44:25,852 [INFO] [T+1260s] Capital=$194.12 (+94.12) | Pos=4 | Trades=15 (100% WR) | PnL=$+102.042 | DD=23.6% | Orders: 4 | News alerts: 0
+2026-04-10 03:44:26,899 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:44:26,899 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:44:26,899 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:44:26,899 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:44:41,978 [INFO] 📝 PAPER | SELL 188 @ $0.1600 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:44:41,978 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:44:41,978 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:44:41,978 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:44:57,043 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:44:57,043 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:44:57,043 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:44:57,043 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:45:12,121 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:45:12,121 [INFO] 📝 PAPER | SELL 6 @ $0.6800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:45:12,121 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:45:12,121 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:45:26,140 [INFO] [T+1320s] Capital=$194.12 (+94.12) | Pos=4 | Trades=15 (100% WR) | PnL=$+102.042 | DD=23.6% | Orders: 4 | News alerts: 0
+2026-04-10 03:45:27,392 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:45:27,392 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:45:27,392 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:45:27,392 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:45:42,453 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:45:42,453 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:45:42,454 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:45:42,454 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:45:57,538 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:45:57,539 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:45:57,539 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:45:57,539 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:46:12,604 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:46:12,604 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:46:12,605 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:46:12,605 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:46:26,622 [INFO] [T+1380s] Capital=$194.12 (+94.12) | Pos=4 | Trades=15 (100% WR) | PnL=$+102.042 | DD=23.6% | Orders: 4 | News alerts: 0
+2026-04-10 03:46:27,675 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:46:27,675 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:46:27,675 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:46:27,675 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:46:42,760 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:46:42,760 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:46:42,761 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:46:42,761 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:46:57,841 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 75s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:46:57,841 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:46:57,841 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:46:57,841 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:47:06,853 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (5) | Risk: 0.32 | Kelly: 5.0%
+2026-04-10 03:47:06,853 [INFO] 🟢 FORCE EXIT | 300 @ $0.1500 | PnL=$+15.000 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:47:12,904 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:47:12,904 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:47:12,904 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:47:26,920 [INFO] [T+1440s] Capital=$239.12 (+139.12) | Pos=3 | Trades=16 (100% WR) | PnL=$+117.042 | DD=5.9% | Orders: 3 | News alerts: 0
+2026-04-10 03:47:27,970 [INFO] 📝 PAPER | SELL 7 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:47:27,970 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 75s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:47:27,970 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:47:36,980 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (5) | Risk: 0.32 | Kelly: 5.0%
+2026-04-10 03:47:36,980 [INFO] 🟢 FORCE EXIT | -107 @ $0.2190 | PnL=$+6.536 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 03:47:36,980 [INFO] 🧠 LEARNED | 🟢 will-pt-win-the-most-seats-in-the-2 | WR: 100% (2) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:47:36,980 [INFO] 🟢 FORCE EXIT | -94 @ $0.2485 | PnL=$+6.703 | timeout | will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:47:36,981 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (4) | Risk: 0.30 | Kelly: 25.0%
+2026-04-10 03:47:36,981 [INFO] 🟢 FORCE EXIT | 7 @ $0.6700 | PnL=$+0.336 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:47:43,084 [INFO] 📝 PAPER | BUY 238 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:47:43,084 [INFO] 📝 PAPER | SELL 119 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:47:43,084 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $24 | ASK $0.2000 × $24 | Spread captured: $0.1000
+2026-04-10 03:47:43,084 [INFO] 📝 PAPER | BUY 15 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:47:43,084 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:47:43,084 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:47:43,084 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 03:47:43,085 [INFO] 📝 PAPER | BUY 148 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:47:43,085 [INFO] 📝 PAPER | SELL 85 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:47:43,085 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $24 | ASK $0.2800 × $24 | Spread captured: $0.1200
+2026-04-10 03:47:43,085 [INFO] 📝 PAPER | BUY 16 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:47:58,151 [INFO] 📝 PAPER | BUY 167 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:47:58,151 [INFO] 📝 PAPER | SELL 94 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:47:58,151 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $30 | ASK $0.3200 × $30 | Spread captured: $0.1400
+2026-04-10 03:47:58,151 [INFO] 📝 PAPER | BUY 22 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:48:08,163 [INFO] 🔴 SHORT SELL | 42 @ $0.7200 | Will cover with BUY | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:48:11,167 [INFO] 🟢 ADDED BUY | 48 @ $0.6200 | Total: 7 @ $8.9292 | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:48:12,168 [INFO] 🔴 SHORT SELL | 85 @ $0.2800 | Will cover with BUY | will-fernando-dias-da-costa-win-the
+2026-04-10 03:48:13,222 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:48:13,223 [INFO] 📝 PAPER | SELL 198 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:48:20,231 [INFO] 🟢 FILLED BUY | 238 @ $0.1000 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:48:27,239 [INFO] [T+1500s] Capital=$263.10 (+163.10) | Pos=3 | Trades=19 (100% WR) | PnL=$+130.616 | DD=17.0% | Orders: 5 | News alerts: 0
+2026-04-10 03:48:28,291 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2000 on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:48:28,292 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:48:28,292 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:48:28,292 [INFO] 📝 PAPER | SELL 198 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:48:38,306 [INFO] 🟢 FILLED BUY | 167 @ $0.1800 | will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:48:43,570 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:48:43,570 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 75s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:48:43,570 [INFO] 📝 PAPER | SELL 198 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:48:43,570 [INFO] 📝 PAPER | SELL 120 @ $0.2500 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:48:58,637 [WARNING] 📰 NEWS ALERT | trump-backed republican clay fuller wins election to replace marjorie taylor gre | keywords: ['trump', 'election']
+2026-04-10 03:48:58,637 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,637 [WARNING] 🚨 PULLED 1 orders on will-kristi-noem-leave-the-trump-ad due to news
+2026-04-10 03:48:58,638 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 PULLED 1 orders on will-fernando-dias-da-costa-win-the due to news
+2026-04-10 03:48:58,638 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 PULLED 1 orders on will-pt-win-the-most-seats-in-the-2 due to news
+2026-04-10 03:48:58,638 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 ADVERSE SELECTION ALERT | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:48:58,638 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,638 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:48:58,639 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:13,723 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:49:13,723 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:13,723 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:13,723 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:13,723 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:13,723 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:13,723 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:27,741 [INFO] [T+1560s] Capital=$233.10 (+133.10) | Pos=4 | Trades=19 (100% WR) | PnL=$+130.616 | DD=26.4% | Orders: 1 | News alerts: 1
+2026-04-10 03:49:28,799 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:49:28,799 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:28,799 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:28,799 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:28,799 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:28,799 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:28,799 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:43,870 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:49:43,870 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:43,870 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:43,870 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:43,870 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:43,871 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:43,871 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:58,955 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:49:58,955 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:58,955 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:58,955 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:58,955 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:58,955 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:49:58,955 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:14,068 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:50:14,068 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:14,068 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:14,069 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:14,069 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:14,069 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:14,069 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:28,086 [INFO] [T+1620s] Capital=$233.10 (+133.10) | Pos=4 | Trades=19 (100% WR) | PnL=$+130.616 | DD=26.4% | Orders: 1 | News alerts: 1
+2026-04-10 03:50:29,133 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:50:29,134 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:29,134 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:29,134 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:29,134 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:29,134 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:29,134 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:44,204 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:50:44,205 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:44,205 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:44,205 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:44,205 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:44,205 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:44,205 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:59,270 [INFO] 📝 PAPER | SELL 148 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:50:59,270 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:59,270 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:59,270 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:59,270 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:59,270 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:50:59,270 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:08,284 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (6) | Risk: 0.33 | Kelly: 5.0%
+2026-04-10 03:51:08,284 [INFO] 🟢 FORCE EXIT | -85 @ $0.2190 | PnL=$+5.176 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 03:51:14,342 [INFO] 📝 PAPER | SELL 339 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:51:14,342 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:14,342 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:14,342 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:14,342 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:14,342 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:14,342 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:18,349 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (6) | Risk: 0.33 | Kelly: 5.0%
+2026-04-10 03:51:18,349 [INFO] 🟢 FORCE EXIT | 238 @ $0.1500 | PnL=$+11.880 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:51:28,363 [INFO] [T+1680s] Capital=$297.68 (+197.68) | Pos=2 | Trades=21 (100% WR) | PnL=$+147.673 | DD=6.1% | Orders: 1 | News alerts: 1
+2026-04-10 03:51:29,410 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:29,410 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:29,410 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:29,410 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:29,410 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:29,410 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:44,480 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:44,480 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:44,480 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:44,480 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:44,480 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:44,480 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:59,551 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:59,551 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:59,551 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:59,551 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:59,551 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:51:59,552 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:14,630 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:14,630 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:14,630 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:14,630 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:14,630 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:14,630 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:28,645 [INFO] [T+1740s] Capital=$297.68 (+197.68) | Pos=2 | Trades=21 (100% WR) | PnL=$+147.673 | DD=6.1% | Orders: 0 | News alerts: 1
+2026-04-10 03:52:29,694 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:29,694 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:29,694 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:29,694 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:29,694 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:29,694 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:44,761 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:44,761 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:44,761 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:44,761 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:44,761 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:44,761 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:59,823 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:59,823 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:59,823 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:59,823 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:59,823 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:52:59,823 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:08,837 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (5) | Risk: 0.32 | Kelly: 5.0%
+2026-04-10 03:53:08,837 [INFO] 🟢 FORCE EXIT | 7 @ $0.6700 | PnL=$+55.502 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:53:14,904 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:53:14,904 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:53:14,904 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 03:53:14,904 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:53:14,904 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:14,904 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:14,904 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:14,904 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:14,904 [INFO] 📝 PAPER | BUY 56 @ $0.5400 [GTD 75s] on will-the-republicans-win-the-south-
+2026-04-10 03:53:14,904 [INFO] 📝 PAPER | SELL 36 @ $0.8400 [GTD 75s] on will-the-republicans-win-the-south-
+2026-04-10 03:53:14,904 [INFO] 🔄 MARKET MAKE | will-the-republicans-win-the-south- | BID $0.5400 × $30 | ASK $0.8400 × $30 | Spread captured: $0.3000
+2026-04-10 03:53:14,904 [INFO] 📝 PAPER | BUY 94 @ $0.1600 [GTD 75s] on will-the-republicans-win-the-south-
+2026-04-10 03:53:14,904 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:14,905 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:28,920 [INFO] [T+1800s] Capital=$413.18 (+313.18) | Pos=1 | Trades=22 (100% WR) | PnL=$+203.175 | DD=0.0% | Orders: 6 | News alerts: 1
+2026-04-10 03:53:29,972 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:29,973 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:29,973 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:29,973 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:29,973 [INFO] 📝 PAPER | BUY 51 @ $0.5900 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:53:29,973 [INFO] 📝 PAPER | SELL 44 @ $0.6800 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:53:29,973 [INFO] 🔄 MARKET MAKE | scotus-accepts-sports-event-contrac | BID $0.5900 × $30 | ASK $0.6800 × $30 | Spread captured: $0.0900
+2026-04-10 03:53:29,973 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:29,973 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 75s] on will-waymo-launch-in-london-by-june
+2026-04-10 03:53:29,973 [INFO] 📝 PAPER | SELL 115 @ $0.2600 [GTD 75s] on will-waymo-launch-in-london-by-june
+2026-04-10 03:53:29,973 [INFO] 🔄 MARKET MAKE | will-waymo-launch-in-london-by-june | BID $0.1000 × $30 | ASK $0.2600 × $30 | Spread captured: $0.1600
+2026-04-10 03:53:29,973 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:38,984 [INFO] 🧠 LEARNED | 🟢 will-pt-win-the-most-seats-in-the-2 | WR: 100% (3) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:53:38,984 [INFO] 🟢 FORCE EXIT | 167 @ $0.2485 | PnL=$+11.417 | timeout | will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:53:41,987 [INFO] 🔴 SHORT SELL | 150 @ $0.2000 | Will cover with BUY | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:53:45,046 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:53:45,046 [WARNING] 🚨 SKIP REPRICE | will-kristi-noem-leave-the-trump-ad | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:45,046 [WARNING] 🚨 SKIP REPRICE | will-fernando-dias-da-costa-win-the | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:45,046 [WARNING] 🚨 SKIP REPRICE | will-pt-win-the-most-seats-in-the-2 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:45,046 [WARNING] 🚨 SKIP REPRICE | will-siga-batista-win-the-2025-guin | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:45,047 [WARNING] 🚨 SKIP REPRICE | will-donald-trump-visit-the-united- | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:53:45,047 [WARNING] 🚨 SKIP REPRICE | will-trump-sell-0-gold-cards-in-202 | NEWS: 'trump-backed republican clay fuller wins election to replace' (BBC World)
+2026-04-10 03:54:00,114 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:54:00,114 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:54:00,114 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:54:00,114 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 03:54:15,187 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:54:29,208 [INFO] [T+1860s] Capital=$454.60 (+354.60) | Pos=1 | Trades=23 (100% WR) | PnL=$+214.592 | DD=0.0% | Orders: 9 | News alerts: 0
+2026-04-10 03:54:30,256 [INFO] ⏰ GTD EXPIRED | BUY @ $0.5400 on will-the-republicans-win-the-south-
+2026-04-10 03:54:30,256 [INFO] ⏰ GTD EXPIRED | SELL @ $0.8400 on will-the-republicans-win-the-south-
+2026-04-10 03:54:30,257 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:54:30,257 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:54:30,257 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:54:30,257 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 03:54:30,257 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:54:35,265 [INFO] 🔴 SHORT SELL | 42 @ $0.7200 | Will cover with BUY | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:54:40,272 [INFO] 🟢 ADDED BUY | 48 @ $0.6200 | Total: 7 @ $8.9292 | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:54:42,277 [INFO] 🟢 FILLED BUY | 51 @ $0.5900 | scotus-accepts-sports-event-contrac
+2026-04-10 03:54:45,338 [INFO] ⏰ GTD EXPIRED | SELL @ $0.6800 on scotus-accepts-sports-event-contrac
+2026-04-10 03:54:45,338 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1000 on will-waymo-launch-in-london-by-june
+2026-04-10 03:54:45,338 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2600 on will-waymo-launch-in-london-by-june
+2026-04-10 03:54:45,339 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:54:45,339 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:54:45,339 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:55:00,412 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:55:00,412 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:55:00,412 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:55:08,422 [INFO] 🟢 FILLED BUY | 188 @ $0.1600 | will-fernando-dias-da-costa-win-the
+2026-04-10 03:55:15,494 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2800 on will-fernando-dias-da-costa-win-the
+2026-04-10 03:55:15,494 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:55:15,494 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:55:15,495 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:55:15,495 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:55:29,513 [INFO] [T+1920s] Capital=$364.60 (+264.60) | Pos=4 | Trades=23 (100% WR) | PnL=$+214.592 | DD=19.8% | Orders: 4 | News alerts: 0
+2026-04-10 03:55:30,574 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:55:30,574 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:55:30,575 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:55:30,575 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:55:45,645 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:55:45,645 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:55:45,645 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:55:45,645 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:56:00,719 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:56:00,719 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:56:00,720 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:56:00,720 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:56:15,791 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:56:15,791 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:56:15,791 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:56:15,792 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:56:29,810 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (7) | Risk: 0.34 | Kelly: 5.0%
+2026-04-10 03:56:29,810 [INFO] 🟢 FORCE EXIT | -150 @ $0.1500 | PnL=$+7.500 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:56:29,810 [INFO] [T+1980s] Capital=$402.10 (+302.10) | Pos=3 | Trades=24 (100% WR) | PnL=$+222.092 | DD=11.5% | Orders: 4 | News alerts: 0
+2026-04-10 03:56:30,880 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:56:30,880 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:56:30,880 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:56:45,982 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:56:45,983 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:56:45,983 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:57:01,049 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:57:01,049 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:57:01,049 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:57:16,120 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:57:16,120 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:57:16,120 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:57:30,142 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (6) | Risk: 0.33 | Kelly: 5.0%
+2026-04-10 03:57:30,142 [INFO] 🟢 FORCE EXIT | 7 @ $0.6700 | PnL=$+55.502 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:57:30,142 [INFO] [T+2040s] Capital=$517.60 (+417.60) | Pos=2 | Trades=25 (100% WR) | PnL=$+277.593 | DD=0.0% | Orders: 3 | News alerts: 0
+2026-04-10 03:57:31,201 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:57:31,201 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:57:46,274 [INFO] 📝 PAPER | SELL 136 @ $0.2200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:57:46,275 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:58:00,295 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (7) | Risk: 0.34 | Kelly: 5.0%
+2026-04-10 03:58:00,295 [INFO] 🟢 FORCE EXIT | 188 @ $0.2190 | PnL=$+11.062 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:01,354 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:58:01,354 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:58:01,354 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 03:58:01,354 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:58:01,355 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:58:01,355 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:58:01,355 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 03:58:01,355 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:01,355 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:01,355 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 03:58:01,355 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:01,355 [INFO] 📝 PAPER | SELL 47 @ $0.6400 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:58:16,479 [INFO] 📝 PAPER | BUY 167 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:58:16,480 [INFO] 📝 PAPER | SELL 94 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:58:16,480 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $30 | ASK $0.3200 × $30 | Spread captured: $0.1400
+2026-04-10 03:58:16,480 [INFO] 📝 PAPER | BUY 22 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:58:16,480 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:58:30,496 [INFO] [T+2100s] Capital=$558.67 (+458.67) | Pos=1 | Trades=26 (100% WR) | PnL=$+288.656 | DD=0.0% | Orders: 10 | News alerts: 0
+2026-04-10 03:58:31,544 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:58:31,545 [INFO] 🔴 SHORT SELL | 42 @ $0.7200 | Will cover with BUY | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:58:35,550 [INFO] 🟢 FILLED BUY | 300 @ $0.1000 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:58:42,559 [INFO] 🟢 ADDED BUY | 48 @ $0.6200 | Total: 7 @ $8.9292 | will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:58:43,562 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (8) | Risk: 0.30 | Kelly: 5.0%
+2026-04-10 03:58:43,562 [INFO] 🟢 FILLED SELL | 150 @ $0.2000 | PnL=$+15.000 | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:58:43,562 [INFO] 🔴 SHORT SELL | 107 @ $0.2800 | Will cover with BUY | will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:46,615 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1600 on will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:46,615 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:58:46,616 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:58:46,616 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:58:46,616 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:59:01,682 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:59:01,682 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:59:01,683 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:59:01,683 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:59:16,753 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:59:16,753 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:59:16,753 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:59:16,753 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:59:30,771 [INFO] [T+2160s] Capital=$498.67 (+398.67) | Pos=4 | Trades=27 (100% WR) | PnL=$+303.656 | DD=10.7% | Orders: 6 | News alerts: 0
+2026-04-10 03:59:31,822 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1800 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:59:31,822 [INFO] ⏰ GTD EXPIRED | SELL @ $0.3200 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 03:59:31,822 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:59:31,822 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:59:31,822 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:59:31,823 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:59:46,889 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 03:59:46,890 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 03:59:46,890 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 03:59:46,890 [INFO] 📝 PAPER | SELL 54 @ $0.5600 [GTD 75s] on scotus-accepts-sports-event-contrac
+2026-04-10 03:59:50,896 [INFO] 🧠 LEARNED | 🟢 scotus-accepts-sports-event-contrac | WR: 100% (1) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 03:59:50,896 [INFO] 🟢 FORCE EXIT | 51 @ $0.6350 | PnL=$+2.288 | timeout | scotus-accepts-sports-event-contrac
+2026-04-10 04:00:01,959 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:00:01,959 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:00:01,959 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:00:17,027 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:00:17,027 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:00:17,027 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:00:31,049 [INFO] [T+2220s] Capital=$530.95 (+430.95) | Pos=3 | Trades=28 (100% WR) | PnL=$+305.944 | DD=5.0% | Orders: 3 | News alerts: 0
+2026-04-10 04:00:32,109 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:00:32,109 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:00:32,109 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:00:47,205 [INFO] 📝 PAPER | SELL 94 @ $0.1600 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:00:47,205 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:00:47,205 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:01,228 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (9) | Risk: 0.31 | Kelly: 5.0%
+2026-04-10 04:01:01,228 [INFO] 🟢 FORCE EXIT | 150 @ $0.1500 | PnL=$+7.500 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:01:02,279 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:01:02,279 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:17,346 [INFO] 📝 PAPER | SELL 103 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:01:17,346 [INFO] 📝 PAPER | SELL 250 @ $0.1200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:21,352 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (7) | Risk: 0.34 | Kelly: 5.0%
+2026-04-10 04:01:21,352 [INFO] 🟢 FORCE EXIT | 7 @ $0.6700 | PnL=$+55.502 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:01:21,353 [INFO] 🧠 LEARNED | 🟢 will-fernando-dias-da-costa-win-the | WR: 100% (8) | Risk: 0.35 | Kelly: 5.0%
+2026-04-10 04:01:21,353 [INFO] 🟢 FORCE EXIT | -107 @ $0.2190 | PnL=$+6.536 | timeout | will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:31,368 [INFO] [T+2280s] Capital=$705.50 (+605.50) | Pos=0 | Trades=31 (100% WR) | PnL=$+375.481 | DD=0.0% | Orders: 2 | News alerts: 0
+2026-04-10 04:01:32,415 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:01:32,415 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:01:32,415 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 04:01:32,415 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:01:32,416 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:01:32,416 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:01:32,416 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 04:01:32,416 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:32,416 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:32,416 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 04:01:32,416 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:01:47,531 [INFO] 📝 PAPER | BUY 167 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:01:47,532 [INFO] 📝 PAPER | SELL 94 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:01:47,532 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $30 | ASK $0.3200 × $30 | Spread captured: $0.1400
+2026-04-10 04:01:47,532 [INFO] 📝 PAPER | BUY 22 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:02:00,553 [INFO] 🔴 SHORT SELL | 42 @ $0.7200 | Will cover with BUY | will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:02:02,612 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:02:02,612 [INFO] 📝 PAPER | BUY 750 @ $0.0400 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:02:02,612 [INFO] 📝 PAPER | SELL 231 @ $0.1300 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:02:02,612 [INFO] 🔄 MARKET MAKE | will-siga-batista-win-the-2025-guin | BID $0.0400 × $30 | ASK $0.1300 × $30 | Spread captured: $0.0900
+2026-04-10 04:02:02,612 [INFO] 📝 PAPER | BUY 17 @ $0.8700 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:02:17,675 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1000 on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:02:17,675 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2000 on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:02:17,675 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1600 on will-fernando-dias-da-costa-win-the
+2026-04-10 04:02:17,675 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2800 on will-fernando-dias-da-costa-win-the
+2026-04-10 04:02:17,675 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:02:17,675 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:02:17,676 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 04:02:17,676 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:02:17,676 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:02:31,694 [INFO] [T+2340s] Capital=$705.50 (+605.50) | Pos=1 | Trades=31 (100% WR) | PnL=$+375.481 | DD=0.0% | Orders: 8 | News alerts: 0
+2026-04-10 04:02:32,743 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:02:32,743 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:02:32,743 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:02:32,743 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 04:02:32,743 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:02:44,760 [INFO] 🟢 FILLED BUY | 750 @ $0.0400 | will-siga-batista-win-the-2025-guin
+2026-04-10 04:02:47,812 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:02:47,812 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:03:02,897 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1800 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:03:02,897 [INFO] ⏰ GTD EXPIRED | SELL @ $0.3200 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:03:02,897 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1000 on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:03:02,897 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2000 on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:03:02,898 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:03:02,898 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:03:17,974 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1600 on will-fernando-dias-da-costa-win-the
+2026-04-10 04:03:17,974 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2800 on will-fernando-dias-da-costa-win-the
+2026-04-10 04:03:17,974 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:03:17,975 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:03:31,993 [INFO] [T+2400s] Capital=$675.50 (+575.50) | Pos=2 | Trades=31 (100% WR) | PnL=$+375.481 | DD=4.3% | Orders: 2 | News alerts: 0
+2026-04-10 04:03:33,042 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:03:33,042 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:03:48,116 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:03:48,116 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:04:03,189 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:04:03,189 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:04:18,261 [WARNING] 📰 NEWS ALERT | israel to hold direct talks with lebanon, netanyahu says | keywords: ['israel']
+2026-04-10 04:04:18,262 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:04:18,262 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:04:32,281 [INFO] [T+2460s] Capital=$675.50 (+575.50) | Pos=2 | Trades=31 (100% WR) | PnL=$+375.481 | DD=4.3% | Orders: 2 | News alerts: 1
+2026-04-10 04:04:33,331 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:04:33,331 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:04:42,346 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (8) | Risk: 0.35 | Kelly: 5.0%
+2026-04-10 04:04:42,346 [INFO] 🟢 FORCE EXIT | -42 @ $0.6700 | PnL=$+2.083 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:04:48,401 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:04:48,401 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:04:48,401 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 04:04:48,401 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:04:48,401 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:04:48,401 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:04:48,401 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 04:04:48,402 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:04:48,402 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:04:48,402 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 04:04:48,402 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:04:48,402 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:05:03,473 [INFO] 📝 PAPER | BUY 167 @ $0.1800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:05:03,473 [INFO] 📝 PAPER | SELL 94 @ $0.3200 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:05:03,473 [INFO] 🔄 MARKET MAKE | will-pt-win-the-most-seats-in-the-2 | BID $0.1800 × $30 | ASK $0.3200 × $30 | Spread captured: $0.1400
+2026-04-10 04:05:03,473 [INFO] 📝 PAPER | BUY 22 @ $0.6800 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:05:03,473 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:05:13,485 [INFO] 🔴 SHORT SELL | 150 @ $0.2000 | Will cover with BUY | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:05:17,491 [INFO] 🔴 SHORT SELL | 42 @ $0.7200 | Will cover with BUY | will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:05:18,551 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:05:18,551 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:05:18,551 [INFO] 📝 PAPER | SELL 333 @ $0.0900 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:05:32,573 [INFO] [T+2520s] Capital=$707.58 (+607.58) | Pos=3 | Trades=32 (100% WR) | PnL=$+377.565 | DD=0.0% | Orders: 7 | News alerts: 1
+2026-04-10 04:05:33,623 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1600 on will-fernando-dias-da-costa-win-the
+2026-04-10 04:05:33,623 [INFO] ⏰ GTD EXPIRED | SELL @ $0.2800 on will-fernando-dias-da-costa-win-the
+2026-04-10 04:05:33,624 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:05:33,624 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:05:33,624 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:05:48,692 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:05:48,692 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:05:48,692 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:06:03,766 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:06:03,766 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:06:03,766 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:06:06,769 [INFO] 🔴 SHORT SELL | 94 @ $0.3200 | Will cover with BUY | will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:06:18,833 [INFO] ⏰ GTD EXPIRED | BUY @ $0.1800 on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:06:18,834 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:06:18,834 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:06:18,834 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:06:18,834 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:06:32,854 [INFO] [T+2580s] Capital=$707.58 (+607.58) | Pos=4 | Trades=32 (100% WR) | PnL=$+377.565 | DD=0.0% | Orders: 4 | News alerts: 1
+2026-04-10 04:06:33,905 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:06:33,905 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:06:33,905 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:06:33,906 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:06:48,983 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:06:48,983 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:06:48,983 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:06:48,983 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:07:04,060 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:07:04,060 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:07:04,060 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:07:04,060 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:07:19,128 [INFO] 📝 PAPER | SELL 429 @ $0.0700 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:07:19,128 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:07:19,129 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:07:19,129 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:07:33,151 [INFO] 🧠 LEARNED | 🟢 will-porto-win-the-2025-26-uefa-eur | WR: 100% (10) | Risk: 0.32 | Kelly: 5.0%
+2026-04-10 04:07:33,151 [INFO] 🟢 FORCE EXIT | -150 @ $0.1500 | PnL=$+7.500 | timeout | will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:07:33,151 [INFO] [T+2640s] Capital=$745.08 (+645.08) | Pos=3 | Trades=33 (100% WR) | PnL=$+385.065 | DD=0.0% | Orders: 4 | News alerts: 1
+2026-04-10 04:07:34,405 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:07:34,405 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:07:34,405 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:07:49,474 [INFO] 📝 PAPER | SELL 52 @ $0.5800 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:07:49,474 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
+2026-04-10 04:07:49,474 [INFO] 📝 PAPER | SELL 3000 @ $0.0100 [GTD 75s] on will-siga-batista-win-the-2025-guin
+2026-04-10 04:07:53,481 [INFO] 🧠 LEARNED | 🟢 will-siga-batista-win-the-2025-guin | WR: 100% (4) | Risk: 0.40 | Kelly: 25.0%
+2026-04-10 04:07:53,481 [INFO] 🟢 FORCE EXIT | 750 @ $0.0845 | PnL=$+33.375 | timeout | will-siga-batista-win-the-2025-guin
+2026-04-10 04:07:53,482 [INFO] 🧠 LEARNED | 🟢 will-kristi-noem-leave-the-trump-ad | WR: 100% (9) | Risk: 0.36 | Kelly: 5.0%
+2026-04-10 04:07:53,482 [INFO] 🟢 FORCE EXIT | -42 @ $0.6700 | PnL=$+2.083 | timeout | will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | BUY 300 @ $0.1000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | SELL 150 @ $0.2000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:08:04,575 [INFO] 🔄 MARKET MAKE | will-porto-win-the-2025-26-uefa-eur | BID $0.1000 × $30 | ASK $0.2000 × $30 | Spread captured: $0.1000
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | BUY 19 @ $0.8000 [GTD 45s] on will-porto-win-the-2025-26-uefa-eur
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | BUY 48 @ $0.6200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | SELL 42 @ $0.7200 [GTD 45s] on will-kristi-noem-leave-the-trump-ad
+2026-04-10 04:08:04,575 [INFO] 🔄 MARKET MAKE | will-kristi-noem-leave-the-trump-ad | BID $0.6200 × $30 | ASK $0.7200 × $30 | Spread captured: $0.1000
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | BUY 188 @ $0.1600 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:08:04,575 [INFO] 📝 PAPER | SELL 107 @ $0.2800 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:08:04,576 [INFO] 🔄 MARKET MAKE | will-fernando-dias-da-costa-win-the | BID $0.1600 × $30 | ASK $0.2800 × $30 | Spread captured: $0.1200
+2026-04-10 04:08:04,576 [INFO] 📝 PAPER | BUY 21 @ $0.7200 [GTD 45s] on will-fernando-dias-da-costa-win-the
+2026-04-10 04:08:04,576 [INFO] 📝 PAPER | SELL 214 @ $0.1400 [GTD 75s] on will-pt-win-the-most-seats-in-the-2
