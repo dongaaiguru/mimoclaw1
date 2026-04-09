@@ -594,6 +594,13 @@ class Scalper:
     async def _tick(self):
         """One second of the scalping engine."""
         self.tick += 1
+        now = time.time()
+
+        # ═══ CANCEL STALE ORDERS (sitting > 2 min unfilled) ═══
+        for oid, order in list(self.om.orders.items()):
+            if order.status == "live" and (now - order.created) > 120:
+                await self.om.cancel_order(order)
+                LOG.info(f"⏰ STALE ORDER | {order.side} @ ${order.price:.4f} | {order.slug[:40]} | age={now-order.created:.0f}s")
 
         # Check position timeouts every 10s
         if self.tick % 10 == 0:
@@ -601,20 +608,21 @@ class Scalper:
             self.om.check_timeouts(prices)
 
         # Reprice orders every N seconds
-        if time.time() - self._last_reprice > self.cfg.reprice_sec:
+        if now - self._last_reprice > self.cfg.reprice_sec:
             await self._reprice()
-            self._last_reprice = time.time()
+            self._last_reprice = now
 
-        # Check for fill opportunities in paper mode
+        # Paper fill check every tick
         if self.paper:
             await self._paper_fill_check()
 
         # Status every 60s
         if self.tick % 60 == 0:
-            LOG.info(f"[T+{self.tick}s] {self.om.summary()}")
+            live_orders = sum(1 for o in self.om.orders.values() if o.status == "live")
+            LOG.info(f"[T+{self.tick}s] {self.om.summary()} | Live orders: {live_orders}")
 
     async def _on_book_update(self, token: str, book: dict):
-        """React to WebSocket book updates."""
+        """React to WebSocket book updates — cancel stale orders immediately."""
         slug = self.token_to_slug.get(token)
         if not slug or slug.endswith("_NO"):
             return
@@ -633,28 +641,58 @@ class Scalper:
         ba = asks[0][0]
         mid = (bb + ba) / 2
         spread = ba - bb
+        old_mid = market.yes_price
 
         # Update market
-        old_price = market.yes_price
         market.best_bid = bb
         market.best_ask = ba
         market.yes_price = mid
         market.spread = spread
         market.last_ws_update = time.time()
 
-        # In paper mode, detect fills when price crosses our orders
+        # ═══ REACTIVE CANCELLATION ═══
+        # If mid moved > 1¢ since we placed an order, cancel immediately
+        # and reprice. Don't wait for the 30s reprice cycle.
+        price_moved = abs(mid - old_mid)
+        if price_moved > 0.01:
+            canceled_count = 0
+            for oid, order in list(self.om.orders.items()):
+                if order.status == "live" and order.slug == slug:
+                    await self.om.cancel_order(order)
+                    canceled_count += 1
+            if canceled_count:
+                LOG.info(f"⚡ REACTIVE CANCEL | {slug[:40]} | mid moved {price_moved*100:.1f}¢ → canceled {canceled_count} orders")
+
+                # Immediately re-place at new price
+                if slug not in self.om.positions:
+                    ok, _ = self.om.can_enter()
+                    if ok:
+                        buy_price = round(mid - max(0.005, spread/2 - self.cfg.spread_target), 4)
+                        buy_price = max(buy_price, round(bb + 0.001, 4))
+                        if 0 < buy_price < 1:
+                            await self.om.place_limit(slug, market.yes_token, "BUY", buy_price, self.cfg.per_order)
+                else:
+                    pos = self.om.positions[slug]
+                    exit_price = round(mid + 0.005, 4)
+                    if mid < pos.entry_price - 0.01:
+                        exit_price = round(bb, 4)
+                    await self.om.place_limit(slug, market.yes_token, "SELL", exit_price, pos.cost)
+
+        # ═══ PAPER FILL SIMULATION ═══
         if self.paper:
             for oid, order in list(self.om.orders.items()):
                 if order.status != "live" or order.slug != slug:
                     continue
+                # Only fill if price actually crosses our level
                 if order.side == "BUY" and bb <= order.price:
                     self.om.fill_order(order, order.price)
                 elif order.side == "SELL" and ba >= order.price:
                     self.om.fill_order(order, order.price)
 
     async def _paper_fill_check(self):
-        """Simulate fills for paper trading using probabilistic model."""
+        """Simulate fills for paper trading — realistic hold times."""
         import random
+        now = time.time()
         for oid, order in list(self.om.orders.items()):
             if order.status != "live":
                 continue
@@ -662,28 +700,25 @@ class Scalper:
             if not market:
                 continue
 
+            # Minimum 15 seconds before first fill (order needs to rest on book)
+            if now - order.created < 15:
+                continue
+
             if order.side == "BUY":
-                # How close is our price to the current best bid?
-                if market.best_bid <= 0:
-                    continue
-                distance = (market.best_bid - order.price) / market.best_bid
-                # Closer = higher fill probability
-                # At 0.5¢ from bid: ~8% per check (every 30s on reprice)
-                # At 1¢ from bid: ~3%
-                fill_prob = max(0.01, 0.15 * math.exp(-distance * 50))
-                # Boost by volume
-                fill_prob *= min(market.volume / 50000, 3.0)
-                if random.random() < fill_prob:
-                    self.om.fill_order(order, order.price)
+                # Fill only if our buy price is at or above best_bid
+                # (someone sold into our resting order)
+                if order.price >= market.best_bid and market.best_bid > 0:
+                    # 8% chance per check (every 1s tick) = ~50% in 10s
+                    # Boosted by volume
+                    fill_rate = 0.08 * min(market.volume / 50000, 3.0)
+                    if random.random() < fill_rate:
+                        self.om.fill_order(order, order.price)
 
             elif order.side == "SELL":
-                if market.best_ask >= 1:
-                    continue
-                distance = (order.price - market.best_ask) / market.best_ask
-                fill_prob = max(0.01, 0.15 * math.exp(-distance * 50))
-                fill_prob *= min(market.volume / 50000, 3.0)
-                if random.random() < fill_prob:
-                    self.om.fill_order(order, order.price)
+                if order.price <= market.best_ask and market.best_ask < 1:
+                    fill_rate = 0.08 * min(market.volume / 50000, 3.0)
+                    if random.random() < fill_rate:
+                        self.om.fill_order(order, order.price)
 
     async def _reprice(self):
         """Cancel stale orders and place new ones at current best prices."""
