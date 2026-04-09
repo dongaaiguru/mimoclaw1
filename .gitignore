@@ -1,1 +1,5 @@
 venv/
+analytics.db
+bankroll.json
+*.log
+__pycache__/
