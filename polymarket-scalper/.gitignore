@@ -1,5 +1,8 @@
 .env
-brain.json
 scalper.log
+*.log
+supervisor_state.json
+rules.jsonl
+proposals.jsonl
+commands.jsonl
 __pycache__/
-*.pyc
