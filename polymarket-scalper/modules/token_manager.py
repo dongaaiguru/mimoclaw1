@@ -101,7 +101,7 @@ class TokenManager:
         h = self._holdings[token_id]
         h.amount += shares
         h.cost_basis += cost
-        LOG.debug(f"📥 CREDIT BUY | {shares:.0f} tokens @ ${cost/shares:.4f if shares else 0:.4f} | {token_id[:16]}...")
+        LOG.debug(f"📥 CREDIT BUY | {shares:.0f} tokens @ ${cost/shares:.4f} | {token_id[:16]}...")
 
     def debit_from_sell(self, token_id: str, shares: float) -> bool:
         """

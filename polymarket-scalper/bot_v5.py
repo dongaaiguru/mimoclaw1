@@ -593,6 +593,7 @@ class ScalperV5:
         self._last_news_check = 0
         self._last_reconcile = 0
         self._last_equity_snapshot = 0
+        self._last_market_refresh = 0
         self._current_size_mult = 1.0  # updated each tick by risk guard
 
         # Supervisor
@@ -678,26 +679,13 @@ class ScalperV5:
         if self._supervised:
             self._check_emergency_exits()
 
-        # News + sentiment check
+        # Sentiment check only (news avoidance disabled — bot trades 24/7)
         if now - self._last_news_check > 15:
             async with aiohttp.ClientSession() as s:
-                # Original news avoidance
-                alerts = await self.news.check_feeds(s)
-                if alerts:
-                    await self._handle_news_alerts()
-
-                # v5: Sentiment-based trading
+                # v5: Sentiment-based trading (news avoidance removed)
                 new_signals = await self.sentiment.check_news(s, self.om._market_questions)
                 for signal in new_signals:
                     await self._handle_sentiment_signal(signal)
-
-            # Auto-un-skip
-            for slug, market in self.markets.items():
-                if self.news.should_unskip_market(slug):
-                    affected, _ = self.news.is_market_affected(market.question)
-                    if not affected:
-                        self.news.clear_market_skip(slug)
-                        LOG.info(f"📰 UNSKIP | {slug[:35]}")
 
             self._last_news_check = now
 
@@ -739,40 +727,25 @@ class ScalperV5:
             self.om.snapshot_equity()
             self._last_equity_snapshot = now
 
+        # Refresh markets every 5 min
+        if now - self._last_market_refresh > 300:
+            await self._refresh_markets()
+            self._last_market_refresh = now
+
         # Status every 60s
         if self.tick % 60 == 0:
             live = sum(1 for o in self.om.orders.values() if o.status == "live")
             LOG.info(f"[T+{self.tick}s] {self.om.summary()} | Orders: {live}")
 
     async def _handle_news_alerts(self):
-        """Original v4 news avoidance + v5 adverse selection exit."""
-        for slug, market in self.markets.items():
-            affected, reason = self.news.is_market_affected(market.question)
-            if affected:
-                LOG.warning(f"🚨 NEWS | {slug[:35]} | {reason}")
-                self.news.mark_market_skipped(slug)
-
-                # Pull orders
-                for oid, order in list(self.om.orders.items()):
-                    if order.status == "live" and order.slug == slug:
-                        await self.om.cancel_order(order)
-
-                # Adverse exit
-                if slug in self.om.positions:
-                    pos = self.om.positions[slug]
-                    dump_price = market.best_bid if market.best_bid > 0 else pos.entry_price
-                    self.om.force_exit_position(slug, dump_price, "adverse_selection")
+        """News avoidance disabled — bot trades through news."""
+        pass
 
     async def _handle_sentiment_signal(self, signal):
         """v5: Handle a sentiment signal by entering a directional trade."""
         for slug in signal.affected_markets:
             market = self.markets.get(slug)
             if not market:
-                continue
-
-            # Don't trade if news avoidance has us skipping this
-            affected, _ = self.news.is_market_affected(market.question)
-            if affected:
                 continue
 
             ok, _ = self.om.can_enter()
@@ -931,6 +904,34 @@ class ScalperV5:
         except Exception as e:
             LOG.debug(f"Reconcile error: {e}")
 
+    async def _refresh_markets(self):
+        """Refresh market list — discover new markets, update prices."""
+        try:
+            market_list = await discover_markets(self.cfg, self.brain)
+            if not market_list:
+                return
+            new_count = 0
+            for m in market_list:
+                if m.slug not in self.markets:
+                    self.markets[m.slug] = m
+                    self.token_to_slug[m.yes_token] = m.slug
+                    self.token_to_slug[m.no_token] = m.slug + "_NO"
+                    self.om.set_market_questions(self.markets)
+                    self.om.register_markets({m.slug: m})
+                    new_count += 1
+                else:
+                    # Update existing market prices
+                    existing = self.markets[m.slug]
+                    existing.yes_price = m.yes_price
+                    existing.no_price = m.no_price
+                    existing.spread = m.spread
+                    existing.volume = m.volume
+                    existing.liquidity = m.liquidity
+            if new_count:
+                LOG.info(f"🔄 MARKET REFRESH | +{new_count} new markets | {len(self.markets)} total")
+        except Exception as e:
+            LOG.debug(f"Market refresh error: {e}")
+
     async def _reprice(self):
         # Cancel existing orders
         for oid, order in list(self.om.orders.items()):
@@ -953,11 +954,6 @@ class ScalperV5:
             if market.best_bid <= 0 or market.best_ask >= 1:
                 continue
             if market.spread < self.cfg.min_spread:
-                continue
-
-            # News check
-            affected, reason = self.news.is_market_affected(market.question)
-            if affected:
                 continue
 
             if self.brain:

@@ -61,12 +61,12 @@ class FillSimulator:
     ADVERSE_SELECTION_STRENGTH = 0.4  # 0 = none, 1 = extreme
 
     # Minimum resting time before fills can occur (seconds)
-    MIN_REST_TIME = 8.0
+    MIN_REST_TIME = 3.0
 
     # Base fill rate per tick at best level
-    BASE_FILL_RATE_AT_BEST = 0.005  # 0.5% per second tick
-    BASE_FILL_RATE_INSIDE = 0.010   # 1.0% per second tick
-    BASE_FILL_RATE_BEHIND = 0.0005  # 0.05% per second tick
+    BASE_FILL_RATE_AT_BEST = 0.025   # 2.5% per second tick
+    BASE_FILL_RATE_INSIDE = 0.050    # 5.0% per second tick
+    BASE_FILL_RATE_BEHIND = 0.003    # 0.3% per second tick
 
     # Partial fill probability (when fill occurs, chance it's partial)
     PARTIAL_FILL_PROB = 0.25
@@ -233,11 +233,11 @@ class FillSimulator:
         # ─── Spread adjustment ──────────────────────────────
 
         if spread > 0.15:
-            base *= 0.2   # 15¢+ spread → very few takers
+            base *= 0.4   # 15¢+ spread → fewer takers
         elif spread > 0.10:
-            base *= 0.35  # 10¢ spread
+            base *= 0.55  # 10¢ spread
         elif spread > 0.05:
-            base *= 0.65  # 5¢ spread
+            base *= 0.80  # 5¢ spread
         elif spread < 0.04:
             base *= 1.4   # tight spread → many takers
 
@@ -285,7 +285,7 @@ class FillSimulator:
 
         # ─── Cap ────────────────────────────────────────────
 
-        fill_prob = min(base, 0.10)  # max 10% per tick
+        fill_prob = min(base, 0.25)  # max 25% per tick
 
         # Apply the adverse selection penalty to profitability
         # (fill prob is higher, but the fill is "bad")
