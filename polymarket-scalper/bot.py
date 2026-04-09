@@ -361,8 +361,10 @@ class OrderManager:
     def can_enter(self) -> Tuple[bool, str]:
         if self.drawdown >= self.cfg.circuit_breaker_pct:
             return False, "CIRCUIT_BREAKER"
-        if len(self.positions) >= self.cfg.max_concurrent:
-            return False, "MAX_POSITIONS"
+        # Count BOTH positions AND open orders against concurrent limit
+        open_orders = sum(1 for o in self.orders.values() if o.status == "live" and o.side == "BUY")
+        if len(self.positions) + open_orders >= self.cfg.max_concurrent:
+            return False, "MAX_CONCURRENT"
         if self.exposed >= self.cfg.max_exposure:
             return False, "MAX_EXPOSURE"
         if self.free_capital < self.cfg.per_order:
@@ -690,7 +692,7 @@ class Scalper:
                     self.om.fill_order(order, order.price)
 
     async def _paper_fill_check(self):
-        """Simulate fills for paper trading — realistic hold times."""
+        """Simulate fills for paper trading — realistic hold times and losses."""
         import random
         now = time.time()
         for oid, order in list(self.om.orders.items()):
@@ -700,23 +702,25 @@ class Scalper:
             if not market:
                 continue
 
-            # Minimum 15 seconds before first fill (order needs to rest on book)
-            if now - order.created < 15:
+            # Minimum 30 seconds before first fill (order needs to rest on book)
+            age = now - order.created
+            if age < 30:
                 continue
 
             if order.side == "BUY":
                 # Fill only if our buy price is at or above best_bid
-                # (someone sold into our resting order)
                 if order.price >= market.best_bid and market.best_bid > 0:
-                    # 8% chance per check (every 1s tick) = ~50% in 10s
-                    # Boosted by volume
-                    fill_rate = 0.08 * min(market.volume / 50000, 3.0)
+                    # Fill rate increases with time on book
+                    # 30s: 3% per check, 60s: 6%, 120s: 12%
+                    fill_rate = min(0.03 * (age / 30), 0.15)
+                    fill_rate *= min(market.volume / 50000, 2.0)
                     if random.random() < fill_rate:
                         self.om.fill_order(order, order.price)
 
             elif order.side == "SELL":
                 if order.price <= market.best_ask and market.best_ask < 1:
-                    fill_rate = 0.08 * min(market.volume / 50000, 3.0)
+                    fill_rate = min(0.03 * (age / 30), 0.15)
+                    fill_rate *= min(market.volume / 50000, 2.0)
                     if random.random() < fill_rate:
                         self.om.fill_order(order, order.price)
 
@@ -739,10 +743,20 @@ class Scalper:
             # If we have a position, place exit order
             if slug in self.om.positions:
                 pos = self.om.positions[slug]
-                # Exit at mid + 0.5¢ (try to capture small profit)
-                exit_price = round(mid + 0.005, 4)
-                # Or if position is underwater, exit at bid (accept small loss)
-                if mid < pos.entry_price - 0.01:
+                hold_sec = time.time() - pos.opened
+
+                # Exit strategy depends on how long we've been holding
+                if hold_sec > self.cfg.max_hold_sec * 0.8:
+                    # Getting close to timeout — exit aggressively at bid
+                    exit_price = round(market.best_bid, 4)
+                elif mid > pos.entry_price + 0.005:
+                    # In profit — exit slightly above mid
+                    exit_price = round(mid + 0.003, 4)
+                elif mid > pos.entry_price - 0.005:
+                    # Near breakeven — exit at mid
+                    exit_price = round(mid, 4)
+                else:
+                    # Underwater — cut loss at bid
                     exit_price = round(market.best_bid, 4)
 
                 await self.om.place_limit(
