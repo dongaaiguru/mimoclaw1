@@ -2,13 +2,14 @@
 Risk Guard v5 — Comprehensive risk management layer.
 
 Fills the gaps the original bot missed:
-1. Quiet hours ENFORCEMENT (not just warning)
-2. Resolution time filtering (block markets <4h from resolution)
-3. Losing streak detection (pause after N consecutive losses)
-4. Daily PnL target (wind down after hitting daily goal)
-5. Drawdown-based size reduction (not binary circuit breaker)
-6. Daily loss limit (stop after losing X% in one day)
-7. Cooldown after forced exits (don't immediately re-enter)
+1. Resolution time filtering (block markets <4h from resolution)
+2. Losing streak detection (pause after N consecutive losses)
+3. Daily PnL target (wind down after hitting daily goal)
+4. Drawdown-based size reduction (not binary circuit breaker)
+5. Daily loss limit (stop after losing X% in one day)
+6. Cooldown after forced exits (don't immediately re-enter)
+
+NOTE: Quiet hours removed — bot runs 24/7.
 """
 
 import time
@@ -96,11 +97,7 @@ class RiskGuard:
         if self._paused:
             return False, f"PAUSED: {self._pause_reason}"
 
-        # 2. Quiet hours — HARD STOP, no trading
-        if self._is_quiet_hours():
-            return False, "QUIET_HOURS"
-
-        # 3. Daily loss limit
+        # 2. Daily loss limit (quiet hours removed — bot runs 24/7)
         daily_loss_pct = abs(min(0, self._daily_pnl)) / max(capital, 1)
         if daily_loss_pct >= self.max_daily_loss_pct:
             self._paused = True
@@ -108,7 +105,7 @@ class RiskGuard:
             LOG.warning(f"🛑 DAILY LOSS LIMIT | {self._pause_reason}")
             return False, self._pause_reason
 
-        # 4. Losing streak
+        # 3. Losing streak
         if self._consecutive_losses >= self.losing_streak_limit:
             # Auto-recover after 10 minutes
             time_since_last = time.time() - self._trades_today[-1].timestamp if self._trades_today else 999
@@ -118,7 +115,7 @@ class RiskGuard:
                 LOG.info("🛡️ Losing streak cooldown expired, resuming")
                 self._consecutive_losses = 0
 
-        # 5. Cooldown after forced exit
+        # 4. Cooldown after forced exit
         if self._last_forced_exit > 0:
             elapsed = time.time() - self._last_forced_exit
             if elapsed < self.cooldown_seconds:
@@ -208,13 +205,8 @@ class RiskGuard:
     # ─── Internal Checks ────────────────────────────────────
 
     def _is_quiet_hours(self) -> bool:
-        """Check if current time is in quiet hours (UTC)."""
-        hour = datetime.now(timezone.utc).hour
-        if self.quiet_start <= self.quiet_end:
-            return self.quiet_start <= hour < self.quiet_end
-        else:
-            # Wraps midnight (e.g., 22 to 6)
-            return hour >= self.quiet_start or hour < self.quiet_end
+        """Quiet hours disabled — bot runs 24/7."""
+        return False
 
     # ─── Manual Controls ────────────────────────────────────
 

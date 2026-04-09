@@ -110,7 +110,6 @@ The bankroll manager tracks effective capital (starting + deposits - withdrawals
 | Daily profit target | 10% (then wind down) |
 | Max drawdown | 10% → 8% → 5% (tightens with gains) |
 | Losing streak | 3 consecutive → pause 10 min |
-| Quiet hours | 3-6 AM UTC (hard stop) |
 | Resolution | Block markets <4h from close |
 | Position size | 5-15% of capital (dynamic) |
 | Max concurrent | 3-10 positions (scales with capital) |
