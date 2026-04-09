@@ -1023,7 +1023,7 @@ class ScalperV5:
         if buy_price <= 0 or buy_price >= 1:
             return
 
-        size = self.om.get_brain_adjusted_size(slug, market, risk_multiplier=size_mult)
+        size = self.om.get_brain_adjusted_size(slug, market, risk_multiplier=self._current_size_mult)
         if self._supervised:
             size = self._apply_supervisor_limits(slug, size)
 

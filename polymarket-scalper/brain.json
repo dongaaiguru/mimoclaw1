@@ -4,7 +4,7 @@
   "total_pnl": 420.5234900000001,
   "total_wins": 35,
   "total_losses": 0,
-  "sessions": 2,
+  "sessions": 3,
   "first_seen": 1775762599.3046165,
   "markets": {
     "will-porto-win-the-2025-26-uefa-europa-league": {
@@ -324,5 +324,5 @@
       "type": "time_star"
     }
   ],
-  "last_updated": 1775773799.7882442
+  "last_updated": 1775773898.483749
 }
