@@ -1,34 +1,48 @@
-# Polymarket Scalper v4
+# Polymarket Scalper v5 — The Profit Machine
 
-Brain-powered, multi-strategy trading engine for Polymarket with AI supervisor. Learns from every trade to avoid repeating losses and double down on winners.
+Multi-strategy, brain-powered, news-aware trading engine for Polymarket with real alpha sources.
 
-## v4 Upgrades
+## v4 → v5 Upgrades
 
-- **Book-Depth-Aware Paper Fills** — uses actual bid/ask levels and sizes from WebSocket feed, models queue position, partial fills, and spread-adjusted fill rates
-- **Realized Capital Tracking** — separates realized P&L from committed capital. Drawdown only counts realized losses, not capital deployed in open positions
-- **Fixed Short-Selling Accounting** — symmetric P&L for long and short positions. No double-counting of capital on close
-- **Spread-Proportional GTD** — wider spread = longer order life. 3¢ spread → 45s, 20¢ spread → 300s. Plus 60s Polymarket security threshold for live mode
-- **Both-Sides Capital Guard** — halved per-order size in market making mode. All live orders counted in exposure check
-- **Aggressive Neg-Risk Quoting** — decoupled from entry checks, wider NO-side quoting on multi-outcome events
-- **News Decay + Auto-Un-Skip** — alerts lose weight exponentially (120s half-life). Markets auto-un-skip after 10 minutes with no fresh alerts
-- **Post-Only Orders** — guarantee maker status. Orders that would cross the spread are rejected instead of executing as taker
-- **AI Supervisor** — rule-based market filtering with zero per-order latency. Supervisor pre-researches markets, bot executes at full speed
-- **Self-Impact Modeling** — estimates price impact of own orders, adjusts exit targets accordingly
-- **Token Inventory Tracking** — Polymarket CLOB requires owning tokens to SELL. Tracks inventory, auto-splits USDC when needed
-- **Live Fill Reconciliation** — polls exchange for filled orders every 30s to catch WebSocket misses
+### Tier 1 — Fixed the Broken Stuff
+- **Live Token Splitting** — CTF contract integration via `TokenManager`. Auto-splits USDC → YES+NO tokens for SELL orders. Falls back to market buy if split unavailable.
+- **Adverse Selection Fill Simulator** — paper mode is now HARDER than live. Fills come faster when price moves against you (realistic informed trader simulation). Post-only rejections modeled. Partial fills with realistic size distribution.
+- **Gas Cost Tracking** — `GasTracker` estimates Polygon gas for each operation (split/merge/erc20 approve). Checks if arb opportunities are profitable after gas. Tracks MATIC/USD price from CoinGecko.
+- **Dynamic Stop Losses** — ATR-based stops (volatility-adjusted), spread-based stops (wider spreads = wider stops), time-decaying stops (tighten as hold time increases), trailing stops (move up with profit, never down). Flow-based tightening when order flow is against you.
 
-## Features
+### Tier 2 — Real Edges
+- **Sentiment Trading** — `SentimentTrader` monitors Reuters/AP/BBC RSS, classifies bullish/bearish/neutral sentiment, matches to markets via category keywords + word overlap. Enters directional trades on strong signals within 15-second head start window. Decaying signal strength (news gets priced in).
+- **Cross-Market Arbitrage** — `ArbitrageEngine` detects: YES/NO price sum ≠ 1.0 (guaranteed profit), neg-risk multi-outcome mispricing (buy all outcomes < 95¢), cross-event correlation anomalies.
+- **Event-Level Hedging** — `HedgingEngine` tracks exposure per event, detects concentration risk (>25% in one event), suggests hedges (buying other outcomes), calculates optimal hedge ratios.
+- **ML Predictor** — `MLPredictor` statistical ensemble of 7 signals: momentum (multi-timeframe ROC), mean reversion (deviation from rolling mean), volume-price divergence (volume spike + flat price = pending move), spread compression (tightening spread = consensus forming), flow imbalance (buy/sell pressure), time-of-day patterns, volatility regime. Self-calibrating weights based on historical accuracy.
 
-- **Adaptive Brain** — persists learning across sessions in `brain.json`. Tracks per-market win rates, risk scores, optimal entry conditions, and time-of-day patterns
-- **True Market Making** — simultaneous bid+ask orders inside the spread with inventory skew and flow-aware quoting
-- **News Monitoring** — polls Reuters/AP/BBC RSS feeds, pulls orders on breaking news to avoid adverse selection
-- **Order Flow Analysis** — detects volume spikes, buy/sell pressure, and momentum surges
-- **Kelly Criterion** — optimal position sizing based on historical win rate and win/loss ratio
-- **Tick Size Awareness** — snaps prices to valid market ticks, no rejected orders
-- **Correlation Tracking** — detects when related markets haven't moved yet
-- **Time-of-Day Patterns** — learns which hours/days produce the best results
-- **Stop Losses** — 2¢ automatic stops on every position (long and short)
-- **AI Supervisor** — pre-checks markets for risks (resolution timing, price extremes, liquidity), blocks bad markets, reduces sizes on risky ones
+### Tier 3 — Infrastructure
+- **SQLite Analytics** — `AnalyticsDB` tracks every trade, equity snapshots, ML predictions, arb opportunities. Reports: Sharpe ratio, profit factor, max drawdown, per-market breakdown, hourly/daily performance, equity curve. All queryable.
+- **Multi-Account Ready** — architecture supports sub-wallets (add `TokenManager` per account).
+
+## Architecture
+
+```
+polymarket-scalper/
+├── bot.py              # Original v4 engine (unchanged)
+├── bot_v5.py           # v5 engine (integrates all modules)
+├── supervisor.py       # AI supervisor (market pre-check)
+├── brain.json          # Persistent learning state
+├── analytics.db        # SQLite analytics (created at runtime)
+├── requirements.txt
+├── .env.example
+└── modules/
+    ├── __init__.py
+    ├── token_manager.py    # Live token splitting
+    ├── fill_simulator.py   # Adverse selection sim
+    ├── gas_tracker.py      # Polygon gas costs
+    ├── dynamic_stops.py    # ATR/trailing/time-decay stops
+    ├── sentiment.py        # News sentiment trading
+    ├── arbitrage.py        # Cross-market arb detection
+    ├── ml_predictor.py     # Statistical prediction
+    ├── analytics.py        # SQLite analytics
+    └── hedging.py          # Event-level hedging
+```
 
 ## Setup
 
@@ -49,56 +63,25 @@ cp .env.example .env
 ## Usage
 
 ```bash
-# Discover scalping targets (brain-informed, no API key needed)
+# v5 (recommended)
+python3 bot_v5.py --scan                    # Discover targets
+python3 bot_v5.py --paper                   # Paper trade with adverse selection sim
+python3 bot_v5.py --paper --strategy both_sides  # Market making mode
+python3 bot_v5.py --live                    # Live trading
+python3 bot_v5.py --live --capital 1000 --strategy both_sides
+python3 bot_v5.py --analytics               # Show analytics dashboard
+
+# v4 (original, still works)
 python3 bot.py --scan
-
-# Paper trade with live prices and learning
 python3 bot.py --paper
-
-# Paper trade with market making strategy
-python3 bot.py --paper --strategy both_sides
-
-# Live trading
-python3 bot.py --live
-
-# Custom capital and strategy
-python3 bot.py --live --capital 1000 --per-order 30 --strategy both_sides
-
-# View brain status and learned rules
 python3 bot.py --brain
 
-# Show available strategies
-python3 bot.py --strategies
-
-# Reset brain (start fresh)
-python3 bot.py --brain-reset
+# AI Supervisor
+python3 supervisor.py --precheck            # Pre-check markets (run first)
+python3 bot_v5.py --paper --supervised      # Start with supervisor rules
+python3 supervisor.py --watch               # Background monitor
+python3 supervisor.py --emergency-stop      # Halt all trading
 ```
-
-### AI Supervisor
-
-```bash
-# Terminal 1: Pre-check markets (run BEFORE starting bot, takes ~30s)
-python3 supervisor.py --precheck
-
-# Terminal 2: Start the bot with supervisor rules
-python3 bot.py --paper --supervised --strategy both_sides
-
-# Terminal 3 (optional): Background monitor (updates rules every 60s)
-python3 supervisor.py --watch
-
-# Emergency stop (halts all trading immediately)
-python3 supervisor.py --emergency-stop
-
-# Check supervisor rules
-python3 supervisor.py --status
-```
-
-The supervisor does NOT gate individual orders (that would add 6-10s latency). Instead, it:
-- Pre-researches all markets before trading starts
-- Writes `rules.jsonl` with approved/blocked/limited markets
-- Bot reads rules every 60s (~1ms) — zero per-order latency
-- Background watcher detects emergencies (market closing, price extreme)
-- Emergency exits queued for immediate execution on next bot tick
 
 ## Strategies
 
@@ -106,28 +89,49 @@ The supervisor does NOT gate individual orders (that would add 6-10s latency). I
 Place BUY orders inside the spread, SELL on fill. Simple, lower risk.
 
 ### `--strategy both_sides`
-True market making. Places simultaneous BUY and SELL orders inside the spread. Earns the spread regardless of direction. Uses inventory skew and flow analysis to adjust quotes.
+True market making. Simultaneous BID + ASK orders inside the spread. Earns the spread regardless of direction. Halved per-order size for safety. Token manager auto-splits USDC for SELL orders in live mode.
 
 ## How It Works
 
 1. **Discover** — Finds best fee-free markets (spread ≥ 3¢, liq ≥ $3K, vol ≥ $2K), brain-filtered
 2. **Connect** — WebSocket for real-time order book updates
-3. **Quote** — Places bid+ask inside the spread (market making) or bid-only (one-side)
-4. **Fill** — Brain records entry conditions, adjusts sizing via Kelly Criterion
-5. **Exit** — Brain-informed exit timing, stop losses, flow-aware repricing
-6. **Learn** — Every trade updates market reputation, pattern buckets, time patterns, avoid/star lists
+3. **Analyze** — ML predictor + sentiment + arbitrage scanner run continuously
+4. **Quote** — Places bid+ask inside the spread (market making) or bid-only (one-side)
+5. **Fill** — Adverse selection-aware fills (paper) or exchange reconciliation (live)
+6. **Exit** — Dynamic stops (ATR + trailing + time-decay), brain-informed timing, flow-aware repricing
+7. **Learn** — Every trade updates brain, analytics DB, ML weights, sentiment outcomes
+8. **Hedge** — Event-level risk management, concentration alerts, hedge suggestions
 
 ## Risk Controls
 
 - **Circuit breaker**: Stops at 10% daily drawdown (realized P&L only)
 - **Max exposure**: 50% of capital at risk
-- **Stop losses**: 2¢ automatic per position
+- **Dynamic stops**: ATR/spread-based, time-decaying, trailing
 - **News protection**: Pulls orders on breaking news, force-exits positions
+- **Sentiment exits**: Bearish news → immediate dump
 - **Flow protection**: Pulls orders on 3x volume spikes
 - **Max hold**: 5 minutes per position (brain-adjustable)
 - **Quiet hours**: Warns during low-liquidity windows (3-6 AM UTC)
 - **Post-only**: Guarantees maker status, no accidental taker fills
 - **AI Supervisor**: Blocks risky markets, reduces sizes, emergency exits
+- **Event hedging**: Concentration risk alerts, hedge suggestions
+
+## Analytics
+
+```bash
+python3 bot_v5.py --analytics
+```
+
+Shows:
+- Overall win rate, PnL, profit factor
+- Sharpe ratio, max drawdown
+- Per-market breakdown
+- Hourly performance (best/worst hours)
+- Daily performance (last 7 days)
+- ML prediction accuracy
+- Arbitrage execution stats
+- Gas cost tracking
+- Fill simulator stats (adverse selection rate)
 
 ## Disclaimer
 
