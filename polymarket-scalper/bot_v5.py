@@ -89,10 +89,12 @@ class OrderManagerV5:
     - Analytics recording
     """
 
-    def __init__(self, cfg: Config, paper: bool = True, brain: Optional[Brain] = None):
+    def __init__(self, cfg: Config, paper: bool = True, brain: Optional[Brain] = None,
+                 risk_guard: Optional['RiskGuard'] = None):
         self.cfg = cfg
         self.paper = paper
         self.brain = brain
+        self.risk_guard = risk_guard  # v5: injected from ScalperV5
         self.orders: Dict[str, Order] = {}
         self.positions: Dict[str, Position] = {}
         self.trades: List[Trade] = []
@@ -564,13 +566,8 @@ class ScalperV5:
         self.cfg = cfg
         self.paper = paper
         self.brain = Brain()
-        self.om = OrderManagerV5(cfg, paper, brain=self.brain)
-        self.feed = Feed(cfg)
-        self.news = NewsMonitor()
-        self.flow = FlowAnalyzer()
-        self.correlations = CorrelationEngine()
 
-        # v5 modules
+        # v5 modules — risk_guard first, injected into order manager
         self.sentiment = SentimentTrader(head_start_seconds=15.0)
         self.risk_guard = RiskGuard({
             "quiet_hours_start": cfg.quiet_hours_start,
@@ -581,6 +578,12 @@ class ScalperV5:
             "cooldown_after_forced_exit": 120,
             "min_resolution_hours": 4.0,
         })
+
+        self.om = OrderManagerV5(cfg, paper, brain=self.brain, risk_guard=self.risk_guard)
+        self.feed = Feed(cfg)
+        self.news = NewsMonitor()
+        self.flow = FlowAnalyzer()
+        self.correlations = CorrelationEngine()
 
         self.markets: Dict[str, Market] = {}
         self.token_to_slug: Dict[str, str] = {}
@@ -684,7 +687,7 @@ class ScalperV5:
                     await self._handle_news_alerts()
 
                 # v5: Sentiment-based trading
-                new_signals = await self.sentiment.check_news(s, self._market_questions)
+                new_signals = await self.sentiment.check_news(s, self.om._market_questions)
                 for signal in new_signals:
                     await self._handle_sentiment_signal(signal)
 
