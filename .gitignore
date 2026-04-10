@@ -1,5 +1,6 @@
 venv/
 analytics.db
 bankroll.json
+brain.json
 *.log
 __pycache__/

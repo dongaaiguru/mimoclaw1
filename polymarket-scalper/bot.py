@@ -1121,29 +1121,56 @@ class Feed:
                         for item in items:
                             if not isinstance(item, dict):
                                 continue
-                            aid = item.get("asset_id", "")
-                            if not aid:
-                                continue
-                            book = self.books.setdefault(aid, {"bids": [], "asks": []})
-                            t = item.get("type", "")
-                            if t == "book":
-                                book["bids"] = sorted(
-                                    [(float(p), float(s)) for p, s in item.get("bids", [])],
-                                    reverse=True
-                                )
-                                book["asks"] = sorted(
-                                    [(float(p), float(s)) for p, s in item.get("asks", [])]
-                                )
-                            elif t == "best_bid_ask":
-                                bb, ba = item.get("best_bid"), item.get("best_ask")
-                                if bb:
-                                    book["bids"] = [(float(bb[0]), float(bb[1]))]
-                                if ba:
-                                    book["asks"] = [(float(ba[0]), float(ba[1]))]
-                            elif t == "last_trade_price":
-                                book["last_trade"] = float(item.get("price", 0))
-                            for cb in self._callbacks:
-                                await cb(aid, book)
+                            # ─── Polymarket actual WS formats ───
+                            # Format 1: Full book snapshot (has bids/asks arrays + asset_id)
+                            # Format 2: Price changes (has price_changes array)
+                            # Format 3: Market metadata (has question/slug) — skip
+                            if "question" in item or "slug" in item:
+                                continue  # market metadata, not book data
+                            if "bids" in item and "asks" in item and "asset_id" in item:
+                                aid = item["asset_id"]
+                                book = self.books.setdefault(aid, {"bids": [], "asks": [], "last_trade": None})
+                                try:
+                                    book["bids"] = sorted(
+                                        [(float(b["price"]), float(b["size"])) for b in item.get("bids", [])],
+                                        reverse=True
+                                    )
+                                    book["asks"] = sorted(
+                                        [(float(b["price"]), float(b["size"])) for b in item.get("asks", [])]
+                                    )
+                                except (KeyError, ValueError, TypeError):
+                                    continue
+                                for cb in self._callbacks:
+                                    await cb(aid, book)
+                            elif "price_changes" in item:
+                                for change in item.get("price_changes", []):
+                                    aid = change.get("asset_id", "")
+                                    if not aid:
+                                        continue
+                                    book = self.books.setdefault(aid, {"bids": [], "asks": [], "last_trade": None})
+                                    # Update best bid/ask from embedded data
+                                    try:
+                                        bb_str = change.get("best_bid")
+                                        ba_str = change.get("best_ask")
+                                        if bb_str:
+                                            book["bids"] = [(float(bb_str), 0)]
+                                        if ba_str:
+                                            book["asks"] = [(float(ba_str), 0)]
+                                    except (ValueError, TypeError):
+                                        pass
+                                    # price + side in price_changes = a TRADE
+                                    try:
+                                        trade_price = float(change.get("price", 0))
+                                        trade_side = change.get("side", "")
+                                        trade_size = float(change.get("size", 0))
+                                        if trade_price > 0 and trade_side:
+                                            book["last_trade"] = trade_price
+                                            book["last_trade_side"] = trade_side
+                                            book["last_trade_size"] = trade_size
+                                    except (ValueError, TypeError):
+                                        pass
+                                    for cb in self._callbacks:
+                                        await cb(aid, book)
 
             except Exception as e:
                 LOG.warning(f"WS error: {e}, reconnect in {delay}s")

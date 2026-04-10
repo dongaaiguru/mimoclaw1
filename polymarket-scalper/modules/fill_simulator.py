@@ -291,43 +291,84 @@ class FillSimulator:
         if not book_crossed and order_created > 0:
             trade_hit = self._check_trade_at_price(token, order_side, order_price, order_created)
 
-        # ─── Priority 3: Probability fallback ───────────────
+        # ─── Priority 3: Queue-based fill model ─────────────
+        # Realistic model for post-only maker orders:
+        # - We're resting at best_bid+1tick (or best_bid)
+        # - Market SELL orders sweep down through the book
+        # - If enough sell volume hits, we get filled at our price
+        # This is the CORE of realistic scalper fill simulation
         prob_fill = False
         if not book_crossed and not trade_hit:
-            # Only fill via probability if we're at the best level
+            # Check how close we are to the best level
             at_best = False
-            if order_side == "BUY" and abs(order_price - best_bid) < tick:
-                at_best = True
-            elif order_side == "SELL" and abs(order_price - best_ask) < tick:
-                at_best = True
+            near_best = False
+            if order_side == "BUY":
+                if abs(order_price - best_bid) <= tick:
+                    at_best = True
+                elif order_price <= best_bid + tick * 2 and order_price >= best_bid:
+                    near_best = True  # 1-2 ticks from best bid
+            elif order_side == "SELL":
+                if abs(order_price - best_ask) <= tick:
+                    at_best = True
+                elif order_price >= best_ask - tick * 2 and order_price <= best_ask:
+                    near_best = True
 
-            if at_best:
-                # Base rate: ~1.5% per second at best (much lower than v5)
-                base_rate = 0.015
+            if at_best or near_best:
+                # ── Queue fill rate ──────────────────────────
+                # Realistic fill rates for Polymarket maker orders:
+                # - At best bid on a 10¢ spread market: ~3-5% per tick
+                # - Near best (1-2 ticks): ~1-2% per tick
+                # - These rates produce fills every 2-5 min on active markets
+                # - Conservative enough to not overstate paper returns
+                if at_best:
+                    base_rate = 0.04  # 4% per check at best level
+                else:
+                    base_rate = 0.015  # 1.5% per check near best
+
                 base_rate *= size_mult
 
-                # Spread penalty
-                if spread > 0.10:
-                    base_rate *= 0.4
+                # Spread adjustment: wider spread = fewer aggressive takers
+                # More aggressive penalty — wide-spread markets have thick books
+                if spread > 0.20:
+                    base_rate *= 0.15   # 20¢+ spread — very few takers, thick book
+                elif spread > 0.15:
+                    base_rate *= 0.25   # 15¢ spread
+                elif spread > 0.10:
+                    base_rate *= 0.40   # 10¢ spread
                 elif spread > 0.05:
-                    base_rate *= 0.65
+                    base_rate *= 0.65   # 5¢ spread
+                elif spread < 0.03:
+                    base_rate *= 1.5    # tight spread — many takers
 
-                # Adverse selection boost
+                # Activity boost: more trades = more fills
+                state = self._flow.get(token)
+                if state and state.trades:
+                    now = time.time()
+                    recent_trades = sum(1 for t in state.trades if t[0] > now - 30)
+                    if recent_trades > 10:
+                        base_rate *= 1.5
+                    elif recent_trades > 5:
+                        base_rate *= 1.2
+                    elif recent_trades < 2:
+                        base_rate *= 0.5
+
+                # Adverse selection: aggressive flow toward us = faster fill
                 adverse_score = self.get_adverse_selection_score(token, order_side)
                 if adverse_score > 0.2:
                     base_rate *= (1.0 + adverse_score * self.ADVERSE_SELECTION_STRENGTH * 2)
 
-                # Age ramp
-                age_factor = min(1.5, 1.0 + (age - self.MIN_REST_TIME) / 200)
+                # Age ramp: older orders get priority in queue
+                age_factor = min(1.8, 1.0 + (age - self.MIN_REST_TIME) / 100)
                 base_rate *= age_factor
 
-                # Time of day
+                # Time of day: quiet hours = fewer fills
                 from datetime import datetime, timezone
                 utc_hour = datetime.now(timezone.utc).hour
                 if 3 <= utc_hour <= 6:
                     base_rate *= 0.25
 
-                base_rate = min(base_rate, 0.08)
+                # Cap per-check probability
+                base_rate = min(base_rate, 0.15)
                 prob_fill = random.random() < base_rate
 
         # ─── No fill ────────────────────────────────────────
@@ -351,23 +392,49 @@ class FillSimulator:
         else:
             self._fill_stats["favorable_fills"] += 1
 
-        # ─── Slippage ───────────────────────────────────────
+        # ─── Slippage — realistic for maker fills ───────────
+        # When you BUY at the bid as a maker, a seller hits you.
+        # The fill price reflects that selling pressure pushed price down slightly.
+        # When you SELL at the ask as a maker, a buyer hits you.
+        # The fill price reflects that buying pressure pushed price up slightly.
         slip = base_slippage
         if is_adverse:
-            slip *= random.uniform(1.5, 3.0)
+            slip *= random.uniform(2.0, 4.0)  # worse adverse slippage
         slip = min(slip, self.SLIPPAGE_MAX)
-        total_cost = slip + self.PAPER_TAX
+        adverse_slip = slip * 0.5  # mild adverse — fills between order_price and best_bid/ask
+        total_cost = slip + self.PAPER_TAX + adverse_slip
         self._fill_stats["total_slippage"] += total_cost
 
+        # Maker BUY fill: you're filled between order_price and best_bid
+        # (you're the highest bidder, so you fill at or below your price)
+        # Maker SELL fill: you're filled between order_price and best_ask
         if order_side == "BUY":
-            fill_price = min(order_price + total_cost, best_ask) if best_ask > 0 else order_price + total_cost
-        else:
+            # Fill between best_bid and order_price — adverse slip pushes toward best_bid
             fill_price = max(order_price - total_cost, best_bid) if best_bid > 0 else order_price - total_cost
+        else:
+            # Fill between best_ask and order_price — adverse slip pushes toward best_ask
+            fill_price = min(order_price + total_cost, best_ask) if best_ask < 1 else order_price + total_cost
         fill_price = round(max(0.001, min(0.999, fill_price)), 4)
 
-        # ─── Partial fills ──────────────────────────────────
-        if random.random() < self.PARTIAL_FILL_PROB:
-            fill_pct = random.uniform(self.PARTIAL_FILL_MIN, self.PARTIAL_FILL_MAX)
+        # ─── Partial fills — more aggressive for wide spreads ──
+        # Wide-spread markets have thick books with many competing orders.
+        # You rarely get your full order filled — more like 20-60%.
+        spread_pct = spread / 0.50  # normalize: 0.50¢ spread = 1.0
+        if spread_pct > 0.4:
+            # Very wide spread: 60% chance of partial, fill 15-50%
+            partial_prob = 0.60
+            partial_min, partial_max = 0.15, 0.50
+        elif spread_pct > 0.2:
+            # Medium spread: 40% chance of partial, fill 30-70%
+            partial_prob = 0.40
+            partial_min, partial_max = 0.30, 0.70
+        else:
+            # Tight spread: 25% chance of partial, fill 50-90%
+            partial_prob = 0.25
+            partial_min, partial_max = 0.50, 0.90
+
+        if random.random() < partial_prob:
+            fill_pct = random.uniform(partial_min, partial_max)
             fill_shares = round(order_shares * fill_pct, 2)
             self._fill_stats["partial_fills"] += 1
         else:

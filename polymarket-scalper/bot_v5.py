@@ -778,6 +778,12 @@ class ScalperV5:
                     LOG.info(f"📰 SENTIMENT EXIT | {slug[:35]} | {signal.headline[:50]}")
 
     async def _on_book_update(self, token: str, book: dict):
+        try:
+            await self._handle_book_update(token, book)
+        except Exception as e:
+            LOG.error(f"Book update error: {e}", exc_info=True)
+
+    async def _handle_book_update(self, token: str, book: dict):
         slug = self.token_to_slug.get(token)
         if not slug or slug.endswith("_NO"):
             return
@@ -804,16 +810,19 @@ class ScalperV5:
         market.spread = spread
         market.last_ws_update = time.time()
 
+        # Feed data to modules — last_trade must be defined BEFORE record_book
+        last_trade = book.get("last_trade")
+        last_trade_side = book.get("last_trade_side")  # from WS if available
+        if last_trade:
+            if not last_trade_side:
+                last_trade_side = "BUY" if last_trade > old_mid else "SELL"
+            self.flow.record_trade(token, last_trade, 0, last_trade_side)
+            self.om.fill_sim.record_trade(token, last_trade, 0, last_trade_side)
+
         # v7: Feed book data to fill simulator (for book-cross detection)
         self.om.fill_sim.record_book(token, bb_price, ba_price, bb_size, ba_size,
-                                      last_trade_price=last_trade)
-
-        # Feed data to modules
-        last_trade = book.get("last_trade")
-        if last_trade:
-            side = "BUY" if last_trade > old_mid else "SELL"
-            self.flow.record_trade(token, last_trade, 0, side)
-            self.om.fill_sim.record_trade(token, last_trade, 0, side)
+                                      last_trade=last_trade,
+                                      last_trade_side=last_trade_side)
 
         self.correlations.record_price(slug, mid, market.question)
         self.om.stops.record_price(token, mid, spread)
@@ -990,19 +999,27 @@ class ScalperV5:
             if slug in self.om.positions:
                 pos = self.om.positions[slug]
                 hold_sec = time.time() - pos.opened
+                tick = market.tick_size
 
                 aggression = 0.5
                 if self.brain:
                     aggression = self.brain.get_exit_aggressiveness(slug)
 
+                # ── Realistic exit: queue at best ask ─────────
+                # Old logic used mid+offset → often outside the book
+                # New logic: queue at best ask (or 1 tick inside)
                 if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
+                    # Timeout — dump at best bid (cross spread)
                     exit_price = round(market.best_bid, 4)
-                elif mid > pos.entry_price + 0.005:
-                    exit_price = round(mid + 0.003, 4)
                 elif mid < pos.entry_price - 0.01:
+                    # Underwater — dump at best bid
                     exit_price = round(market.best_bid, 4)
+                elif market.spread > tick * 3:
+                    # Wide spread: 1 tick inside ask for queue advantage
+                    exit_price = round(market.best_ask - tick, 4)
                 else:
-                    exit_price = round(mid, 4)
+                    # Tight spread: queue at best ask
+                    exit_price = round(market.best_ask, 4)
 
                 exit_price = min(exit_price, 0.99)
                 # Skip tiny positions
@@ -1031,9 +1048,24 @@ class ScalperV5:
             if blocked:
                 return
 
-        half_spread = market.spread / 2
-        buy_price = round(mid - max(0.005, half_spread - self.cfg.spread_target), 4)
-        buy_price = max(buy_price, round(market.best_bid + 0.001, 4))
+        tick = market.tick_size
+        bb = market.best_bid
+        ba = market.best_ask
+        spread = market.spread
+
+        # ── Realistic scalping entry: queue at best bid ─────
+        # Old logic placed orders way below best bid → never filled.
+        # New logic: place AT best bid (queue position) or 1 tick inside
+        # if spread is wide enough. This is how real scalpers work.
+        if spread > tick * 3:
+            # Wide spread: jump 1 tick inside for better queue position
+            buy_price = round(bb + tick, 4)
+        else:
+            # Tight spread: queue at best bid
+            buy_price = round(bb, 4)
+
+        # Safety: don't cross the ask
+        buy_price = min(buy_price, round(ba - tick, 4))
         if buy_price <= 0 or buy_price >= 1:
             return
 
