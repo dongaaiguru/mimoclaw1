@@ -605,6 +605,9 @@ class ScalperV5:
         # v10: Track per-market WS trade activity for pruning dead markets
         self._market_last_trade: Dict[str, float] = {}  # slug → last trade timestamp
         self._market_trade_count: Dict[str, int] = {}   # slug → trade count in session
+        # v6: Flow pull cooldown — prevent spam from same market
+        self._last_flow_pull: Dict[str, float] = {}  # slug → last flow pull timestamp
+        self._flow_pull_cooldown = 30.0  # seconds between flow pulls per market
 
         # Supervisor
         self._supervised = cfg.supervised
@@ -837,13 +840,17 @@ class ScalperV5:
         self.correlations.record_price(slug, mid, market.question)
         self.om.stops.record_price(token, mid, spread)
 
-        # Flow pull check
+        # Flow pull check — with 30s cooldown per market to prevent spam
         should_pull, pull_reason = self.flow.should_pull_orders(token)
         if should_pull:
-            for oid, order in list(self.om.orders.items()):
-                if order.status == "live" and order.slug == slug:
-                    await self.om.cancel_order(order)
-            LOG.warning(f"🌊 FLOW PULL | {slug[:35]} | {pull_reason}")
+            now_t = time.time()
+            last_pull = self._last_flow_pull.get(slug, 0)
+            if now_t - last_pull > self._flow_pull_cooldown:
+                self._last_flow_pull[slug] = now_t
+                for oid, order in list(self.om.orders.items()):
+                    if order.status == "live" and order.slug == slug:
+                        await self.om.cancel_order(order)
+                LOG.warning(f"🌊 FLOW PULL | {slug[:35]} | {pull_reason}")
 
         # v10: Reactive cancellation — only if price moved >8¢ (not noise)
         # Prediction markets have constant 3-5¢ noise; 8¢+ is real movement

@@ -79,8 +79,8 @@ class Config:
     spread_target: float = float(os.getenv("SPREAD_CAPTURE_TARGET", "0.02"))
     reprice_sec: int = int(os.getenv("REPRICE_INTERVAL", "15"))
     min_spread: float = 0.02
-    min_liquidity: float = 1000.0
-    min_volume: float = 500.0
+    min_liquidity: float = 1500.0
+    min_volume: float = 1000.0
     max_markets: int = 20
     max_orders_per_market: int = 1
     strategy: str = os.getenv("STRATEGY", "one_side")
@@ -849,6 +849,12 @@ class Brain:
         rep = self.get_market_rep(slug)
         if rep["trades"] >= 5 and rep["risk_score"] > 0.8:
             return False, f"HIGH RISK: {rep['risk_score']:.2f}"
+        # v6: Early avoidance — if we have 2+ consecutive losses on a market, skip it
+        if rep["trades"] >= 2 and rep["wins"] == 0 and rep["losses"] >= 2:
+            return False, f"COLD: 0% WR ({rep['trades']} trades, all losses)"
+        # v6: If loss rate > 80% after 3+ trades, avoid
+        if rep["trades"] >= 3 and rep["losses"] / rep["trades"] > 0.8:
+            return False, f"LOSING: {rep['losses']}/{rep['trades']} losses"
         return True, "OK"
 
     def is_star_market(self, slug: str) -> bool:
@@ -1078,9 +1084,11 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
                 m._score *= 1.3
         else:
             # v10: Weight volume heavily — active markets fill orders
+            # v6: Higher volume weight — active markets fill orders
             vol_score = math.log10(max(m.volume, 1))
             liq_score = math.sqrt(max(m.liquidity, 1))
-            m._score = m.spread * liq_score * (vol_score ** 1.5)
+            # Volume dominates — a $50k market is 2x better than $5k
+            m._score = m.spread * liq_score * (vol_score ** 2.0)
 
     all_markets.sort(key=lambda m: m._score, reverse=True)
     return all_markets[:cfg.max_markets]

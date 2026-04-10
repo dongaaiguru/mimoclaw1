@@ -1,0 +1,398 @@
+{
+  "version": 4,
+  "total_trades": 58,
+  "total_pnl": 57.18613000000001,
+  "total_wins": 54,
+  "total_losses": 4,
+  "sessions": 2,
+  "first_seen": 1775823672.240313,
+  "markets": {
+    "stripe-ipo-before-2027": {
+      "trades": 21,
+      "wins": 21,
+      "losses": 0,
+      "total_pnl": 24.600220000000004,
+      "avg_pnl": 1.1714390476190477,
+      "win_rate": 1.0,
+      "avg_hold": 31.223957107180645,
+      "fills": 21,
+      "timeouts": 0,
+      "last_seen": 1775826690.8234043,
+      "question": "Stripe IPO before 2027?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-usdt-market-cap-hit-200b-before-2027": {
+      "trades": 15,
+      "wins": 15,
+      "losses": 0,
+      "total_pnl": 7.272809999999996,
+      "avg_pnl": 0.48485399999999973,
+      "win_rate": 1.0,
+      "avg_hold": 24.879068787892663,
+      "fills": 15,
+      "timeouts": 0,
+      "last_seen": 1775826706.1137621,
+      "question": "Will USDT market cap hit $200B before 2027?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election": {
+      "trades": 13,
+      "wins": 12,
+      "losses": 1,
+      "total_pnl": 21.213499999999996,
+      "avg_pnl": 1.631807692307692,
+      "win_rate": 0.9230769230769231,
+      "avg_hold": 60.628804353567276,
+      "fills": 13,
+      "timeouts": 0,
+      "last_seen": 1775826537.4692369,
+      "question": "Will Fernando Dias da Costa win the 2025 Guinea-Bissau presidential election?",
+      "risk_score": 0.03076923076923077,
+      "profit_score": 0.9692307692307693
+    },
+    "will-pt-win-the-most-seats-in-the-2025-guinea-bissau-national-peoples-assembly-election": {
+      "trades": 3,
+      "wins": 0,
+      "losses": 3,
+      "total_pnl": -1.8147,
+      "avg_pnl": -0.6049,
+      "win_rate": 0.0,
+      "avg_hold": 209.9168884754181,
+      "fills": 3,
+      "timeouts": 0,
+      "last_seen": 1775825044.0762432,
+      "question": "Will PT win the most seats in the 2025 Guinea-Bissau National People\u2019s Assembly election?",
+      "risk_score": 0.6000000000000001,
+      "profit_score": 0.3
+    },
+    "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026": {
+      "trades": 6,
+      "wins": 6,
+      "losses": 0,
+      "total_pnl": 5.914300000000001,
+      "avg_pnl": 0.9857166666666668,
+      "win_rate": 1.0,
+      "avg_hold": 69.00159839789073,
+      "fills": 6,
+      "timeouts": 0,
+      "last_seen": 1775825135.6564472,
+      "question": "Will OpenAI launch a new consumer hardware product by December 31, 2026?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    }
+  },
+  "patterns": {
+    "by_spread": {
+      "0.10-0.20": {
+        "wins": 44,
+        "losses": 2,
+        "total_pnl": 46.00491000000001,
+        "trades": 46
+      },
+      "0.20+": {
+        "wins": 6,
+        "losses": 2,
+        "total_pnl": 4.204600000000001,
+        "trades": 8
+      },
+      "0.06-0.10": {
+        "wins": 2,
+        "losses": 0,
+        "total_pnl": 3.9814200000000004,
+        "trades": 2
+      },
+      "0.04-0.06": {
+        "wins": 2,
+        "losses": 0,
+        "total_pnl": 2.9952000000000005,
+        "trades": 2
+      }
+    },
+    "by_volume": {
+      "50K-500K": {
+        "wins": 36,
+        "losses": 0,
+        "total_pnl": 31.87303,
+        "trades": 36
+      },
+      "5K-50K": {
+        "wins": 18,
+        "losses": 4,
+        "total_pnl": 25.31309999999999,
+        "trades": 22
+      }
+    },
+    "by_liquidity": {
+      "3K-7K": {
+        "wins": 33,
+        "losses": 4,
+        "total_pnl": 43.99902000000001,
+        "trades": 37
+      },
+      "7K-15K": {
+        "wins": 15,
+        "losses": 0,
+        "total_pnl": 7.272809999999996,
+        "trades": 15
+      },
+      "2K-3K": {
+        "wins": 6,
+        "losses": 0,
+        "total_pnl": 5.914300000000001,
+        "trades": 6
+      }
+    },
+    "by_price": {
+      "mid_low": {
+        "wins": 32,
+        "losses": 4,
+        "total_pnl": 40.51360000000001,
+        "trades": 36
+      },
+      "high": {
+        "wins": 15,
+        "losses": 0,
+        "total_pnl": 7.272809999999996,
+        "trades": 15
+      },
+      "low": {
+        "wins": 7,
+        "losses": 0,
+        "total_pnl": 9.39972,
+        "trades": 7
+      }
+    },
+    "by_hold_time": {
+      "0-30s": {
+        "wins": 29,
+        "losses": 0,
+        "total_pnl": 43.366310000000006,
+        "trades": 29
+      },
+      "30-60s": {
+        "wins": 17,
+        "losses": 0,
+        "total_pnl": 12.852409999999999,
+        "trades": 17
+      },
+      "60-120s": {
+        "wins": 6,
+        "losses": 1,
+        "total_pnl": 2.9279699999999993,
+        "trades": 7
+      },
+      "120-300s": {
+        "wins": 2,
+        "losses": 3,
+        "total_pnl": -1.9605599999999999,
+        "trades": 5
+      }
+    }
+  },
+  "time_patterns": {
+    "peak": {
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0
+    },
+    "normal": {
+      "wins": 54,
+      "losses": 4,
+      "pnl": 57.18613000000001
+    },
+    "quiet": {
+      "wins": 0,
+      "losses": 0,
+      "pnl": 0
+    }
+  },
+  "day_patterns": {
+    "Friday": {
+      "wins": 54,
+      "losses": 4,
+      "pnl": 57.18613000000001
+    }
+  },
+  "avoid_list": [],
+  "star_list": [
+    "stripe-ipo-before-2027",
+    "will-usdt-market-cap-hit-200b-before-2027",
+    "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election",
+    "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026"
+  ],
+  "rules": [
+    {
+      "ts": 1775823834.2421873,
+      "rule": "STAR: stripe-ipo-before-2027 \u2014 100% WR, $+0.956/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775823987.3921072,
+      "rule": "STAR: will-usdt-market-cap-hit-200b-before-2027 \u2014 100% WR, $+0.351/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775824033.2822688,
+      "rule": "by_spread:0.10-0.20 \u2192 80% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824033.2822728,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824033.2822745,
+      "rule": "by_price:mid_low \u2192 71% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824033.2822773,
+      "rule": "TIME:normal \u2192 80% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775824171.0843675,
+      "rule": "STAR: will-fernando-dias-da-costa-win-the-2025-guinea-bi \u2014 67% WR, $+0.713/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775824201.6820183,
+      "rule": "by_spread:0.10-0.20 \u2192 90% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824201.6820216,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824201.6820228,
+      "rule": "by_price:mid_low \u2192 87% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824201.682024,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824201.682027,
+      "rule": "TIME:normal \u2192 90% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775824492.692929,
+      "rule": "by_spread:0.10-0.20 \u2192 93% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824492.6929321,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824492.6929333,
+      "rule": "by_volume:5K-50K \u2192 75% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824492.692935,
+      "rule": "by_price:mid_low \u2192 90% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824492.6929364,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775824492.692938,
+      "rule": "TIME:normal \u2192 93% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775824546.4804149,
+      "rule": "STAR: will-openai-launch-a-new-consumer-hardware-product \u2014 100% WR, $+0.354/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775825135.656478,
+      "rule": "by_spread:0.10-0.20 \u2192 94% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775825135.656481,
+      "rule": "by_spread:0.20+ \u2192 75% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775825135.656483,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775825135.6564837,
+      "rule": "by_volume:5K-50K \u2192 71% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775825135.6564846,
+      "rule": "by_price:mid_low \u2192 86% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775825135.6564856,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775825135.656488,
+      "rule": "TIME:normal \u2192 90% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775826506.6177855,
+      "rule": "by_spread:0.10-0.20 \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.617789,
+      "rule": "by_spread:0.20+ \u2192 75% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.6177912,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.6177924,
+      "rule": "by_volume:5K-50K \u2192 79% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.6177936,
+      "rule": "by_price:mid_low \u2192 88% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.617795,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.6177955,
+      "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775826506.6177976,
+      "rule": "TIME:normal \u2192 92% WR \u2014 focus here",
+      "type": "time_star"
+    }
+  ],
+  "last_updated": 1775826706.1137943
+}
