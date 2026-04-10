@@ -1,9 +1,9 @@
 {
   "version": 4,
-  "total_trades": 122,
-  "total_pnl": 401.193265,
-  "total_wins": 116,
-  "total_losses": 6,
+  "total_trades": 125,
+  "total_pnl": 397.983405,
+  "total_wins": 118,
+  "total_losses": 7,
   "sessions": 5,
   "first_seen": 1775823672.240313,
   "markets": {
@@ -158,19 +158,19 @@
       "profit_score": 0.9833333333333334
     },
     "weed-rescheduled-by-december-31": {
-      "trades": 3,
-      "wins": 3,
+      "trades": 5,
+      "wins": 5,
       "losses": 0,
-      "total_pnl": 0.7233399999999999,
-      "avg_pnl": 0.2411133333333333,
+      "total_pnl": 2.5917399999999997,
+      "avg_pnl": 0.5183479999999999,
       "win_rate": 1.0,
-      "avg_hold": 144.49953031539917,
-      "fills": 3,
-      "timeouts": 0,
-      "last_seen": 1775838907.0090861,
+      "avg_hold": 156.49131679534912,
+      "fills": 4,
+      "timeouts": 1,
+      "last_seen": 1775840604.9893117,
       "question": "Weed rescheduled by December 31?",
-      "risk_score": 0.0,
-      "profit_score": 1.0
+      "risk_score": 0.08000000000000002,
+      "profit_score": 0.94
     },
     "us-forces-in-gaza-before-2027": {
       "trades": 2,
@@ -201,21 +201,36 @@
       "question": "Will Andy Beshear announce a Presidential run before 2027?",
       "risk_score": 0.4,
       "profit_score": 0.7
+    },
+    "will-unit-launch-a-token-by-december-31-2027": {
+      "trades": 1,
+      "wins": 0,
+      "losses": 1,
+      "total_pnl": -5.078259999999999,
+      "avg_pnl": -5.078259999999999,
+      "win_rate": 0.0,
+      "avg_hold": 309.47616267204285,
+      "fills": 0,
+      "timeouts": 1,
+      "last_seen": 1775840359.7546089,
+      "question": "Will Unit launch a token by December 31, 2027?",
+      "risk_score": 1.0,
+      "profit_score": 0.0
     }
   },
   "patterns": {
     "by_spread": {
       "0.10-0.20": {
-        "wins": 95,
+        "wins": 97,
         "losses": 2,
-        "total_pnl": 369.423235,
-        "trades": 97
+        "total_pnl": 371.291635,
+        "trades": 99
       },
       "0.20+": {
         "wins": 10,
-        "losses": 2,
-        "total_pnl": 8.7405,
-        "trades": 12
+        "losses": 3,
+        "total_pnl": 3.6622400000000015,
+        "trades": 13
       },
       "0.06-0.10": {
         "wins": 8,
@@ -238,10 +253,10 @@
         "trades": 60
       },
       "5K-50K": {
-        "wins": 57,
-        "losses": 4,
-        "total_pnl": 295.07320500000003,
-        "trades": 61
+        "wins": 59,
+        "losses": 5,
+        "total_pnl": 291.86334500000004,
+        "trades": 64
       },
       "1K-5K": {
         "wins": 1,
@@ -264,18 +279,18 @@
         "trades": 38
       },
       "2K-3K": {
-        "wins": 20,
-        "losses": 0,
-        "total_pnl": 33.986110000000004,
-        "trades": 20
+        "wins": 22,
+        "losses": 1,
+        "total_pnl": 30.77625,
+        "trades": 23
       }
     },
     "by_price": {
       "mid_low": {
-        "wins": 64,
-        "losses": 4,
-        "total_pnl": 114.53196999999999,
-        "trades": 68
+        "wins": 66,
+        "losses": 5,
+        "total_pnl": 111.32211,
+        "trades": 71
       },
       "high": {
         "wins": 20,
@@ -304,10 +319,10 @@
         "trades": 37
       },
       "30-60s": {
-        "wins": 37,
+        "wins": 38,
         "losses": 0,
-        "total_pnl": 73.42437,
-        "trades": 37
+        "total_pnl": 74.33435,
+        "trades": 38
       },
       "60-120s": {
         "wins": 23,
@@ -322,10 +337,10 @@
         "trades": 18
       },
       "300s+": {
-        "wins": 4,
-        "losses": 2,
-        "total_pnl": 33.819715000000016,
-        "trades": 6
+        "wins": 5,
+        "losses": 3,
+        "total_pnl": 29.699875000000016,
+        "trades": 8
       }
     }
   },
@@ -336,9 +351,9 @@
       "pnl": 0
     },
     "normal": {
-      "wins": 116,
-      "losses": 6,
-      "pnl": 401.193265
+      "wins": 118,
+      "losses": 7,
+      "pnl": 397.983405
     },
     "quiet": {
       "wins": 0,
@@ -348,9 +363,9 @@
   },
   "day_patterns": {
     "Friday": {
-      "wins": 116,
-      "losses": 6,
-      "pnl": 401.193265
+      "wins": 118,
+      "losses": 7,
+      "pnl": 397.983405
     }
   },
   "avoid_list": [],
@@ -614,13 +629,27 @@
       "ts": 1775840151.2350311,
       "rule": "TIME:normal \u2192 95% WR \u2014 focus here",
       "type": "time_star"
+    },
+    {
+      "ts": 1775840900.0,
+      "rule": "RULE: All session_analyses entries MUST include date_utc, time_start_utc, time_end_utc, timestamp_start, timestamp_end. No session without dates.",
+      "type": "system_rule"
     }
   ],
-  "last_updated": 1775840181.729242,
+  "last_updated": 1775840604.989341,
   "session_analyses": [
     {
       "session": 5,
-      "date": "2026-04-10",
+      "date_utc": "2026-04-10",
+      "time_start_utc": "16:11:30",
+      "time_end_utc": "16:48:25",
+      "timestamp_start": 1775837490,
+      "timestamp_end": 1775839705,
+      "timezone": "UTC",
+      "date_local": "2026-04-11",
+      "time_start_local": "00:11:30",
+      "time_end_local": "00:48:25",
+      "local_timezone": "GMT+8",
       "duration_minutes": 35,
       "mode": "paper",
       "strategy": "both_sides",
@@ -635,7 +664,6 @@
       "profit_factor": 34.79,
       "sharpe": 0.524,
       "max_drawdown_pct": 7.3,
-      "avg_hold_seconds": 90,
       "top_market": {
         "slug": "will-the-feds-upper-bound-reach-5pt5-or-higher-before-2027-767",
         "trades": 18,
@@ -647,10 +675,10 @@
         "Paper fill simulator v9 is deterministic but still more favorable than live",
         "Token inventory bug: bot opens unintended SHORTs when selling more tokens than owned",
         "Kelly fraction at 25% is too aggressive for prediction markets",
-        "Flow pull on 50-93\u00a2 momentum surges is correct - these are significant on PM",
+        "Flow pull on 50-93c momentum surges is correct - these are significant on PM",
         "Brain correctly identified STAR markets with 100% WR",
         "Tight spread markets (0.06-0.10) have 100% WR - fast fills",
-        "Low price range (5-20\u00a2) has highest PnL - spread capture is largest here"
+        "Low price range (5-20c) has highest PnL - spread capture is largest here"
       ],
       "bugs_found": [
         "Token inventory: SELL opens SHORT when bot does not own enough tokens",
@@ -662,12 +690,36 @@
         "Reduce Kelly to 5-10%",
         "Fix token inventory tracking - prevent unintended SHORTs",
         "Cap per-market exposure at 30% of total PnL",
-        "Add gas cost simulation (0.5\u00a2 per trade)",
-        "Increase paper tax to 0.5\u00a2 for more realistic slippage",
+        "Add gas cost simulation (0.5c per trade)",
+        "Increase paper tax to 0.5c for more realistic slippage",
         "Test one_side strategy to avoid token inventory issues",
         "Run during peak hours (14-22 UTC) for better fills"
-      ],
-      "honest_assessment": "Well-built bot but +295% return is from one anomalously volatile market. Realistic edge: 20-50% per session on wide-spread PM markets with proper risk management."
+      ]
     }
-  ]
+  ],
+  "conventions": {
+    "session_tracking": {
+      "required_fields": [
+        "session",
+        "date_utc",
+        "time_start_utc",
+        "time_end_utc",
+        "timestamp_start",
+        "timestamp_end",
+        "mode",
+        "strategy",
+        "starting_capital",
+        "final_equity",
+        "realized_pnl",
+        "trades",
+        "wins",
+        "losses",
+        "win_rate"
+      ],
+      "date_format": "YYYY-MM-DD",
+      "time_format": "HH:MM:SS",
+      "timezone": "UTC",
+      "description": "Every session must be timestamped so we can track performance over time and avoid mixing data across days."
+    }
+  }
 }
