@@ -1,17 +1,15 @@
 """
-Fill Simulator v7 — Order-book-grounded paper fill engine.
+Fill Simulator v9 — Deterministic-only paper fill engine.
 
-v5/v6 approach: Random probability each tick → fantasy returns
-v7 approach: Compare paper orders against LIVE WebSocket book state
+ONLY fills from real WebSocket book data. No random probability model.
+If the real market didn't cross your price, you don't get filled.
 
-The key insight: We already have real-time order book data from the
-WebSocket feed. Instead of rolling dice, we check:
-1. Did the best bid/ask cross our order price?
-2. Did the trade stream execute at our price?
-3. Did the book depth change at our price level?
+Deterministic fill methods:
+1. Book cross: best_bid/ask moved through our order price (from WS data)
+2. Trade hit: a trade printed at or through our price (from WS data)
 
-This makes paper fills deterministic and realistic — if the real
-market would have filled you, paper fills you. If not, not.
+This makes paper fills 100% realistic — if the real market would have
+filled you, paper fills you. If not, not. No fantasy fills.
 """
 
 import math
@@ -310,102 +308,12 @@ class FillSimulator:
         if not book_crossed and order_created > 0:
             trade_hit = self._check_trade_at_price(token, order_side, order_price, order_created)
 
-        # ─── Priority 3: Queue-based fill model ─────────────
-        # Realistic model for post-only maker orders:
-        # - We're resting at best_bid+1tick (or best_bid)
-        # - Market SELL orders sweep down through the book
-        # - If enough sell volume hits, we get filled at our price
-        # This is the CORE of realistic scalper fill simulation
+        # ─── Priority 3: REMOVED — no more probabilistic fake fills ──
+        # Only deterministic fills from real book data (book_cross + trade_hit).
+        # Probability model was generating fictional fills that don't reflect
+        # actual market activity. Paper trading should only fill when the
+        # real market would have filled you.
         prob_fill = False
-        if not book_crossed and not trade_hit:
-            # Check how close we are to the best level OR if we're inside the spread
-            at_best = False
-            near_best = False
-            inside_spread = False
-
-            if order_side == "BUY":
-                if abs(order_price - best_bid) <= tick:
-                    at_best = True
-                elif order_price <= best_bid + tick * 2 and order_price >= best_bid:
-                    near_best = True  # 1-2 ticks from best bid
-                elif order_price < best_ask and order_price > best_bid:
-                    # v9: Inside the spread but not near best_bid
-                    # On wide-spread markets this is where trading happens
-                    inside_spread = True
-            elif order_side == "SELL":
-                if abs(order_price - best_ask) <= tick:
-                    at_best = True
-                elif order_price >= best_ask - tick * 2 and order_price <= best_ask:
-                    near_best = True
-                elif order_price > best_bid and order_price < best_ask:
-                    inside_spread = True
-
-            if at_best or near_best or inside_spread:
-                # ── Queue fill rate ──────────────────────────
-                # v9: More realistic fill rates with inside_spread support
-                # At best bid on a 10¢ spread market: ~5% per check
-                # Near best (1 tick): ~3% per check
-                # Inside spread (wide markets): ~2% per check
-                # These produce fills every 2-6 min on active markets
-                if at_best:
-                    base_rate = 0.05  # 5% per check at best level
-                elif near_best:
-                    base_rate = 0.03  # 3% per check near best (1 tick)
-                elif inside_spread:
-                    # v9: Inside spread — fill rate depends on how close to mid
-                    # Closer to mid = more likely to get hit by takers
-                    spread_position = (order_price - best_bid) / max(spread, tick)
-                    # spread_position: 0 = at bid, 1 = at ask, 0.5 = at mid
-                    # Closer to mid = higher fill rate (takers cross from both sides)
-                    base_rate = 0.015 + spread_position * 0.02  # 1.5% to 3.5%
-                else:
-                    base_rate = 0.001  # fallback
-
-                base_rate *= size_mult
-
-                # Spread adjustment: wider spread = fewer aggressive takers
-                # More aggressive penalty — wide-spread markets have thick books
-                if spread > 0.20:
-                    base_rate *= 0.15   # 20¢+ spread — very few takers, thick book
-                elif spread > 0.15:
-                    base_rate *= 0.25   # 15¢ spread
-                elif spread > 0.10:
-                    base_rate *= 0.40   # 10¢ spread
-                elif spread > 0.05:
-                    base_rate *= 0.65   # 5¢ spread
-                elif spread < 0.03:
-                    base_rate *= 1.5    # tight spread — many takers
-
-                # Activity boost: more trades = more fills
-                state = self._flow.get(token)
-                if state and state.trades:
-                    now = time.time()
-                    recent_trades = sum(1 for t in state.trades if t[0] > now - 30)
-                    if recent_trades > 10:
-                        base_rate *= 1.5
-                    elif recent_trades > 5:
-                        base_rate *= 1.2
-                    elif recent_trades < 2:
-                        base_rate *= 0.5
-
-                # Adverse selection: aggressive flow toward us = faster fill
-                adverse_score = self.get_adverse_selection_score(token, order_side)
-                if adverse_score > 0.2:
-                    base_rate *= (1.0 + adverse_score * self.ADVERSE_SELECTION_STRENGTH * 2)
-
-                # Age ramp: older orders get priority in queue
-                age_factor = min(1.8, 1.0 + (age - self.MIN_REST_TIME) / 100)
-                base_rate *= age_factor
-
-                # Time of day: quiet hours = fewer fills
-                from datetime import datetime, timezone
-                utc_hour = datetime.now(timezone.utc).hour
-                if 3 <= utc_hour <= 6:
-                    base_rate *= 0.25
-
-                # Cap per-check probability
-                base_rate = min(base_rate, 0.15)
-                prob_fill = random.random() < base_rate
 
         # ─── No fill ────────────────────────────────────────
         if not book_crossed and not trade_hit and not prob_fill:
@@ -501,11 +409,11 @@ class FillSimulator:
     def report(self) -> str:
         s = self.get_stats()
         return (
-            f"\n📊 FILL SIMULATOR v7 (book-grounded)\n"
+            f"\n📊 FILL SIMULATOR v9 (deterministic only)\n"
             f"  Attempts: {s['total_attempts']} | Fills: {s['total_fills']} ({s['fill_rate']:.1%})\n"
             f"  Book-cross: {s['book_cross_fills']} ({s['book_cross_pct']:.0%}) | "
             f"Trade-hit: {s['trade_fills']} ({s['trade_hit_pct']:.0%}) | "
-            f"Simulated: {s['simulated_fills']} ({s['sim_pct']:.0%})\n"
+            f"Simulated: REMOVED (no fake fills)\n"
             f"  Adverse: {s['adverse_fills']} ({s['adverse_rate']:.1%}) | "
             f"Partial: {s['partial_fills']} ({s['partial_rate']:.1%})\n"
             f"  Size-penalized: {s['size_penalized']} | "
