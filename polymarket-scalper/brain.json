@@ -1,38 +1,38 @@
 {
   "version": 4,
-  "total_trades": 75,
-  "total_pnl": 73.14773000000001,
-  "total_wins": 71,
-  "total_losses": 4,
-  "sessions": 4,
+  "total_trades": 122,
+  "total_pnl": 401.193265,
+  "total_wins": 116,
+  "total_losses": 6,
+  "sessions": 5,
   "first_seen": 1775823672.240313,
   "markets": {
     "stripe-ipo-before-2027": {
-      "trades": 26,
+      "trades": 28,
       "wins": 26,
-      "losses": 0,
-      "total_pnl": 28.622000000000003,
-      "avg_pnl": 1.100846153846154,
-      "win_rate": 1.0,
-      "avg_hold": 49.249066985570465,
+      "losses": 2,
+      "total_pnl": 20.46272,
+      "avg_pnl": 0.7308114285714286,
+      "win_rate": 0.9285714285714286,
+      "avg_hold": 67.84436562231609,
       "fills": 25,
-      "timeouts": 1,
-      "last_seen": 1775830331.9721544,
+      "timeouts": 3,
+      "last_seen": 1775838733.2213955,
       "question": "Stripe IPO before 2027?",
-      "risk_score": 0.015384615384615385,
-      "profit_score": 0.9884615384615385
+      "risk_score": 0.07142857142857142,
+      "profit_score": 0.9392857142857143
     },
     "will-usdt-market-cap-hit-200b-before-2027": {
-      "trades": 16,
-      "wins": 16,
+      "trades": 20,
+      "wins": 20,
       "losses": 0,
-      "total_pnl": 7.431589999999997,
-      "avg_pnl": 0.46447437499999983,
+      "total_pnl": 8.523449999999997,
+      "avg_pnl": 0.42617249999999984,
       "win_rate": 1.0,
-      "avg_hold": 30.30294728279114,
-      "fills": 16,
+      "avg_hold": 42.29173085689545,
+      "fills": 20,
       "timeouts": 0,
-      "last_seen": 1775827731.1991684,
+      "last_seen": 1775838955.10464,
       "question": "Will USDT market cap hit $200B before 2027?",
       "risk_score": 0.0,
       "profit_score": 1.0
@@ -68,34 +68,34 @@
       "profit_score": 0.3
     },
     "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026": {
-      "trades": 9,
-      "wins": 9,
+      "trades": 15,
+      "wins": 15,
       "losses": 0,
-      "total_pnl": 6.773130000000001,
-      "avg_pnl": 0.7525700000000001,
+      "total_pnl": 10.697170000000002,
+      "avg_pnl": 0.7131446666666668,
       "win_rate": 1.0,
-      "avg_hold": 64.493554910024,
-      "fills": 9,
+      "avg_hold": 55.92734835942586,
+      "fills": 15,
       "timeouts": 0,
-      "last_seen": 1775830676.028861,
+      "last_seen": 1775839444.3372557,
       "question": "Will OpenAI launch a new consumer hardware product by December 31, 2026?",
       "risk_score": 0.0,
       "profit_score": 1.0
     },
     "will-israel-annex-any-territory-by-june-30": {
-      "trades": 1,
-      "wins": 1,
+      "trades": 2,
+      "wins": 2,
       "losses": 0,
-      "total_pnl": 0.71424,
-      "avg_pnl": 0.71424,
+      "total_pnl": 17.74383,
+      "avg_pnl": 8.871915,
       "win_rate": 1.0,
-      "avg_hold": 23.29325032234192,
+      "avg_hold": 164.91265189647675,
       "fills": 1,
-      "timeouts": 0,
-      "last_seen": 1775830301.3531005,
+      "timeouts": 1,
+      "last_seen": 1775838221.9330041,
       "question": "Will Israel annex any territory by June 30?",
-      "risk_score": 0.0,
-      "profit_score": 1.0
+      "risk_score": 0.2,
+      "profit_score": 0.8500000000000001
     },
     "foreign-intervention-in-gaza-by-june-30": {
       "trades": 4,
@@ -126,15 +126,90 @@
       "question": "Will Israel launch a major ground offensive in Gaza by December 31?",
       "risk_score": 0.0,
       "profit_score": 1.0
+    },
+    "israeli-parliament-dissolved-by-june-30": {
+      "trades": 10,
+      "wins": 10,
+      "losses": 0,
+      "total_pnl": 37.17956000000001,
+      "avg_pnl": 3.717956000000001,
+      "win_rate": 1.0,
+      "avg_hold": 42.018702268600464,
+      "fills": 10,
+      "timeouts": 0,
+      "last_seen": 1775840181.72922,
+      "question": "Israeli parliament dissolved by June 30?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-the-feds-upper-bound-reach-5pt5-or-higher-before-2027-767": {
+      "trades": 18,
+      "wins": 18,
+      "losses": 0,
+      "total_pnl": 250.31002499999994,
+      "avg_pnl": 13.906112499999997,
+      "win_rate": 1.0,
+      "avg_hold": 143.62652695178986,
+      "fills": 17,
+      "timeouts": 1,
+      "last_seen": 1775839388.5297027,
+      "question": "Will the Fed\u2019s upper bound reach 5.5% or higher before 2027?",
+      "risk_score": 0.022222222222222223,
+      "profit_score": 0.9833333333333334
+    },
+    "weed-rescheduled-by-december-31": {
+      "trades": 3,
+      "wins": 3,
+      "losses": 0,
+      "total_pnl": 0.7233399999999999,
+      "avg_pnl": 0.2411133333333333,
+      "win_rate": 1.0,
+      "avg_hold": 144.49953031539917,
+      "fills": 3,
+      "timeouts": 0,
+      "last_seen": 1775838907.0090861,
+      "question": "Weed rescheduled by December 31?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "us-forces-in-gaza-before-2027": {
+      "trades": 2,
+      "wins": 2,
+      "losses": 0,
+      "total_pnl": 3.7359000000000004,
+      "avg_pnl": 1.8679500000000002,
+      "win_rate": 1.0,
+      "avg_hold": 26.436821460723877,
+      "fills": 2,
+      "timeouts": 0,
+      "last_seen": 1775839601.64018,
+      "question": "U.S. forces in Gaza before 2027?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-andy-beshear-announce-a-presidential-run-before-2027": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "total_pnl": 22.210500000000003,
+      "avg_pnl": 22.210500000000003,
+      "win_rate": 1.0,
+      "avg_hold": 300.17362809181213,
+      "fills": 0,
+      "timeouts": 1,
+      "last_seen": 1775839859.1275954,
+      "question": "Will Andy Beshear announce a Presidential run before 2027?",
+      "risk_score": 0.4,
+      "profit_score": 0.7
     }
   },
   "patterns": {
     "by_spread": {
       "0.10-0.20": {
-        "wins": 53,
+        "wins": 95,
         "losses": 2,
-        "total_pnl": 53.98391000000001,
-        "trades": 55
+        "total_pnl": 369.423235,
+        "trades": 97
       },
       "0.20+": {
         "wins": 10,
@@ -143,70 +218,76 @@
         "trades": 12
       },
       "0.06-0.10": {
-        "wins": 5,
+        "wins": 8,
         "losses": 0,
-        "total_pnl": 6.820920000000001,
-        "trades": 5
+        "total_pnl": 27.586409999999997,
+        "trades": 8
       },
       "0.04-0.06": {
         "wins": 3,
-        "losses": 0,
-        "total_pnl": 3.6024000000000007,
-        "trades": 3
+        "losses": 2,
+        "total_pnl": -4.55688,
+        "trades": 5
       }
     },
     "by_volume": {
       "50K-500K": {
-        "wins": 43,
-        "losses": 0,
-        "total_pnl": 36.76783,
-        "trades": 43
+        "wins": 58,
+        "losses": 2,
+        "total_pnl": 83.90955999999998,
+        "trades": 60
       },
       "5K-50K": {
-        "wins": 28,
+        "wins": 57,
         "losses": 4,
-        "total_pnl": 36.37989999999999,
-        "trades": 32
+        "total_pnl": 295.07320500000003,
+        "trades": 61
+      },
+      "1K-5K": {
+        "wins": 1,
+        "losses": 0,
+        "total_pnl": 22.210500000000003,
+        "trades": 1
       }
     },
     "by_liquidity": {
       "3K-7K": {
-        "wins": 44,
-        "losses": 4,
-        "total_pnl": 57.87367000000001,
-        "trades": 48
+        "wins": 58,
+        "losses": 6,
+        "total_pnl": 107.07579999999999,
+        "trades": 64
       },
       "7K-15K": {
-        "wins": 17,
+        "wins": 38,
         "losses": 0,
-        "total_pnl": 8.145829999999997,
-        "trades": 17
+        "total_pnl": 260.131355,
+        "trades": 38
       },
       "2K-3K": {
-        "wins": 10,
+        "wins": 20,
         "losses": 0,
-        "total_pnl": 7.128230000000001,
-        "trades": 10
+        "total_pnl": 33.986110000000004,
+        "trades": 20
       }
     },
     "by_price": {
       "mid_low": {
-        "wins": 42,
+        "wins": 64,
         "losses": 4,
-        "total_pnl": 51.93954000000001,
-        "trades": 46
+        "total_pnl": 114.53196999999999,
+        "trades": 68
       },
       "high": {
-        "wins": 16,
+        "wins": 20,
         "losses": 0,
-        "total_pnl": 7.431589999999997,
-        "trades": 16
+        "total_pnl": 8.523449999999997,
+        "trades": 20
       },
       "low": {
-        "wins": 12,
-        "losses": 0,
-        "total_pnl": 13.421500000000002,
-        "trades": 12
+        "wins": 31,
+        "losses": 2,
+        "total_pnl": 277.782745,
+        "trades": 33
       },
       "mid_high": {
         "wins": 1,
@@ -217,34 +298,34 @@
     },
     "by_hold_time": {
       "0-30s": {
-        "wins": 32,
+        "wins": 37,
         "losses": 0,
-        "total_pnl": 45.08153,
-        "trades": 32
+        "total_pnl": 67.30103,
+        "trades": 37
       },
       "30-60s": {
-        "wins": 22,
+        "wins": 37,
         "losses": 0,
-        "total_pnl": 18.635690000000004,
-        "trades": 22
+        "total_pnl": 73.42437,
+        "trades": 37
       },
       "60-120s": {
-        "wins": 13,
+        "wins": 23,
         "losses": 1,
-        "total_pnl": 10.208790000000002,
-        "trades": 14
+        "total_pnl": 162.90078999999997,
+        "trades": 24
       },
       "120-300s": {
-        "wins": 3,
+        "wins": 15,
         "losses": 3,
-        "total_pnl": -1.35336,
-        "trades": 6
+        "total_pnl": 63.74736,
+        "trades": 18
       },
       "300s+": {
-        "wins": 1,
-        "losses": 0,
-        "total_pnl": 0.5750799999999998,
-        "trades": 1
+        "wins": 4,
+        "losses": 2,
+        "total_pnl": 33.819715000000016,
+        "trades": 6
       }
     }
   },
@@ -255,9 +336,9 @@
       "pnl": 0
     },
     "normal": {
-      "wins": 71,
-      "losses": 4,
-      "pnl": 73.14773000000001
+      "wins": 116,
+      "losses": 6,
+      "pnl": 401.193265
     },
     "quiet": {
       "wins": 0,
@@ -267,9 +348,9 @@
   },
   "day_patterns": {
     "Friday": {
-      "wins": 71,
-      "losses": 4,
-      "pnl": 73.14773000000001
+      "wins": 116,
+      "losses": 6,
+      "pnl": 401.193265
     }
   },
   "avoid_list": [],
@@ -278,249 +359,12 @@
     "will-usdt-market-cap-hit-200b-before-2027",
     "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election",
     "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026",
-    "foreign-intervention-in-gaza-by-june-30"
+    "foreign-intervention-in-gaza-by-june-30",
+    "israeli-parliament-dissolved-by-june-30",
+    "will-the-feds-upper-bound-reach-5pt5-or-higher-before-2027-767",
+    "weed-rescheduled-by-december-31"
   ],
   "rules": [
-    {
-      "ts": 1775824033.2822688,
-      "rule": "by_spread:0.10-0.20 \u2192 80% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824033.2822728,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824033.2822745,
-      "rule": "by_price:mid_low \u2192 71% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824033.2822773,
-      "rule": "TIME:normal \u2192 80% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775824171.0843675,
-      "rule": "STAR: will-fernando-dias-da-costa-win-the-2025-guinea-bi \u2014 67% WR, $+0.713/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775824201.6820183,
-      "rule": "by_spread:0.10-0.20 \u2192 90% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824201.6820216,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824201.6820228,
-      "rule": "by_price:mid_low \u2192 87% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824201.682024,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824201.682027,
-      "rule": "TIME:normal \u2192 90% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775824492.692929,
-      "rule": "by_spread:0.10-0.20 \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824492.6929321,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824492.6929333,
-      "rule": "by_volume:5K-50K \u2192 75% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824492.692935,
-      "rule": "by_price:mid_low \u2192 90% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824492.6929364,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775824492.692938,
-      "rule": "TIME:normal \u2192 93% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775824546.4804149,
-      "rule": "STAR: will-openai-launch-a-new-consumer-hardware-product \u2014 100% WR, $+0.354/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775825135.656478,
-      "rule": "by_spread:0.10-0.20 \u2192 94% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775825135.656481,
-      "rule": "by_spread:0.20+ \u2192 75% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775825135.656483,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775825135.6564837,
-      "rule": "by_volume:5K-50K \u2192 71% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775825135.6564846,
-      "rule": "by_price:mid_low \u2192 86% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775825135.6564856,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775825135.656488,
-      "rule": "TIME:normal \u2192 90% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775826506.6177855,
-      "rule": "by_spread:0.10-0.20 \u2192 95% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.617789,
-      "rule": "by_spread:0.20+ \u2192 75% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.6177912,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.6177924,
-      "rule": "by_volume:5K-50K \u2192 79% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.6177936,
-      "rule": "by_price:mid_low \u2192 88% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.617795,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.6177955,
-      "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775826506.6177976,
-      "rule": "TIME:normal \u2192 92% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775827731.199225,
-      "rule": "by_spread:0.10-0.20 \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.199229,
-      "rule": "by_spread:0.20+ \u2192 75% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.199232,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.1992335,
-      "rule": "by_volume:5K-50K \u2192 82% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.1992357,
-      "rule": "by_price:mid_low \u2192 89% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.1992366,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.1992376,
-      "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775827731.19924,
-      "rule": "TIME:normal \u2192 93% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775830408.4587705,
-      "rule": "STAR: foreign-intervention-in-gaza-by-june-30 \u2014 100% WR, $+1.313/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775830408.4589002,
-      "rule": "by_spread:0.10-0.20 \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.4589036,
-      "rule": "by_spread:0.20+ \u2192 82% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.458905,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.4589071,
-      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.4589078,
-      "rule": "by_volume:5K-50K \u2192 85% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.4589095,
-      "rule": "by_price:mid_low \u2192 90% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.4589105,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
     {
       "ts": 1775830408.4589112,
       "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
@@ -530,7 +374,300 @@
       "ts": 1775830408.4589133,
       "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
       "type": "time_star"
+    },
+    {
+      "ts": 1775838403.3807192,
+      "rule": "by_spread:0.10-0.20 \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.3807225,
+      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.3807235,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.3807251,
+      "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.380726,
+      "rule": "by_volume:5K-50K \u2192 88% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.380727,
+      "rule": "by_price:mid_low \u2192 92% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.3807278,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.3807282,
+      "rule": "by_price:low \u2192 92% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838403.3807304,
+      "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775838620.4608378,
+      "rule": "STAR: will-the-feds-upper-bound-reach-5pt5-or-higher-bef \u2014 100% WR, $+1.051/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775838907.0091133,
+      "rule": "STAR: weed-rescheduled-by-december-31 \u2014 100% WR, $+0.241/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775838907.0091882,
+      "rule": "by_spread:0.10-0.20 \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.00919,
+      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.0091908,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.0091922,
+      "rule": "by_volume:50K-500K \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.009193,
+      "rule": "by_volume:5K-50K \u2192 90% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.009194,
+      "rule": "by_price:mid_low \u2192 92% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.0091946,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.0091953,
+      "rule": "by_price:low \u2192 88% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775838907.0091975,
+      "rule": "TIME:normal \u2192 93% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775839033.920068,
+      "rule": "STAR: israeli-parliament-dissolved-by-june-30 \u2014 100% WR, $+1.736/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775839201.9059174,
+      "rule": "by_spread:0.10-0.20 \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.9059196,
+      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.90592,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.9059212,
+      "rule": "by_volume:50K-500K \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.9059217,
+      "rule": "by_volume:5K-50K \u2192 91% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.905923,
+      "rule": "by_price:mid_low \u2192 93% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.9059234,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.9059238,
+      "rule": "by_price:low \u2192 91% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839201.905925,
+      "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775839325.2691586,
+      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.2691607,
+      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.2691615,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.2691624,
+      "rule": "by_volume:50K-500K \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.269163,
+      "rule": "by_volume:5K-50K \u2192 93% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.269164,
+      "rule": "by_price:mid_low \u2192 93% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.2691646,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.269165,
+      "rule": "by_price:low \u2192 94% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775839325.2691662,
+      "rule": "TIME:normal \u2192 95% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775840151.2350228,
+      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.235025,
+      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.2350256,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.2350268,
+      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.2350276,
+      "rule": "by_volume:5K-50K \u2192 93% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.2350287,
+      "rule": "by_price:mid_low \u2192 94% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.2350295,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.23503,
+      "rule": "by_price:low \u2192 94% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775840151.2350311,
+      "rule": "TIME:normal \u2192 95% WR \u2014 focus here",
+      "type": "time_star"
     }
   ],
-  "last_updated": 1775830699.3221018
+  "last_updated": 1775840181.729242,
+  "session_analyses": [
+    {
+      "session": 5,
+      "date": "2026-04-10",
+      "duration_minutes": 35,
+      "mode": "paper",
+      "strategy": "both_sides",
+      "starting_capital": 100.0,
+      "final_equity": 395.24,
+      "realized_pnl": 295.24,
+      "return_pct": 295.24,
+      "trades": 41,
+      "wins": 39,
+      "losses": 2,
+      "win_rate": 0.951,
+      "profit_factor": 34.79,
+      "sharpe": 0.524,
+      "max_drawdown_pct": 7.3,
+      "avg_hold_seconds": 90,
+      "top_market": {
+        "slug": "will-the-feds-upper-bound-reach-5pt5-or-higher-before-2027-767",
+        "trades": 18,
+        "pnl": 250.31,
+        "pct_of_total": 84.8
+      },
+      "lessons": [
+        "85% of profits from one market (Fed 5.5%) - extreme concentration risk",
+        "Paper fill simulator v9 is deterministic but still more favorable than live",
+        "Token inventory bug: bot opens unintended SHORTs when selling more tokens than owned",
+        "Kelly fraction at 25% is too aggressive for prediction markets",
+        "Flow pull on 50-93\u00a2 momentum surges is correct - these are significant on PM",
+        "Brain correctly identified STAR markets with 100% WR",
+        "Tight spread markets (0.06-0.10) have 100% WR - fast fills",
+        "Low price range (5-20\u00a2) has highest PnL - spread capture is largest here"
+      ],
+      "bugs_found": [
+        "Token inventory: SELL opens SHORT when bot does not own enough tokens",
+        "Stripe IPO: SHORT 115 @ 0.144, timeout exit lost -8.04",
+        "USDT market cap: SHORT 5 shares on SELL side",
+        "OpenAI: SHORT at 0.414 on SELL side"
+      ],
+      "recommendations": [
+        "Reduce Kelly to 5-10%",
+        "Fix token inventory tracking - prevent unintended SHORTs",
+        "Cap per-market exposure at 30% of total PnL",
+        "Add gas cost simulation (0.5\u00a2 per trade)",
+        "Increase paper tax to 0.5\u00a2 for more realistic slippage",
+        "Test one_side strategy to avoid token inventory issues",
+        "Run during peak hours (14-22 UTC) for better fills"
+      ],
+      "honest_assessment": "Well-built bot but +295% return is from one anomalously volatile market. Realistic edge: 20-50% per session on wide-spread PM markets with proper risk management."
+    }
+  ]
 }
