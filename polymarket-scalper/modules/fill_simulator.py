@@ -91,7 +91,7 @@ class FillSimulator:
             "total_fills": 0,
             "book_cross_fills": 0,     # filled because book crossed our price
             "trade_fills": 0,           # filled because a trade hit our level
-            "simulated_fills": 0,       # fallback probability fill
+            "simulated_fills": 0,       # DEPRECATED — no longer used
             "adverse_fills": 0,
             "favorable_fills": 0,
             "partial_fills": 0,
@@ -325,8 +325,7 @@ class FillSimulator:
             self._fill_stats["book_cross_fills"] += 1
         elif trade_hit:
             self._fill_stats["trade_fills"] += 1
-        else:
-            self._fill_stats["simulated_fills"] += 1
+        # else: impossible now — prob_fill is always False
 
         # ─── Adverse selection check ────────────────────────
         adverse_score = self.get_adverse_selection_score(token, order_side)
@@ -387,7 +386,7 @@ class FillSimulator:
         if is_adverse:
             LOG.warning(f"⚠️ ADVERSE FILL | {order_side} {fill_shares:.0f} @ ${fill_price:.4f} "
                        f"(limit=${order_price:.4f}, slip=${total_cost:.4f}, "
-                       f"{'book_cross' if book_crossed else 'trade_hit' if trade_hit else 'simulated'})")
+                       f"{'book_cross' if book_crossed else 'trade_hit'})")
 
         return True, fill_price, fill_shares, is_adverse
 
