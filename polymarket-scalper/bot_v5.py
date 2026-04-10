@@ -835,10 +835,10 @@ class ScalperV5:
                     await self.om.cancel_order(order)
             LOG.warning(f"🌊 FLOW PULL | {slug[:35]} | {pull_reason}")
 
-        # v8: Reactive cancellation — only if price moved >3¢ (not 1¢)
-        # 1¢ moves are constant noise on prediction markets
+        # v8: Reactive cancellation — only if price moved >5¢ (not 1¢ or 3¢)
+        # 3¢ moves are constant noise on prediction markets
         price_moved = abs(mid - old_mid)
-        if price_moved > 0.03:
+        if price_moved > 0.05:
             for oid, order in list(self.om.orders.items()):
                 if order.status == "live" and order.slug == slug:
                     await self.om.cancel_order(order)
@@ -1112,15 +1112,23 @@ class ScalperV5:
         ba = market.best_ask
         spread = market.spread
 
-        # ── v8: Place AT best bid for queue priority ──────────
-        # The v5 logic (mid - spread*0.3) placed orders in the MIDDLE of the spread,
-        # which means nobody was in front of us but nobody would hit us either.
-        # Real scalpers queue AT the best bid (or 1 tick inside if wide spread).
-        if spread > tick * 5:
-            # Wide spread: 1 tick inside best bid for better position
+        # ── v9: Smart BUY placement ──────────────────────────
+        # On wide-spread markets, best_bid is often way below mid (no liquidity there).
+        # Placing at best_bid on a market with bid=$0.01, ask=$0.17 means waiting for
+        # someone to sweep 16¢ down the book — extremely unlikely.
+        # Solution: place at best_bid + fraction of spread, getting closer to mid
+        # where actual trading happens.
+        mid = (bb + ba) / 2
+
+        if spread > tick * 10:
+            # Wide spread (10¢+): place at 25% of spread above best_bid
+            # This gets us into the "active zone" where takers actually trade
+            buy_price = round(bb + spread * 0.25, 4)
+        elif spread > tick * 5:
+            # Medium spread: place at 1 tick inside best_bid
             buy_price = round(bb + tick, 4)
         else:
-            # Tight spread: queue at best bid
+            # Tight spread: queue at best_bid
             buy_price = round(bb, 4)
 
         # Safety: don't cross the ask
@@ -1180,13 +1188,16 @@ class ScalperV5:
         gtd = self._get_gtd_seconds(slug, market.spread)
         tick = market.tick_size
 
-        # v8: Place AT best bid/ask for queue priority, not in the middle of spread
-        # Real market makers queue at the front of the book
+        # v9: Smart placement — don't place at dead best_bid/ask on wide spreads
         bb = market.best_bid
         ba = market.best_ask
 
-        if spread > tick * 5:
-            # Wide spread: 1 tick inside for better queue position
+        if spread > tick * 10:
+            # Wide spread: place 25% inside from each side (closer to mid)
+            bid_price = round(bb + spread * 0.25, 4)
+            ask_price = round(ba - spread * 0.25, 4)
+        elif spread > tick * 5:
+            # Medium spread: 1 tick inside
             bid_price = round(bb + tick, 4)
             ask_price = round(ba - tick, 4)
         else:

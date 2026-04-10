@@ -318,30 +318,48 @@ class FillSimulator:
         # This is the CORE of realistic scalper fill simulation
         prob_fill = False
         if not book_crossed and not trade_hit:
-            # Check how close we are to the best level
+            # Check how close we are to the best level OR if we're inside the spread
             at_best = False
             near_best = False
+            inside_spread = False
+
             if order_side == "BUY":
                 if abs(order_price - best_bid) <= tick:
                     at_best = True
                 elif order_price <= best_bid + tick * 2 and order_price >= best_bid:
                     near_best = True  # 1-2 ticks from best bid
+                elif order_price < best_ask and order_price > best_bid:
+                    # v9: Inside the spread but not near best_bid
+                    # On wide-spread markets this is where trading happens
+                    inside_spread = True
             elif order_side == "SELL":
                 if abs(order_price - best_ask) <= tick:
                     at_best = True
                 elif order_price >= best_ask - tick * 2 and order_price <= best_ask:
                     near_best = True
+                elif order_price > best_bid and order_price < best_ask:
+                    inside_spread = True
 
-            if at_best or near_best:
+            if at_best or near_best or inside_spread:
                 # ── Queue fill rate ──────────────────────────
-                # v8: More realistic fill rates
+                # v9: More realistic fill rates with inside_spread support
                 # At best bid on a 10¢ spread market: ~5% per check
                 # Near best (1 tick): ~3% per check
+                # Inside spread (wide markets): ~2% per check
                 # These produce fills every 2-6 min on active markets
                 if at_best:
                     base_rate = 0.05  # 5% per check at best level
-                else:
+                elif near_best:
                     base_rate = 0.03  # 3% per check near best (1 tick)
+                elif inside_spread:
+                    # v9: Inside spread — fill rate depends on how close to mid
+                    # Closer to mid = more likely to get hit by takers
+                    spread_position = (order_price - best_bid) / max(spread, tick)
+                    # spread_position: 0 = at bid, 1 = at ask, 0.5 = at mid
+                    # Closer to mid = higher fill rate (takers cross from both sides)
+                    base_rate = 0.015 + spread_position * 0.02  # 1.5% to 3.5%
+                else:
+                    base_rate = 0.001  # fallback
 
                 base_rate *= size_mult
 

@@ -71,15 +71,16 @@ class DynamicStopLoss:
     MIN_STOP_DISTANCE = 0.005  # 0.5¢
 
     # Maximum stop distance in dollars
-    MAX_STOP_DISTANCE = 0.05   # 5¢
+    MAX_STOP_DISTANCE = 0.08   # 8¢ (wider for prediction market noise)
 
     # Time decay: stop tightens by this fraction per minute after threshold
     TIME_DECAY_START = 60  # seconds before decay begins
     TIME_DECAY_RATE = 0.02  # 2% tightening per minute
 
     # Trailing stop: activate after this profit threshold
-    TRAILING_ACTIVATE_PROFIT = 0.01  # 1¢ profit
-    TRAILING_DISTANCE = 0.005  # trail 0.5¢ behind high
+    TRAILING_ACTIVATE_PROFIT = 0.03  # 3¢ profit (need real move, not noise)
+    TRAILING_DISTANCE = 0.01  # trail 1¢ behind high/low
+    TRAILING_GRACE_PERIOD = 30  # don't trail in first 30 seconds
 
     def __init__(self):
         # token_id → list of price points
@@ -237,21 +238,28 @@ class DynamicStopLoss:
         hold_time = now - stop.opened
 
         # ─── Trailing stop ──────────────────────────────────
+        # FIXED: Grace period — don't trail in first TRAILING_GRACE_PERIOD seconds
+        # FIXED: Higher activation threshold (3¢ vs 1¢) to avoid noise
+        # For SHORT: price dropping = profit. Stop trails DOWN to lock gains.
+        # For LONG: price rising = profit. Stop trails UP to lock gains.
 
-        if stop.side == "LONG":
-            profit = current_price - stop.entry_price
-            if profit >= self.TRAILING_ACTIVATE_PROFIT:
-                trail_stop = round(current_price - self.TRAILING_DISTANCE, 4)
-                if trail_stop > stop.current_stop:
-                    stop.current_stop = trail_stop
-                    stop.stop_type = "trailing"
-        else:  # SHORT
-            profit = stop.entry_price - current_price
-            if profit >= self.TRAILING_ACTIVATE_PROFIT:
-                trail_stop = round(current_price + self.TRAILING_DISTANCE, 4)
-                if trail_stop < stop.current_stop:
-                    stop.current_stop = trail_stop
-                    stop.stop_type = "trailing"
+        if hold_time > self.TRAILING_GRACE_PERIOD:
+            if stop.side == "LONG":
+                profit = current_price - stop.entry_price
+                if profit >= self.TRAILING_ACTIVATE_PROFIT:
+                    # Trail UP: stop moves up behind rising price
+                    trail_stop = round(current_price - self.TRAILING_DISTANCE, 4)
+                    if trail_stop > stop.current_stop:
+                        stop.current_stop = trail_stop
+                        stop.stop_type = "trailing"
+            else:  # SHORT
+                profit = stop.entry_price - current_price
+                if profit >= self.TRAILING_ACTIVATE_PROFIT:
+                    # Trail DOWN: stop tightens DOWN as price drops
+                    trail_stop = round(current_price + self.TRAILING_DISTANCE, 4)
+                    if trail_stop < stop.current_stop:
+                        stop.current_stop = trail_stop
+                        stop.stop_type = "trailing"
 
         # ─── Time decay ─────────────────────────────────────
 

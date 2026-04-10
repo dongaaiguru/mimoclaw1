@@ -270,8 +270,8 @@ class FlowAnalyzer:
             direction = "BUY" if s["buy_pressure"] > 0 else "SELL"
             return True, f"VOLUME SPIKE: {s['spike_ratio']:.1f}x, {direction} pressure={s['buy_pressure']:.2f}"
         # v8: Much higher thresholds — only pull on REAL danger, not noise
-        # 4¢ moves are normal on prediction markets; need 8¢+ to be concerning
-        if abs(s["momentum"]) > 0.08 and s["velocity"] > 20:
+        # 4¢ moves are normal on prediction markets; need 20¢+ to be concerning
+        if abs(s["momentum"]) > 0.20 and s["velocity"] > 30:
             return True, f"MOMENTUM SURGE: {s['momentum']*100:.1f}¢ move, {s['velocity']} trades/30s"
         return False, "OK"
 
