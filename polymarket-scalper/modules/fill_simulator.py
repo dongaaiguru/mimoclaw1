@@ -186,9 +186,10 @@ class FillSimulator:
         """
         Check if the live order book crossed our order price since we placed it.
         
-        This is the CORE of realistic paper fills:
-        - If best_ask dropped below our BUY price → we'd be filled
-        - If best_bid rose above our SELL price → we'd be filled
+        v8: FIXED logic for SELL orders.
+        - BUY: fills when best_ask dropped to our bid (sellers crossed down)
+        - SELL: fills when best_ask dropped to our ask (asks consumed to our level)
+               OR best_bid rose to our ask (buyers crossed up)
         """
         history = self._book_history.get(token, [])
         if not history:
@@ -206,8 +207,12 @@ class FillSimulator:
                 if snap.best_ask > 0 and snap.best_ask <= order_price + tick:
                     return True
             else:
-                # Our SELL would fill if best_bid >= our price
+                # Our SELL would fill if:
+                # 1) best_bid >= our price (buyer lifted our ask)
+                # 2) best_ask <= our price (asks consumed down to our level)
                 if snap.best_bid > 0 and snap.best_bid >= order_price - tick:
+                    return True
+                if snap.best_ask > 0 and snap.best_ask <= order_price + tick:
                     return True
 
         return False
@@ -275,12 +280,26 @@ class FillSimulator:
             self._fill_stats["size_penalized"] += 1
 
         # ─── Priority 1: Deterministic book cross ───────────
+        # v8: FIXED book cross logic
+        # BUY fills: best_ask <= our price (ask book came down to us = sellers hitting our bid)
+        # SELL fills: best_ask <= our price (ask book consumed down to our level = buyers hitting our ask)
+        # OR: best_bid >= our price (bid book rose to our level)
         tick = 0.01
         book_crossed = False
-        if order_side == "BUY" and best_ask > 0 and best_ask <= order_price + tick:
-            book_crossed = True
-        elif order_side == "SELL" and best_bid > 0 and best_bid >= order_price - tick:
-            book_crossed = True
+        if order_side == "BUY":
+            # Our BUY fills when the ask side comes down to our price
+            # i.e., someone is willing to sell at/below our bid price
+            if best_ask > 0 and best_ask <= order_price + tick:
+                book_crossed = True
+        elif order_side == "SELL":
+            # Our SELL fills when:
+            # 1) The best bid rises to/above our ask price (aggressive buyer)
+            # 2) The best ask drops to/below our price (asks consumed down to us)
+            if best_bid > 0 and best_bid >= order_price - tick:
+                book_crossed = True
+            elif best_ask > 0 and best_ask <= order_price + tick:
+                # Asks were consumed down to our level — we're now at the best ask
+                book_crossed = True
 
         # Also check historical book snapshots
         if not book_crossed and order_created > 0:
