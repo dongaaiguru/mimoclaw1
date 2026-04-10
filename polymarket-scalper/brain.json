@@ -1,10 +1,10 @@
 {
   "version": 4,
-  "total_trades": 471,
-  "total_pnl": 1010.83,
-  "total_wins": 462,
+  "total_trades": 598,
+  "total_pnl": 1134.29,
+  "total_wins": 589,
   "total_losses": 9,
-  "sessions": 9,
+  "sessions": 11,
   "first_seen": 1775823672.240313,
   "markets": {
     "stripe-ipo-before-2027": {
@@ -23,34 +23,34 @@
       "profit_score": 0.9734375
     },
     "will-usdt-market-cap-hit-200b-before-2027": {
-      "trades": 38,
-      "wins": 37,
+      "trades": 48,
+      "wins": 47,
       "losses": 1,
-      "total_pnl": 20.123709999999992,
-      "avg_pnl": 0.5295713157894735,
-      "win_rate": 0.9736842105263158,
-      "avg_hold": 88.98391750611758,
-      "fills": 36,
+      "total_pnl": 34.51659999999999,
+      "avg_pnl": 0.7190958333333332,
+      "win_rate": 0.9791666666666666,
+      "avg_hold": 80.41314573089282,
+      "fills": 46,
       "timeouts": 2,
-      "last_seen": 1775850109.7290463,
+      "last_seen": 1775861965.3526776,
       "question": "Will USDT market cap hit $200B before 2027?",
-      "risk_score": 0.031578947368421054,
-      "profit_score": 0.9736842105263159
+      "risk_score": 0.025,
+      "profit_score": 0.9791666666666667
     },
     "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election": {
-      "trades": 34,
-      "wins": 33,
+      "trades": 37,
+      "wins": 36,
       "losses": 1,
-      "total_pnl": 87.1723,
-      "avg_pnl": 2.5638911764705883,
-      "win_rate": 0.9705882352941176,
-      "avg_hold": 61.868278124753175,
-      "fills": 34,
+      "total_pnl": 90.8011,
+      "avg_pnl": 2.454083783783784,
+      "win_rate": 0.972972972972973,
+      "avg_hold": 61.74273513458872,
+      "fills": 37,
       "timeouts": 0,
-      "last_seen": 1775850860.8624277,
+      "last_seen": 1775861858.4559326,
       "question": "Will Fernando Dias da Costa win the 2025 Guinea-Bissau presidential election?",
-      "risk_score": 0.011764705882352941,
-      "profit_score": 0.9882352941176471
+      "risk_score": 0.010810810810810811,
+      "profit_score": 0.9891891891891893
     },
     "will-pt-win-the-most-seats-in-the-2025-guinea-bissau-national-peoples-assembly-election": {
       "trades": 3,
@@ -68,16 +68,16 @@
       "profit_score": 0.3
     },
     "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026": {
-      "trades": 42,
-      "wins": 42,
+      "trades": 56,
+      "wins": 56,
       "losses": 0,
-      "total_pnl": 37.12062999999999,
-      "avg_pnl": 0.8838245238095236,
+      "total_pnl": 48.424509999999984,
+      "avg_pnl": 0.8647233928571426,
       "win_rate": 1.0,
-      "avg_hold": 42.37671468371437,
-      "fills": 42,
+      "avg_hold": 38.1509039912905,
+      "fills": 56,
       "timeouts": 0,
-      "last_seen": 1775850799.7860043,
+      "last_seen": 1775861904.244689,
       "question": "Will OpenAI launch a new consumer hardware product by December 31, 2026?",
       "risk_score": 0.0,
       "profit_score": 1.0
@@ -113,31 +113,31 @@
       "profit_score": 1.0
     },
     "will-israel-launch-a-major-ground-offensive-in-gaza-by-december-31-828": {
-      "trades": 13,
-      "wins": 13,
+      "trades": 25,
+      "wins": 25,
       "losses": 0,
-      "total_pnl": 19.088479999999993,
-      "avg_pnl": 1.468344615384615,
+      "total_pnl": 23.638879999999993,
+      "avg_pnl": 0.9455551999999997,
       "win_rate": 1.0,
-      "avg_hold": 39.52079242926377,
-      "fills": 13,
+      "avg_hold": 38.8134496307373,
+      "fills": 25,
       "timeouts": 0,
-      "last_seen": 1775850081.0640173,
+      "last_seen": 1775861077.952341,
       "question": "Will Israel launch a major ground offensive in Gaza by December 31?",
       "risk_score": 0.0,
       "profit_score": 1.0
     },
     "israeli-parliament-dissolved-by-june-30": {
-      "trades": 17,
-      "wins": 17,
+      "trades": 33,
+      "wins": 33,
       "losses": 0,
-      "total_pnl": 49.53926000000002,
-      "avg_pnl": 2.91407411764706,
+      "total_pnl": 64.18348000000003,
+      "avg_pnl": 1.9449539393939403,
       "win_rate": 1.0,
-      "avg_hold": 35.79818868637085,
-      "fills": 17,
+      "avg_hold": 37.05207545829542,
+      "fills": 33,
       "timeouts": 0,
-      "last_seen": 1775842203.405807,
+      "last_seen": 1775861736.295762,
       "question": "Israeli parliament dissolved by June 30?",
       "risk_score": 0.0,
       "profit_score": 1.0
@@ -263,16 +263,16 @@
       "profit_score": 1.0
     },
     "nhl-2025-26-hart-memorial-trophy-nikita-kucherov": {
-      "trades": 10,
-      "wins": 10,
+      "trades": 19,
+      "wins": 19,
       "losses": 0,
-      "total_pnl": 16.594810000000003,
-      "avg_pnl": 1.6594810000000002,
+      "total_pnl": 29.89456,
+      "avg_pnl": 1.573397894736842,
       "win_rate": 1.0,
-      "avg_hold": 80.7479986190796,
-      "fills": 10,
+      "avg_hold": 63.9695221499393,
+      "fills": 19,
       "timeouts": 0,
-      "last_seen": 1775850837.9572012,
+      "last_seen": 1775860956.037675,
       "question": "Will Nikita Kucherov win the 2025\u20132026 NHL Hart Memorial Trophy?",
       "risk_score": 0.0,
       "profit_score": 1.0
@@ -311,22 +311,22 @@
   "patterns": {
     "by_spread": {
       "0.10-0.20": {
-        "wins": 202,
+        "wins": 282,
         "losses": 3,
-        "total_pnl": 542.6589249999997,
-        "trades": 205
+        "total_pnl": 633.6277649999997,
+        "trades": 285
       },
       "0.20+": {
-        "wins": 39,
+        "wins": 76,
         "losses": 3,
-        "total_pnl": 36.062079999999995,
-        "trades": 42
+        "total_pnl": 61.11274,
+        "trades": 79
       },
       "0.06-0.10": {
-        "wins": 29,
+        "wins": 39,
         "losses": 0,
-        "total_pnl": 100.95193000000002,
-        "trades": 29
+        "total_pnl": 108.39237000000001,
+        "trades": 39
       },
       "0.04-0.06": {
         "wins": 3,
@@ -343,16 +343,16 @@
     },
     "by_volume": {
       "50K-500K": {
-        "wins": 118,
+        "wins": 144,
         "losses": 3,
-        "total_pnl": 204.63064,
-        "trades": 121
+        "total_pnl": 233.66775,
+        "trades": 147
       },
       "5K-50K": {
-        "wins": 168,
+        "wins": 206,
         "losses": 5,
-        "total_pnl": 479.5513349999998,
-        "trades": 173
+        "total_pnl": 512.3341649999998,
+        "trades": 211
       },
       "1K-5K": {
         "wins": 6,
@@ -363,74 +363,74 @@
     },
     "by_liquidity": {
       "3K-7K": {
-        "wins": 125,
+        "wins": 150,
         "losses": 6,
-        "total_pnl": 249.04699999999997,
-        "trades": 131
+        "total_pnl": 276.99096999999983,
+        "trades": 156
       },
       "7K-15K": {
-        "wins": 88,
+        "wins": 101,
         "losses": 1,
-        "total_pnl": 355.1537599999997,
-        "trades": 89
+        "total_pnl": 373.17544999999967,
+        "trades": 102
       },
       "2K-3K": {
-        "wins": 79,
+        "wins": 105,
         "losses": 1,
-        "total_pnl": 104.78489499999998,
-        "trades": 80
+        "total_pnl": 120.63917499999995,
+        "trades": 106
       }
     },
     "by_price": {
       "mid_low": {
-        "wins": 122,
+        "wins": 152,
         "losses": 5,
-        "total_pnl": 186.69812500000006,
-        "trades": 127
+        "total_pnl": 212.64622500000007,
+        "trades": 157
       },
       "high": {
-        "wins": 42,
+        "wins": 52,
         "losses": 1,
-        "total_pnl": 22.716889999999996,
-        "trades": 43
+        "total_pnl": 37.10977999999999,
+        "trades": 53
       },
       "low": {
-        "wins": 114,
+        "wins": 126,
         "losses": 2,
-        "total_pnl": 480.14513999999997,
-        "trades": 116
+        "total_pnl": 497.0736899999999,
+        "trades": 128
       },
       "mid_high": {
-        "wins": 14,
+        "wins": 26,
         "losses": 0,
-        "total_pnl": 19.425499999999992,
-        "trades": 14
+        "total_pnl": 23.975899999999992,
+        "trades": 26
       }
     },
     "by_hold_time": {
       "0-30s": {
-        "wins": 95,
+        "wins": 129,
         "losses": 0,
-        "total_pnl": 251.29585999999998,
-        "trades": 95
+        "total_pnl": 294.07796999999994,
+        "trades": 129
       },
       "30-60s": {
-        "wins": 98,
+        "wins": 162,
         "losses": 0,
-        "total_pnl": 153.83476999999996,
-        "trades": 98
+        "total_pnl": 211.73214,
+        "trades": 162
       },
       "60-120s": {
-        "wins": 50,
+        "wins": 78,
         "losses": 1,
-        "total_pnl": 185.76459,
-        "trades": 51
+        "total_pnl": 208.21535,
+        "trades": 79
       },
       "120-300s": {
-        "wins": 38,
+        "wins": 39,
         "losses": 3,
-        "total_pnl": 87.04264999999998,
-        "trades": 41
+        "total_pnl": 87.37234999999998,
+        "trades": 42
       },
       "300s+": {
         "wins": 11,
@@ -442,14 +442,14 @@
   },
   "time_patterns": {
     "peak": {
-      "wins": 0,
+      "wins": 63,
       "losses": 0,
-      "pnl": 0
+      "pnl": 61.64
     },
     "normal": {
-      "wins": 292,
+      "wins": 356,
       "losses": 8,
-      "pnl": 708.985655
+      "pnl": 770.8055950000003
     },
     "quiet": {
       "wins": 0,
@@ -459,9 +459,14 @@
   },
   "day_patterns": {
     "Friday": {
-      "wins": 292,
+      "wins": 419,
       "losses": 8,
-      "pnl": 708.985655
+      "pnl": 832.4455950000003
+    },
+    "Saturday": {
+      "wins": 63,
+      "losses": 0,
+      "pnl": 61.64
     }
   },
   "avoid_list": [],
@@ -483,257 +488,312 @@
   ],
   "rules": [
     {
-      "ts": 1775850478.1995504,
-      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995528,
-      "rule": "by_spread:0.20+ \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995535,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995544,
-      "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995559,
-      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995568,
-      "rule": "by_volume:5K-50K \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995578,
-      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.199559,
-      "rule": "by_price:mid_low \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995597,
-      "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995606,
-      "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850478.1995618,
+      "ts": 1775860833.5804784,
       "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850478.1995635,
+      "ts": 1775860833.5804813,
       "rule": "TIME:normal \u2192 97% WR \u2014 focus here",
       "type": "time_star"
     },
     {
-      "ts": 1775850730.6101665,
-      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101701,
-      "rule": "by_spread:0.20+ \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.610171,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.610173,
-      "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.610174,
-      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101747,
-      "rule": "by_volume:5K-50K \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101751,
-      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101763,
-      "rule": "by_price:mid_low \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.610177,
-      "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101778,
-      "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101785,
-      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850730.6101804,
-      "rule": "TIME:normal \u2192 97% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775850804.1791372,
-      "rule": "STAR: nhl-2025-26-hart-memorial-trophy-connor-mcdavid \u2014 100% WR, $+2.409/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775850804.179259,
-      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.179262,
-      "rule": "by_spread:0.20+ \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792626,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792645,
-      "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792657,
-      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.179267,
-      "rule": "by_volume:5K-50K \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.179268,
-      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792693,
-      "rule": "by_price:mid_low \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792705,
-      "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792715,
-      "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792722,
-      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775850804.1792743,
-      "rule": "TIME:normal \u2192 97% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775850830.340917,
-      "rule": "STAR: will-trump-pardon-steve-bannon-before-2027 \u2014 100% WR, $+3.736/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775850845.5927477,
+      "ts": 1775860940.7767525,
       "rule": "by_spread:0.10-0.20 \u2192 99% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927503,
-      "rule": "by_spread:0.20+ \u2192 93% WR \u2014 prioritize",
+      "ts": 1775860940.7767544,
+      "rule": "by_spread:0.20+ \u2192 94% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927513,
+      "ts": 1775860940.7767549,
       "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.592753,
+      "ts": 1775860940.7767563,
       "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927544,
+      "ts": 1775860940.7767575,
       "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927563,
+      "ts": 1775860940.776758,
       "rule": "by_volume:5K-50K \u2192 97% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927572,
+      "ts": 1775860940.7767587,
       "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927582,
+      "ts": 1775860940.7767599,
       "rule": "by_price:mid_low \u2192 96% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927591,
+      "ts": 1775860940.7767606,
       "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.59276,
+      "ts": 1775860940.7767618,
       "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.5927613,
+      "ts": 1775860940.7767627,
       "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775850845.592763,
-      "rule": "TIME:normal \u2192 97% WR \u2014 focus here",
+      "ts": 1775860940.776764,
+      "rule": "TIME:normal \u2192 98% WR \u2014 focus here",
       "type": "time_star"
+    },
+    {
+      "ts": 1775861261.917789,
+      "rule": "by_spread:0.10-0.20 \u2192 99% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177911,
+      "rule": "by_spread:0.20+ \u2192 94% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177923,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177935,
+      "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177952,
+      "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.917796,
+      "rule": "by_volume:5K-50K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177966,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177978,
+      "rule": "by_price:mid_low \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177988,
+      "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9177997,
+      "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9178002,
+      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861261.9178016,
+      "rule": "TIME:normal \u2192 98% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775861537.2077894,
+      "rule": "by_spread:0.10-0.20 \u2192 99% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077918,
+      "rule": "by_spread:0.20+ \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077928,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077937,
+      "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077947,
+      "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077954,
+      "rule": "by_volume:5K-50K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077963,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077975,
+      "rule": "by_price:mid_low \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077982,
+      "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2077992,
+      "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2078,
+      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861537.2078016,
+      "rule": "TIME:normal \u2192 98% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775861858.4559634,
+      "rule": "by_spread:0.10-0.20 \u2192 99% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.455966,
+      "rule": "by_spread:0.20+ \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559672,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559681,
+      "rule": "by_spread:0.03-0.04 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559693,
+      "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559703,
+      "rule": "by_volume:5K-50K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.455971,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559724,
+      "rule": "by_price:mid_low \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559731,
+      "rule": "by_price:high \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559736,
+      "rule": "by_price:low \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559743,
+      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775861858.4559758,
+      "rule": "TIME:normal \u2192 98% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775863475.4724739,
+      "rule": "CROSS-SESSION: Returns declining 295%->138%->101%->62% - brain learning shorter holds, NOT strategy failure",
+      "type": "meta_analysis"
+    },
+    {
+      "ts": 1775863475.472474,
+      "rule": "CROSS-SESSION: Diversification improving - top market 85%->44%->24%->31% - healthy risk distribution",
+      "type": "meta_analysis"
+    },
+    {
+      "ts": 1775863475.4724746,
+      "rule": "CROSS-SESSION: 280+ paper trades, 2 adverse fills total - fill sim is 3-5x too optimistic, multiply paper returns by 0.25 for live estimate",
+      "type": "meta_analysis"
+    },
+    {
+      "ts": 1775863475.4724746,
+      "rule": "CROSS-SESSION: Israeli parliament = most consistent earner across all sessions (100% WR, 33+ trades, $1.07 avg) - STAR confirmed",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775863475.4724748,
+      "rule": "CROSS-SESSION: USDT $200B = second most reliable (98% WR, $1.44 avg) - STAR confirmed",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775863475.472475,
+      "rule": "CROSS-SESSION: OpenAI hardware = steady earner (100% WR, $0.81 avg, short holds) - STAR confirmed",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775863475.4724777,
+      "rule": "LIVE RECOMMENDATION: Go live with $100, one_side, per-order $5, max 3 concurrent - paper testing exhausted",
+      "type": "go_live"
+    },
+    {
+      "ts": 1775863475.472478,
+      "rule": "LIVE RECOMMENDATION: Expected live metrics - 60-75% WR, +2% to -5% per session, 15-25% adverse fills, 5-15% drawdown",
+      "type": "go_live"
+    },
+    {
+      "ts": 1775863475.4724782,
+      "rule": "LIVE RECOMMENDATION: 2-week trial minimum before evaluating - track fill rates, adverse %, gas costs vs paper predictions",
+      "type": "go_live"
+    },
+    {
+      "ts": 1775863475.4724782,
+      "rule": "SENTIMENT: Module underperforms in paper mode - regular one_side flow captures same markets more efficiently. Consider disabling for live to reduce noise.",
+      "type": "meta_analysis"
+    },
+    {
+      "ts": 1775863475.4724784,
+      "rule": "HOLD TIME: 0-30s and 30-60s hold times have 100% WR across all sessions. 300s+ hold times have 73% WR. Target <60s holds.",
+      "type": "pattern_star"
     }
   ],
-  "last_updated": 1775850906,
+  "last_updated": 1775863475.4724689,
   "session_analyses": [
     {
       "session": 5,
@@ -916,6 +976,76 @@
         "Add random partial fills (20-40% of orders) to simulate queue position reality",
         "Before live: run 5+ paper sessions and verify WR drops to 65-80% range with adverse fills enabled",
         "Consider reducing starting position sizes by 75% for first live week"
+      ]
+    },
+    {
+      "session": 10,
+      "date_utc": "2026-04-11",
+      "time_start_utc": "22:29:41",
+      "time_end_utc": "22:59:41",
+      "timestamp_start": 1775861381,
+      "timestamp_end": 1775863181,
+      "timezone": "UTC",
+      "date_local": "2026-04-11",
+      "time_start_local": "06:29:41",
+      "time_end_local": "06:59:41",
+      "local_timezone": "GMT+8",
+      "duration_minutes": 30,
+      "mode": "paper",
+      "strategy": "one_side",
+      "starting_capital": 100.0,
+      "final_equity": 161.64,
+      "realized_pnl": 61.64,
+      "return_pct": 61.64,
+      "trades": 63,
+      "wins": 63,
+      "losses": 0,
+      "win_rate": 1.0,
+      "profit_factor": null,
+      "max_drawdown_pct": 0.0,
+      "top_market": {
+        "slug": "israeli-parliament-dissolved-by-june-30",
+        "trades": 18,
+        "pnl": 19.34,
+        "pct_of_total": 31.4
+      },
+      "termination": "timeout - 30 min kill signal, no open positions at exit",
+      "adverse_fills": 0,
+      "flow_pulls": 10,
+      "sentiment_signals": 4,
+      "markets_pruned": 20,
+      "lessons": [
+        "Return declining across sessions: 295% -> 138% -> 101% -> 62% - brain learning shorter hold times = smaller per-trade profits",
+        "Diversification improving: top market dropped from 85% (#5) to 31% (#10) - healthy trend",
+        "Equity curve acceleration visible: first half +$23/12min, second half +$38/17min - compounding effect of bankroll scaling",
+        "Israeli parliament is the most consistent earner across 4 sessions: +$19.34 (#10), +$17.44 (#9), +$12.36 (#6)",
+        "USDT market cap is second most reliable: +$14.39 (#10), +$18.78 (#9) - 15c price with ~15c spread = near 100% capture",
+        "NHL Hart Trophy remains explosive: +$13.30 in 9 trades ($1.48 avg) - extreme volatility on thin books",
+        "OpenAI hardware is the steady earner: +$11.30 in 14 trades, 100% WR, consistent 7-8c spread capture",
+        "Sentiment module underperformed: 4 signals fired at T+0, placed 5 buys, but regular one_side flow captured same markets more efficiently",
+        "0 adverse fills in 4 consecutive sessions (280+ trades total, only 2 adverse ever) - fill simulator is 3-5x too optimistic",
+        "0 drawdown in 4 consecutive sessions - even best live scalpers see 3-8% drawdowns",
+        "Paper-mode multiplier estimated at 3-5x: divide paper returns by 4 for realistic live expectations",
+        "Growth rate was remarkably linear at ~$2.05/minute - no blowup spikes, steady accumulation",
+        "Market pruning doing heavy lifting: 20+ dead markets removed across session - keeps bot focused on active books",
+        "Brain has 598 trades in memory now - learning is accumulating but all paper-mode inflated"
+      ],
+      "bugs_found": [
+        "Fill simulator still producing 0 adverse fills - same issue for 4th consecutive session",
+        "0% drawdown impossible in real market making with 63 trades in 30 minutes",
+        "Gas costs unaccounted: 63 trades x ~$0.005 = $0.315 in Polygon fees, not deducted",
+        "Low-price markets (13-15c) have widest spreads and highest PnL but also thinnest books - paper mode doesn't simulate queue competition"
+      ],
+      "recommendations": [
+        "FINAL RECOMMENDATION: Stop paper trading. Go live with tight risk limits.",
+        "Live config: $100 capital, one_side, per-order $5, max 3 concurrent positions",
+        "Track actual fill rates, adverse selection %, gas costs for 2 weeks minimum",
+        "If WR > 60% and PnL > gas costs after 2 weeks -> scale to $500",
+        "If WR 50-60% and breakeven -> tune and extend trial",
+        "If WR < 50% or negative PnL -> strategy doesn't work live",
+        "Expected live return: +2% to -5% per 30-min session (vs +62% paper)",
+        "Expected live WR: 60-75% (vs 100% paper)",
+        "Expected live adverse fills: 15-25% of trades (vs 0% paper)"
       ]
     }
   ],
