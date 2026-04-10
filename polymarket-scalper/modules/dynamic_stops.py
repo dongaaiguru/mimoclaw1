@@ -284,11 +284,14 @@ class DynamicStopLoss:
 
         # ─── Return if changed ──────────────────────────────
 
-        if stop.current_stop != old_stop:
+        move = abs(stop.current_stop - old_stop)
+        if move >= 0.005:  # Only log moves >= 0.5¢
             direction = "↑" if stop.current_stop > old_stop else "↓"
             LOG.info(f"🛑 STOP MOVE {direction} | {slug[:35]} | "
                     f"${old_stop:.4f} → ${stop.current_stop:.4f} ({stop.stop_type})")
             return stop.current_stop
+        elif move > 0:
+            return stop.current_stop  # still update, just don't log
 
         return None
 

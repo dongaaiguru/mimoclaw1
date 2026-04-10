@@ -140,6 +140,10 @@ class TokenManager:
         if no_token not in self._holdings:
             self._holdings[no_token] = TokenHolding(no_token, "")
 
+        if amount < 0.5:
+            LOG.debug(f"✂️ SPLIT SKIP | amount too small: ${amount:.2f}")
+            return
+
         self._holdings[yes_token].amount += amount
         self._holdings[yes_token].cost_basis += amount
         self._holdings[no_token].amount += amount

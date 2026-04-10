@@ -1649,7 +1649,8 @@ class OrderManager:
                 pos = self.positions[order.slug]
                 total_cost = pos.cost + cost
                 total_shares = pos.shares + order.shares
-                pos.entry_price = total_cost / total_shares
+                if total_shares > 0.001:
+                    pos.entry_price = total_cost / total_shares
                 pos.shares = total_shares
                 pos.cost = total_cost
                 pos.committed_capital = total_cost

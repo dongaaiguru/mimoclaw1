@@ -1,56 +1,56 @@
 {
   "version": 4,
-  "total_trades": 58,
-  "total_pnl": 57.18613000000001,
-  "total_wins": 54,
+  "total_trades": 75,
+  "total_pnl": 73.14773000000001,
+  "total_wins": 71,
   "total_losses": 4,
-  "sessions": 2,
+  "sessions": 4,
   "first_seen": 1775823672.240313,
   "markets": {
     "stripe-ipo-before-2027": {
-      "trades": 21,
-      "wins": 21,
+      "trades": 26,
+      "wins": 26,
       "losses": 0,
-      "total_pnl": 24.600220000000004,
-      "avg_pnl": 1.1714390476190477,
+      "total_pnl": 28.622000000000003,
+      "avg_pnl": 1.100846153846154,
       "win_rate": 1.0,
-      "avg_hold": 31.223957107180645,
-      "fills": 21,
-      "timeouts": 0,
-      "last_seen": 1775826690.8234043,
+      "avg_hold": 49.249066985570465,
+      "fills": 25,
+      "timeouts": 1,
+      "last_seen": 1775830331.9721544,
       "question": "Stripe IPO before 2027?",
-      "risk_score": 0.0,
-      "profit_score": 1.0
+      "risk_score": 0.015384615384615385,
+      "profit_score": 0.9884615384615385
     },
     "will-usdt-market-cap-hit-200b-before-2027": {
-      "trades": 15,
-      "wins": 15,
+      "trades": 16,
+      "wins": 16,
       "losses": 0,
-      "total_pnl": 7.272809999999996,
-      "avg_pnl": 0.48485399999999973,
+      "total_pnl": 7.431589999999997,
+      "avg_pnl": 0.46447437499999983,
       "win_rate": 1.0,
-      "avg_hold": 24.879068787892663,
-      "fills": 15,
+      "avg_hold": 30.30294728279114,
+      "fills": 16,
       "timeouts": 0,
-      "last_seen": 1775826706.1137621,
+      "last_seen": 1775827731.1991684,
       "question": "Will USDT market cap hit $200B before 2027?",
       "risk_score": 0.0,
       "profit_score": 1.0
     },
     "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election": {
-      "trades": 13,
-      "wins": 12,
+      "trades": 15,
+      "wins": 14,
       "losses": 1,
-      "total_pnl": 21.213499999999996,
-      "avg_pnl": 1.631807692307692,
-      "win_rate": 0.9230769230769231,
-      "avg_hold": 60.628804353567276,
-      "fills": 13,
+      "total_pnl": 26.530469999999998,
+      "avg_pnl": 1.7686979999999999,
+      "win_rate": 0.9333333333333333,
+      "avg_hold": 64.01655181248984,
+      "fills": 15,
       "timeouts": 0,
-      "last_seen": 1775826537.4692369,
+      "last_seen": 1775829918.838948,
       "question": "Will Fernando Dias da Costa win the 2025 Guinea-Bissau presidential election?",
-      "risk_score": 0.03076923076923077,
-      "profit_score": 0.9692307692307693
+      "risk_score": 0.02666666666666667,
+      "profit_score": 0.9733333333333334
     },
     "will-pt-win-the-most-seats-in-the-2025-guinea-bissau-national-peoples-assembly-election": {
       "trades": 3,
@@ -68,17 +68,62 @@
       "profit_score": 0.3
     },
     "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026": {
-      "trades": 6,
-      "wins": 6,
+      "trades": 9,
+      "wins": 9,
       "losses": 0,
-      "total_pnl": 5.914300000000001,
-      "avg_pnl": 0.9857166666666668,
+      "total_pnl": 6.773130000000001,
+      "avg_pnl": 0.7525700000000001,
       "win_rate": 1.0,
-      "avg_hold": 69.00159839789073,
-      "fills": 6,
+      "avg_hold": 64.493554910024,
+      "fills": 9,
       "timeouts": 0,
-      "last_seen": 1775825135.6564472,
+      "last_seen": 1775830676.028861,
       "question": "Will OpenAI launch a new consumer hardware product by December 31, 2026?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-israel-annex-any-territory-by-june-30": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "total_pnl": 0.71424,
+      "avg_pnl": 0.71424,
+      "win_rate": 1.0,
+      "avg_hold": 23.29325032234192,
+      "fills": 1,
+      "timeouts": 0,
+      "last_seen": 1775830301.3531005,
+      "question": "Will Israel annex any territory by June 30?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "foreign-intervention-in-gaza-by-june-30": {
+      "trades": 4,
+      "wins": 4,
+      "losses": 0,
+      "total_pnl": 4.535900000000001,
+      "avg_pnl": 1.1339750000000002,
+      "win_rate": 1.0,
+      "avg_hold": 47.69066244363785,
+      "fills": 4,
+      "timeouts": 0,
+      "last_seen": 1775830423.7540524,
+      "question": "Foreign intervention in Gaza by June 30?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-israel-launch-a-major-ground-offensive-in-gaza-by-december-31-828": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "total_pnl": 0.3551,
+      "avg_pnl": 0.3551,
+      "win_rate": 1.0,
+      "avg_hold": 10.271045446395874,
+      "fills": 1,
+      "timeouts": 0,
+      "last_seen": 1775830699.3220696,
+      "question": "Will Israel launch a major ground offensive in Gaza by December 31?",
       "risk_score": 0.0,
       "profit_score": 1.0
     }
@@ -86,108 +131,120 @@
   "patterns": {
     "by_spread": {
       "0.10-0.20": {
-        "wins": 44,
+        "wins": 53,
         "losses": 2,
-        "total_pnl": 46.00491000000001,
-        "trades": 46
+        "total_pnl": 53.98391000000001,
+        "trades": 55
       },
       "0.20+": {
-        "wins": 6,
+        "wins": 10,
         "losses": 2,
-        "total_pnl": 4.204600000000001,
-        "trades": 8
+        "total_pnl": 8.7405,
+        "trades": 12
       },
       "0.06-0.10": {
-        "wins": 2,
+        "wins": 5,
         "losses": 0,
-        "total_pnl": 3.9814200000000004,
-        "trades": 2
+        "total_pnl": 6.820920000000001,
+        "trades": 5
       },
       "0.04-0.06": {
-        "wins": 2,
+        "wins": 3,
         "losses": 0,
-        "total_pnl": 2.9952000000000005,
-        "trades": 2
+        "total_pnl": 3.6024000000000007,
+        "trades": 3
       }
     },
     "by_volume": {
       "50K-500K": {
-        "wins": 36,
+        "wins": 43,
         "losses": 0,
-        "total_pnl": 31.87303,
-        "trades": 36
+        "total_pnl": 36.76783,
+        "trades": 43
       },
       "5K-50K": {
-        "wins": 18,
+        "wins": 28,
         "losses": 4,
-        "total_pnl": 25.31309999999999,
-        "trades": 22
+        "total_pnl": 36.37989999999999,
+        "trades": 32
       }
     },
     "by_liquidity": {
       "3K-7K": {
-        "wins": 33,
+        "wins": 44,
         "losses": 4,
-        "total_pnl": 43.99902000000001,
-        "trades": 37
+        "total_pnl": 57.87367000000001,
+        "trades": 48
       },
       "7K-15K": {
-        "wins": 15,
+        "wins": 17,
         "losses": 0,
-        "total_pnl": 7.272809999999996,
-        "trades": 15
+        "total_pnl": 8.145829999999997,
+        "trades": 17
       },
       "2K-3K": {
-        "wins": 6,
+        "wins": 10,
         "losses": 0,
-        "total_pnl": 5.914300000000001,
-        "trades": 6
+        "total_pnl": 7.128230000000001,
+        "trades": 10
       }
     },
     "by_price": {
       "mid_low": {
-        "wins": 32,
+        "wins": 42,
         "losses": 4,
-        "total_pnl": 40.51360000000001,
-        "trades": 36
+        "total_pnl": 51.93954000000001,
+        "trades": 46
       },
       "high": {
-        "wins": 15,
+        "wins": 16,
         "losses": 0,
-        "total_pnl": 7.272809999999996,
-        "trades": 15
+        "total_pnl": 7.431589999999997,
+        "trades": 16
       },
       "low": {
-        "wins": 7,
+        "wins": 12,
         "losses": 0,
-        "total_pnl": 9.39972,
-        "trades": 7
+        "total_pnl": 13.421500000000002,
+        "trades": 12
+      },
+      "mid_high": {
+        "wins": 1,
+        "losses": 0,
+        "total_pnl": 0.3551,
+        "trades": 1
       }
     },
     "by_hold_time": {
       "0-30s": {
-        "wins": 29,
+        "wins": 32,
         "losses": 0,
-        "total_pnl": 43.366310000000006,
-        "trades": 29
+        "total_pnl": 45.08153,
+        "trades": 32
       },
       "30-60s": {
-        "wins": 17,
+        "wins": 22,
         "losses": 0,
-        "total_pnl": 12.852409999999999,
-        "trades": 17
+        "total_pnl": 18.635690000000004,
+        "trades": 22
       },
       "60-120s": {
-        "wins": 6,
+        "wins": 13,
         "losses": 1,
-        "total_pnl": 2.9279699999999993,
-        "trades": 7
+        "total_pnl": 10.208790000000002,
+        "trades": 14
       },
       "120-300s": {
-        "wins": 2,
+        "wins": 3,
         "losses": 3,
-        "total_pnl": -1.9605599999999999,
-        "trades": 5
+        "total_pnl": -1.35336,
+        "trades": 6
+      },
+      "300s+": {
+        "wins": 1,
+        "losses": 0,
+        "total_pnl": 0.5750799999999998,
+        "trades": 1
       }
     }
   },
@@ -198,9 +255,9 @@
       "pnl": 0
     },
     "normal": {
-      "wins": 54,
+      "wins": 71,
       "losses": 4,
-      "pnl": 57.18613000000001
+      "pnl": 73.14773000000001
     },
     "quiet": {
       "wins": 0,
@@ -210,9 +267,9 @@
   },
   "day_patterns": {
     "Friday": {
-      "wins": 54,
+      "wins": 71,
       "losses": 4,
-      "pnl": 57.18613000000001
+      "pnl": 73.14773000000001
     }
   },
   "avoid_list": [],
@@ -220,19 +277,10 @@
     "stripe-ipo-before-2027",
     "will-usdt-market-cap-hit-200b-before-2027",
     "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election",
-    "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026"
+    "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026",
+    "foreign-intervention-in-gaza-by-june-30"
   ],
   "rules": [
-    {
-      "ts": 1775823834.2421873,
-      "rule": "STAR: stripe-ipo-before-2027 \u2014 100% WR, $+0.956/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775823987.3921072,
-      "rule": "STAR: will-usdt-market-cap-hit-200b-before-2027 \u2014 100% WR, $+0.351/trade",
-      "type": "star"
-    },
     {
       "ts": 1775824033.2822688,
       "rule": "by_spread:0.10-0.20 \u2192 80% WR \u2014 prioritize",
@@ -392,7 +440,97 @@
       "ts": 1775826506.6177976,
       "rule": "TIME:normal \u2192 92% WR \u2014 focus here",
       "type": "time_star"
+    },
+    {
+      "ts": 1775827731.199225,
+      "rule": "by_spread:0.10-0.20 \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.199229,
+      "rule": "by_spread:0.20+ \u2192 75% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.199232,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.1992335,
+      "rule": "by_volume:5K-50K \u2192 82% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.1992357,
+      "rule": "by_price:mid_low \u2192 89% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.1992366,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.1992376,
+      "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775827731.19924,
+      "rule": "TIME:normal \u2192 93% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775830408.4587705,
+      "rule": "STAR: foreign-intervention-in-gaza-by-june-30 \u2014 100% WR, $+1.313/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775830408.4589002,
+      "rule": "by_spread:0.10-0.20 \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589036,
+      "rule": "by_spread:0.20+ \u2192 82% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.458905,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589071,
+      "rule": "by_volume:50K-500K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589078,
+      "rule": "by_volume:5K-50K \u2192 85% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589095,
+      "rule": "by_price:mid_low \u2192 90% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589105,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589112,
+      "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775830408.4589133,
+      "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
+      "type": "time_star"
     }
   ],
-  "last_updated": 1775826706.1137943
+  "last_updated": 1775830699.3221018
 }

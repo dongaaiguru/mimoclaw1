@@ -359,12 +359,24 @@ class OrderManagerV5:
                 pos = self.positions[order.slug]
                 total_cost = pos.cost + cost
                 total_shares = pos.shares + order.shares
-                pos.entry_price = total_cost / total_shares
-                pos.shares = total_shares
-                pos.cost = total_cost
-                pos.committed_capital = total_cost
-                LOG.info(f"🟢 ADDED | {order.shares:.0f} @ ${fill_price:.4f} | "
-                        f"Total: {total_shares:.0f} @ ${pos.entry_price:.4f} | {order.slug[:35]}")
+                if abs(total_shares) < 0.01:
+                    # Position fully closed via averaging — realize PnL and remove
+                    pnl = total_cost - pos.cost  # simplified: net cost change
+                    self._realized_pnl += pnl
+                    self._committed -= pos.cost
+                    self._peak_equity = max(self._peak_equity, self.equity)
+                    self.positions.pop(order.slug, None)
+                    self.stops.remove_stop(order.slug)
+                    LOG.info(f"🟢 AVG CLOSE | {order.shares:.0f} @ ${fill_price:.4f} | "
+                            f"Position netted to zero | {order.slug[:35]}")
+                else:
+                    if abs(total_shares) > 0.001:
+                        pos.entry_price = total_cost / total_shares
+                    pos.shares = total_shares
+                    pos.cost = total_cost
+                    pos.committed_capital = total_cost
+                    LOG.info(f"🟢 ADDED | {order.shares:.0f} @ ${fill_price:.4f} | "
+                            f"Total: {total_shares:.0f} @ ${pos.entry_price:.4f} | {order.slug[:35]}")
             else:
                 self.positions[order.slug] = Position(
                     slug=order.slug, token=order.token, side="LONG",
@@ -607,7 +619,7 @@ class ScalperV5:
         self._market_trade_count: Dict[str, int] = {}   # slug → trade count in session
         # v6: Flow pull cooldown — prevent spam from same market
         self._last_flow_pull: Dict[str, float] = {}  # slug → last flow pull timestamp
-        self._flow_pull_cooldown = 30.0  # seconds between flow pulls per market
+        self._flow_pull_cooldown = 60.0  # seconds between flow pulls per market
 
         # Supervisor
         self._supervised = cfg.supervised
