@@ -1,41 +1,41 @@
 {
   "version": 4,
-  "total_trades": 125,
-  "total_pnl": 397.983405,
-  "total_wins": 118,
-  "total_losses": 7,
-  "sessions": 5,
+  "total_trades": 294,
+  "total_pnl": 679.8487199999997,
+  "total_wins": 285,
+  "total_losses": 9,
+  "sessions": 8,
   "first_seen": 1775823672.240313,
   "markets": {
     "stripe-ipo-before-2027": {
-      "trades": 28,
-      "wins": 26,
+      "trades": 45,
+      "wins": 43,
       "losses": 2,
-      "total_pnl": 20.46272,
-      "avg_pnl": 0.7308114285714286,
-      "win_rate": 0.9285714285714286,
-      "avg_hold": 67.84436562231609,
-      "fills": 25,
+      "total_pnl": 83.35424000000003,
+      "avg_pnl": 1.852316444444445,
+      "win_rate": 0.9555555555555556,
+      "avg_hold": 57.38971082899307,
+      "fills": 42,
       "timeouts": 3,
-      "last_seen": 1775838733.2213955,
+      "last_seen": 1775842707.994572,
       "question": "Stripe IPO before 2027?",
-      "risk_score": 0.07142857142857142,
-      "profit_score": 0.9392857142857143
+      "risk_score": 0.044444444444444446,
+      "profit_score": 0.9622222222222223
     },
     "will-usdt-market-cap-hit-200b-before-2027": {
-      "trades": 20,
-      "wins": 20,
-      "losses": 0,
-      "total_pnl": 8.523449999999997,
-      "avg_pnl": 0.42617249999999984,
-      "win_rate": 1.0,
-      "avg_hold": 42.29173085689545,
-      "fills": 20,
+      "trades": 32,
+      "wins": 31,
+      "losses": 1,
+      "total_pnl": 15.151629999999995,
+      "avg_pnl": 0.47348843749999986,
+      "win_rate": 0.96875,
+      "avg_hold": 66.47925249487162,
+      "fills": 32,
       "timeouts": 0,
-      "last_seen": 1775838955.10464,
+      "last_seen": 1775842704.9862952,
       "question": "Will USDT market cap hit $200B before 2027?",
-      "risk_score": 0.0,
-      "profit_score": 1.0
+      "risk_score": 0.0125,
+      "profit_score": 0.9875
     },
     "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election": {
       "trades": 15,
@@ -68,16 +68,16 @@
       "profit_score": 0.3
     },
     "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026": {
-      "trades": 15,
-      "wins": 15,
+      "trades": 29,
+      "wins": 29,
       "losses": 0,
-      "total_pnl": 10.697170000000002,
-      "avg_pnl": 0.7131446666666668,
+      "total_pnl": 21.271009999999997,
+      "avg_pnl": 0.7334831034482757,
       "win_rate": 1.0,
-      "avg_hold": 55.92734835942586,
-      "fills": 15,
+      "avg_hold": 44.60253606171443,
+      "fills": 29,
       "timeouts": 0,
-      "last_seen": 1775839444.3372557,
+      "last_seen": 1775842692.7360694,
       "question": "Will OpenAI launch a new consumer hardware product by December 31, 2026?",
       "risk_score": 0.0,
       "profit_score": 1.0
@@ -113,64 +113,64 @@
       "profit_score": 1.0
     },
     "will-israel-launch-a-major-ground-offensive-in-gaza-by-december-31-828": {
-      "trades": 1,
-      "wins": 1,
+      "trades": 8,
+      "wins": 8,
       "losses": 0,
-      "total_pnl": 0.3551,
-      "avg_pnl": 0.3551,
+      "total_pnl": 15.128779999999995,
+      "avg_pnl": 1.8910974999999994,
       "win_rate": 1.0,
-      "avg_hold": 10.271045446395874,
-      "fills": 1,
+      "avg_hold": 49.6758599281311,
+      "fills": 8,
       "timeouts": 0,
-      "last_seen": 1775830699.3220696,
+      "last_seen": 1775842738.5361195,
       "question": "Will Israel launch a major ground offensive in Gaza by December 31?",
       "risk_score": 0.0,
       "profit_score": 1.0
     },
     "israeli-parliament-dissolved-by-june-30": {
-      "trades": 10,
-      "wins": 10,
+      "trades": 17,
+      "wins": 17,
       "losses": 0,
-      "total_pnl": 37.17956000000001,
-      "avg_pnl": 3.717956000000001,
+      "total_pnl": 49.53926000000002,
+      "avg_pnl": 2.91407411764706,
       "win_rate": 1.0,
-      "avg_hold": 42.018702268600464,
-      "fills": 10,
+      "avg_hold": 35.79818868637085,
+      "fills": 17,
       "timeouts": 0,
-      "last_seen": 1775840181.72922,
+      "last_seen": 1775842203.405807,
       "question": "Israeli parliament dissolved by June 30?",
       "risk_score": 0.0,
       "profit_score": 1.0
     },
     "will-the-feds-upper-bound-reach-5pt5-or-higher-before-2027-767": {
-      "trades": 18,
-      "wins": 18,
+      "trades": 32,
+      "wins": 32,
       "losses": 0,
-      "total_pnl": 250.31002499999994,
-      "avg_pnl": 13.906112499999997,
+      "total_pnl": 273.0903399999998,
+      "avg_pnl": 8.534073124999994,
       "win_rate": 1.0,
-      "avg_hold": 143.62652695178986,
-      "fills": 17,
-      "timeouts": 1,
-      "last_seen": 1775839388.5297027,
+      "avg_hold": 140.70309273153543,
+      "fills": 29,
+      "timeouts": 3,
+      "last_seen": 1775842738.5317707,
       "question": "Will the Fed\u2019s upper bound reach 5.5% or higher before 2027?",
-      "risk_score": 0.022222222222222223,
-      "profit_score": 0.9833333333333334
+      "risk_score": 0.037500000000000006,
+      "profit_score": 0.971875
     },
     "weed-rescheduled-by-december-31": {
-      "trades": 5,
-      "wins": 5,
+      "trades": 10,
+      "wins": 10,
       "losses": 0,
-      "total_pnl": 2.5917399999999997,
-      "avg_pnl": 0.5183479999999999,
+      "total_pnl": 7.715299999999999,
+      "avg_pnl": 0.7715299999999999,
       "win_rate": 1.0,
-      "avg_hold": 156.49131679534912,
-      "fills": 4,
+      "avg_hold": 155.03169231414796,
+      "fills": 9,
       "timeouts": 1,
-      "last_seen": 1775840604.9893117,
+      "last_seen": 1775842435.5219815,
       "question": "Weed rescheduled by December 31?",
-      "risk_score": 0.08000000000000002,
-      "profit_score": 0.94
+      "risk_score": 0.04000000000000001,
+      "profit_score": 0.97
     },
     "us-forces-in-gaza-before-2027": {
       "trades": 2,
@@ -216,27 +216,72 @@
       "question": "Will Unit launch a token by December 31, 2027?",
       "risk_score": 1.0,
       "profit_score": 0.0
+    },
+    "will-trump-endorse-ken-paxton-for-tx-sen-by-nov-2-2026-et": {
+      "trades": 1,
+      "wins": 1,
+      "losses": 0,
+      "total_pnl": 0.3370200000000003,
+      "avg_pnl": 0.3370200000000003,
+      "win_rate": 1.0,
+      "avg_hold": 11.242570638656616,
+      "fills": 1,
+      "timeouts": 0,
+      "last_seen": 1775840979.0808384,
+      "question": "Will Trump endorse Ken Paxton for TX-Sen by Nov 2 2026 ET?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-waymo-launch-in-london-by-june-30-2026": {
+      "trades": 4,
+      "wins": 4,
+      "losses": 0,
+      "total_pnl": 5.584320000000001,
+      "avg_pnl": 1.3960800000000002,
+      "win_rate": 1.0,
+      "avg_hold": 32.22894835472107,
+      "fills": 4,
+      "timeouts": 0,
+      "last_seen": 1775841070.8206072,
+      "question": "Will Waymo launch in London by June 30 2026?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
+    },
+    "will-republicans-lose-a-seat-in-the-us-senate-for-any-state-trump-won-in-2024": {
+      "trades": 5,
+      "wins": 5,
+      "losses": 0,
+      "total_pnl": 2.59318,
+      "avg_pnl": 0.518636,
+      "win_rate": 1.0,
+      "avg_hold": 31.823905420303344,
+      "fills": 5,
+      "timeouts": 0,
+      "last_seen": 1775842738.5393355,
+      "question": "Will Republicans lose a seat in the US Senate for any state Trump won in 2024?",
+      "risk_score": 0.0,
+      "profit_score": 1.0
     }
   },
   "patterns": {
     "by_spread": {
       "0.10-0.20": {
-        "wins": 97,
-        "losses": 2,
-        "total_pnl": 371.291635,
-        "trades": 99
+        "wins": 144,
+        "losses": 3,
+        "total_pnl": 426.16178999999977,
+        "trades": 147
       },
       "0.20+": {
-        "wins": 10,
+        "wins": 31,
         "losses": 3,
-        "total_pnl": 3.6622400000000015,
-        "trades": 13
+        "total_pnl": 29.545879999999993,
+        "trades": 34
       },
       "0.06-0.10": {
-        "wins": 8,
+        "wins": 25,
         "losses": 0,
-        "total_pnl": 27.586409999999997,
-        "trades": 8
+        "total_pnl": 90.47793000000003,
+        "trades": 25
       },
       "0.04-0.06": {
         "wins": 3,
@@ -247,100 +292,100 @@
     },
     "by_volume": {
       "50K-500K": {
-        "wins": 58,
-        "losses": 2,
-        "total_pnl": 83.90955999999998,
-        "trades": 60
+        "wins": 93,
+        "losses": 3,
+        "total_pnl": 165.78896000000003,
+        "trades": 96
       },
       "5K-50K": {
-        "wins": 59,
+        "wins": 104,
         "losses": 5,
-        "total_pnl": 291.86334500000004,
-        "trades": 64
+        "total_pnl": 351.0360799999998,
+        "trades": 109
       },
       "1K-5K": {
-        "wins": 1,
+        "wins": 6,
         "losses": 0,
-        "total_pnl": 22.210500000000003,
-        "trades": 1
+        "total_pnl": 24.803680000000004,
+        "trades": 6
       }
     },
     "by_liquidity": {
       "3K-7K": {
-        "wins": 58,
+        "wins": 92,
         "losses": 6,
-        "total_pnl": 107.07579999999999,
-        "trades": 64
+        "total_pnl": 190.84154,
+        "trades": 98
       },
       "7K-15K": {
-        "wins": 38,
-        "losses": 0,
-        "total_pnl": 260.131355,
-        "trades": 38
+        "wins": 63,
+        "losses": 1,
+        "total_pnl": 289.5398499999998,
+        "trades": 64
       },
       "2K-3K": {
-        "wins": 22,
+        "wins": 48,
         "losses": 1,
-        "total_pnl": 30.77625,
-        "trades": 23
+        "total_pnl": 61.247329999999984,
+        "trades": 49
       }
     },
     "by_price": {
       "mid_low": {
-        "wins": 66,
+        "wins": 92,
         "losses": 5,
-        "total_pnl": 111.32211,
-        "trades": 71
+        "total_pnl": 139.37921000000006,
+        "trades": 97
       },
       "high": {
-        "wins": 20,
-        "losses": 0,
-        "total_pnl": 8.523449999999997,
-        "trades": 20
+        "wins": 36,
+        "losses": 1,
+        "total_pnl": 17.744809999999998,
+        "trades": 37
       },
       "low": {
-        "wins": 31,
+        "wins": 66,
         "losses": 2,
-        "total_pnl": 277.782745,
-        "trades": 33
+        "total_pnl": 369.0388999999998,
+        "trades": 68
       },
       "mid_high": {
-        "wins": 1,
+        "wins": 9,
         "losses": 0,
-        "total_pnl": 0.3551,
-        "trades": 1
+        "total_pnl": 15.465799999999994,
+        "trades": 9
       }
     },
     "by_hold_time": {
       "0-30s": {
-        "wins": 37,
+        "wins": 66,
         "losses": 0,
-        "total_pnl": 67.30103,
-        "trades": 37
+        "total_pnl": 157.59143000000003,
+        "trades": 66
       },
       "30-60s": {
-        "wins": 38,
+        "wins": 67,
         "losses": 0,
-        "total_pnl": 74.33435,
-        "trades": 38
+        "total_pnl": 104.66557999999999,
+        "trades": 67
       },
       "60-120s": {
-        "wins": 23,
+        "wins": 35,
         "losses": 1,
-        "total_pnl": 162.90078999999997,
-        "trades": 24
+        "total_pnl": 169.99559999999997,
+        "trades": 36
       },
       "120-300s": {
-        "wins": 15,
+        "wins": 28,
         "losses": 3,
-        "total_pnl": 63.74736,
-        "trades": 18
+        "total_pnl": 78.75008,
+        "trades": 31
       },
       "300s+": {
-        "wins": 5,
-        "losses": 3,
-        "total_pnl": 29.699875000000016,
-        "trades": 8
+        "wins": 7,
+        "losses": 4,
+        "total_pnl": 30.626030000000018,
+        "trades": 11
       }
     }
   },
@@ -351,9 +396,9 @@
       "pnl": 0
     },
     "normal": {
-      "wins": 118,
-      "losses": 7,
-      "pnl": 397.983405
+      "wins": 203,
+      "losses": 8,
+      "pnl": 541.6287199999997
     },
     "quiet": {
       "wins": 0,
@@ -363,9 +408,9 @@
   },
   "day_patterns": {
     "Friday": {
-      "wins": 118,
-      "losses": 7,
-      "pnl": 397.983405
+      "wins": 203,
+      "losses": 8,
+      "pnl": 541.6287199999997
     }
   },
   "avoid_list": [],
@@ -375,268 +420,266 @@
     "will-fernando-dias-da-costa-win-the-2025-guinea-bissau-presidential-election",
     "will-openai-launch-a-new-consumer-hardware-product-by-december-31-2026",
     "foreign-intervention-in-gaza-by-june-30",
+    "will-israel-launch-a-major-ground-offensive-in-gaza-by-december-31-828",
     "israeli-parliament-dissolved-by-june-30",
     "will-the-feds-upper-bound-reach-5pt5-or-higher-before-2027-767",
-    "weed-rescheduled-by-december-31"
+    "weed-rescheduled-by-december-31",
+    "will-waymo-launch-in-london-by-june-30-2026",
+    "will-republicans-lose-a-seat-in-the-us-senate-for-any-state-trump-won-in-2024"
   ],
   "rules": [
     {
-      "ts": 1775830408.4589112,
-      "rule": "by_price:low \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775830408.4589133,
-      "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775838403.3807192,
-      "rule": "by_spread:0.10-0.20 \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.3807225,
-      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.3807235,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.3807251,
-      "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.380726,
-      "rule": "by_volume:5K-50K \u2192 88% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.380727,
-      "rule": "by_price:mid_low \u2192 92% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.3807278,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.3807282,
-      "rule": "by_price:low \u2192 92% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838403.3807304,
-      "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775838620.4608378,
-      "rule": "STAR: will-the-feds-upper-bound-reach-5pt5-or-higher-bef \u2014 100% WR, $+1.051/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775838907.0091133,
-      "rule": "STAR: weed-rescheduled-by-december-31 \u2014 100% WR, $+0.241/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775838907.0091882,
-      "rule": "by_spread:0.10-0.20 \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.00919,
-      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.0091908,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.0091922,
-      "rule": "by_volume:50K-500K \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.009193,
-      "rule": "by_volume:5K-50K \u2192 90% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.009194,
-      "rule": "by_price:mid_low \u2192 92% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.0091946,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.0091953,
-      "rule": "by_price:low \u2192 88% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775838907.0091975,
-      "rule": "TIME:normal \u2192 93% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775839033.920068,
-      "rule": "STAR: israeli-parliament-dissolved-by-june-30 \u2014 100% WR, $+1.736/trade",
-      "type": "star"
-    },
-    {
-      "ts": 1775839201.9059174,
-      "rule": "by_spread:0.10-0.20 \u2192 97% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.9059196,
-      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.90592,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.9059212,
-      "rule": "by_volume:50K-500K \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.9059217,
-      "rule": "by_volume:5K-50K \u2192 91% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.905923,
-      "rule": "by_price:mid_low \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.9059234,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.9059238,
-      "rule": "by_price:low \u2192 91% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839201.905925,
-      "rule": "TIME:normal \u2192 94% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775839325.2691586,
-      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.2691607,
-      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.2691615,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.2691624,
-      "rule": "by_volume:50K-500K \u2192 96% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.269163,
-      "rule": "by_volume:5K-50K \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.269164,
-      "rule": "by_price:mid_low \u2192 93% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.2691646,
-      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.269165,
-      "rule": "by_price:low \u2192 94% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775839325.2691662,
-      "rule": "TIME:normal \u2192 95% WR \u2014 focus here",
-      "type": "time_star"
-    },
-    {
-      "ts": 1775840151.2350228,
-      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775840151.235025,
-      "rule": "by_spread:0.20+ \u2192 83% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775840151.2350256,
-      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
-      "type": "pattern_star"
-    },
-    {
-      "ts": 1775840151.2350268,
+      "ts": 1775842019.7352045,
       "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775840151.2350276,
-      "rule": "by_volume:5K-50K \u2192 93% WR \u2014 prioritize",
+      "ts": 1775842019.7352054,
+      "rule": "by_volume:5K-50K \u2192 94% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775840151.2350287,
+      "ts": 1775842019.7352064,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842019.7352073,
       "rule": "by_price:mid_low \u2192 94% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775840151.2350295,
+      "ts": 1775842019.7352085,
       "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775840151.23503,
-      "rule": "by_price:low \u2192 94% WR \u2014 prioritize",
+      "ts": 1775842019.7352092,
+      "rule": "by_price:low \u2192 96% WR \u2014 prioritize",
       "type": "pattern_star"
     },
     {
-      "ts": 1775840151.2350311,
-      "rule": "TIME:normal \u2192 95% WR \u2014 focus here",
+      "ts": 1775842019.735211,
+      "rule": "TIME:normal \u2192 96% WR \u2014 focus here",
       "type": "time_star"
     },
     {
-      "ts": 1775840900.0,
-      "rule": "RULE: All session_analyses entries MUST include date_utc, time_start_utc, time_end_utc, timestamp_start, timestamp_end. No session without dates.",
-      "type": "system_rule"
+      "ts": 1775842381.7043133,
+      "rule": "by_spread:0.10-0.20 \u2192 99% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.704316,
+      "rule": "by_spread:0.20+ \u2192 84% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.7043166,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.7043183,
+      "rule": "by_volume:50K-500K \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.704319,
+      "rule": "by_volume:5K-50K \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.7043197,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.7043207,
+      "rule": "by_price:mid_low \u2192 94% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.7043219,
+      "rule": "by_price:high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.7043228,
+      "rule": "by_price:low \u2192 96% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842381.704324,
+      "rule": "TIME:normal \u2192 96% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775842570.1477404,
+      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477427,
+      "rule": "by_spread:0.20+ \u2192 86% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477437,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477454,
+      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.147746,
+      "rule": "by_volume:5K-50K \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477468,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477478,
+      "rule": "by_price:mid_low \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.147749,
+      "rule": "by_price:high \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477494,
+      "rule": "by_price:low \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842570.1477509,
+      "rule": "TIME:normal \u2192 96% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775842661.878916,
+      "rule": "STAR: will-israel-launch-a-major-ground-offensive-in-gaz \u2014 100% WR, $+3.837/trade",
+      "type": "star"
+    },
+    {
+      "ts": 1775842677.4327393,
+      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327414,
+      "rule": "by_spread:0.20+ \u2192 89% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327424,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327438,
+      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327445,
+      "rule": "by_volume:5K-50K \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327452,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327462,
+      "rule": "by_price:mid_low \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327471,
+      "rule": "by_price:high \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327478,
+      "rule": "by_price:low \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.4327488,
+      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842677.43275,
+      "rule": "TIME:normal \u2192 96% WR \u2014 focus here",
+      "type": "time_star"
+    },
+    {
+      "ts": 1775842738.536155,
+      "rule": "by_spread:0.10-0.20 \u2192 98% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.536157,
+      "rule": "by_spread:0.20+ \u2192 91% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.5361578,
+      "rule": "by_spread:0.06-0.10 \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.53616,
+      "rule": "by_volume:50K-500K \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.5361607,
+      "rule": "by_volume:5K-50K \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.5361621,
+      "rule": "by_volume:1K-5K \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.536163,
+      "rule": "by_price:mid_low \u2192 95% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.536164,
+      "rule": "by_price:high \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.5361648,
+      "rule": "by_price:low \u2192 97% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.5361657,
+      "rule": "by_price:mid_high \u2192 100% WR \u2014 prioritize",
+      "type": "pattern_star"
+    },
+    {
+      "ts": 1775842738.536167,
+      "rule": "TIME:normal \u2192 96% WR \u2014 focus here",
+      "type": "time_star"
     }
   ],
-  "last_updated": 1775840604.989341,
+  "last_updated": 1775842744,
   "session_analyses": [
     {
       "session": 5,
@@ -694,6 +737,68 @@
         "Increase paper tax to 0.5c for more realistic slippage",
         "Test one_side strategy to avoid token inventory issues",
         "Run during peak hours (14-22 UTC) for better fills"
+      ]
+    },
+    {
+      "session": 6,
+      "date_utc": "2026-04-10",
+      "time_start_utc": "17:08:38",
+      "time_end_utc": "17:39:04",
+      "timestamp_start": 1775840918,
+      "timestamp_end": 1775842744,
+      "timezone": "UTC",
+      "date_local": "2026-04-11",
+      "time_start_local": "01:08:38",
+      "time_end_local": "01:39:04",
+      "local_timezone": "GMT+8",
+      "duration_minutes": 30,
+      "mode": "paper",
+      "strategy": "one_side",
+      "starting_capital": 100.0,
+      "final_equity": 238.22,
+      "realized_pnl": 138.22,
+      "return_pct": 138.22,
+      "trades": 83,
+      "wins": 82,
+      "losses": 1,
+      "win_rate": 0.988,
+      "profit_factor": 4322.4,
+      "max_drawdown_pct": 0.0,
+      "top_market": {
+        "slug": "stripe-ipo-before-2027",
+        "trades": 17,
+        "pnl": 62.9,
+        "pct_of_total": 44.1
+      },
+      "lessons": [
+        "one_side strategy avoids token inventory bugs seen in both_sides (no unintended SHORTs)",
+        "99% WR is unrealistic - paper fill simulator produces 0 adverse fills in 83 trades",
+        "Stripe IPO carried 44% of total PnL - single market dependency is dangerous",
+        "Top 3 markets = 70% of PnL - concentration risk is extreme",
+        "Adverse selection simulator needs tightening: 0/83 adverse fills is impossible in live",
+        "Sentiment trading triggered 5 initial orders from Iran ceasefire news - working correctly",
+        "Dynamic stops fired once, correctly protected (still profited +$0.09 on stop hit)",
+        "Flow pulls fired 10 times on momentum surges - good risk management",
+        "Timeout exits (3) were all profitable - brain hold time tuning works",
+        "Realistic live expectations: 2-5% daily return, 60-75% WR, regular small losses",
+        "Mid-relative BUY placement (1-3c below mid) outperformed best-bid placement",
+        "Post-only orders working as intended - never crossed the spread",
+        "Brain learned STAR markets: waymo, republicans, israel-gaza-offensive"
+      ],
+      "bugs_found": [
+        "Fill simulator adverse selection: 0 adverse fills in 83 trades is unrealistic",
+        "Paper mode 100% WR (later 99%) suggests fill model is too lenient",
+        "Stripe IPO market: bought 250 shares @ 0.106, sold @ 0.170 - unrealistic fill on large order",
+        "No drawdown in 30 min of active trading is a red flag for paper realism"
+      ],
+      "recommendations": [
+        "Tighten FillSimulator adverse selection - target 10-20% adverse fill rate",
+        "Add paper tax of 0.5-1c per fill to simulate slippage",
+        "Cap per-market PnL contribution at 30% to force diversification",
+        "Add market liquidity cap: never order > 2% of book depth",
+        "Calibrate fill simulator against actual Polymarket trade data",
+        "Before live: run 1-week paper session and compare fill prices",
+        "Consider reducing position sizes by 50% for first live week"
       ]
     }
   ],
