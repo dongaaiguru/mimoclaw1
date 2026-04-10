@@ -1,22 +1,17 @@
 """
-Fill Simulator v5 — Adverse selection-aware paper fill model.
+Fill Simulator v7 — Order-book-grounded paper fill engine.
 
-The v4 paper fill model was too optimistic: it assumed fills are always
-favorable. In reality, fills come FASTER when price is moving AGAINST you
-(adverse selection) and SLOWER when price is in your favor.
+v5/v6 approach: Random probability each tick → fantasy returns
+v7 approach: Compare paper orders against LIVE WebSocket book state
 
-This simulator models:
-1. Adverse selection — fills are correlated with price momentum against you
-2. Queue position — realistic queue mechanics with partial fills
-3. Spread dynamics — wider spreads = fewer takers = slower fills
-4. Volume regime — quiet markets fill differently than active ones
-5. Time-of-day — US market hours have more flow
-6. Informed flow — detect when someone with info is trading
+The key insight: We already have real-time order book data from the
+WebSocket feed. Instead of rolling dice, we check:
+1. Did the best bid/ask cross our order price?
+2. Did the trade stream execute at our price?
+3. Did the book depth change at our price level?
 
-Key insight: In prediction markets, "informed traders" are people who know
-something you don't. When they BUY aggressively, your SELL gets filled
-(bad for you — they know YES will win). When they SELL aggressively,
-your BUY gets filled (bad for you — they know YES will lose).
+This makes paper fills deterministic and realistic — if the real
+market would have filled you, paper fills you. If not, not.
 """
 
 import math
@@ -32,269 +27,213 @@ LOG = logging.getLogger("scalper.fill_sim")
 
 @dataclass
 class FlowState:
-    """Tracks order flow state for adverse selection modeling."""
-    # Recent trades: (timestamp, price, size, side)
+    """Tracks order flow for adverse selection modeling."""
     trades: List[Tuple[float, float, float, str]] = field(default_factory=list)
-    # Cumulative flow imbalance (-1 to +1, positive = buy pressure)
     imbalance: float = 0.0
-    # Rolling volatility (std dev of price changes)
     volatility: float = 0.0
-    # Informed flow estimate (Kyle's lambda proxy)
     informed_flow: float = 0.0
-    # Last update
     last_update: float = 0.0
+
+
+@dataclass
+class BookSnapshot:
+    """A snapshot of the order book at a point in time."""
+    timestamp: float
+    best_bid: float
+    best_ask: float
+    bid_size: float
+    ask_size: float
+    last_trade_price: Optional[float] = None
+    last_trade_side: Optional[str] = None
 
 
 class FillSimulator:
     """
-    Adverse selection-aware fill simulator for paper trading.
+    Order-book-grounded fill simulator.
     
-    Philosophy: The PAPER environment should be HARDER than live.
-    If you're profitable in adversarial paper mode, you'll likely
-    be profitable live (where fills are somewhat better).
+    Instead of random probability, checks actual market conditions:
+    - If best bid >= our sell price → we got filled
+    - If best ask <= our buy price → we got filled
+    - If a trade printed at our price → we got filled
+    
+    Then applies realistic penalties:
+    - Slippage proportional to order size / depth
+    - Adverse selection when flow is against us
+    - Partial fills on thin books
     """
 
-    # ─── Configuration ───────────────────────────────────────
+    # Slippage model
+    SLIPPAGE_BASE = 0.001             # 0.1¢ base slippage
+    SLIPPAGE_PER_DEPTH_PCT = 0.0005   # 0.05¢ per 1% of depth consumed
+    SLIPPAGE_MAX = 0.008              # 0.8¢ max slippage
 
-    # Adverse selection strength: how much flow imbalance affects fill probability
-    # Higher = more realistic but more punishing
-    ADVERSE_SELECTION_STRENGTH = 0.4  # 0 = none, 1 = extreme
+    # Paper tax — hidden cost to account for real-world friction
+    PAPER_TAX = 0.001                 # 0.1¢ per fill
 
-    # Minimum resting time before fills can occur (seconds)
+    # Partial fill model
+    PARTIAL_FILL_PROB = 0.35          # 35% chance
+    PARTIAL_FILL_MIN = 0.30
+    PARTIAL_FILL_MAX = 0.80
+
+    # Size impact — orders >X% of depth get penalized
+    SIZE_IMPACT_THRESHOLD = 0.03      # 3% of depth
+    FILL_PROB_PENALTY_AT_10PCT = 0.5  # at 10% depth, 50% normal fill prob
+
+    # Min resting time before fills can happen
     MIN_REST_TIME = 3.0
 
-    # Base fill rate per tick at best level
-    BASE_FILL_RATE_AT_BEST = 0.025   # 2.5% per second tick
-    BASE_FILL_RATE_INSIDE = 0.050    # 5.0% per second tick
-    BASE_FILL_RATE_BEHIND = 0.003    # 0.3% per second tick
-
-    # Partial fill probability (when fill occurs, chance it's partial)
-    PARTIAL_FILL_PROB = 0.25
-    PARTIAL_FILL_MIN = 0.30  # minimum fill percentage
-    PARTIAL_FILL_MAX = 0.85  # maximum fill percentage
+    # Adverse selection
+    ADVERSE_SELECTION_STRENGTH = 0.6
 
     def __init__(self):
-        # token_id → FlowState
         self._flow: Dict[str, FlowState] = {}
-        # Track fill outcomes for calibration
+        self._book_history: Dict[str, List[BookSnapshot]] = {}
         self._fill_stats = {
             "total_attempts": 0,
             "total_fills": 0,
-            "adverse_fills": 0,  # fills when price moving against us
+            "book_cross_fills": 0,     # filled because book crossed our price
+            "trade_fills": 0,           # filled because a trade hit our level
+            "simulated_fills": 0,       # fallback probability fill
+            "adverse_fills": 0,
             "favorable_fills": 0,
             "partial_fills": 0,
-            "rejected_fills": 0,  # post-only rejections
+            "rejected_fills": 0,
+            "size_penalized": 0,
+            "total_slippage": 0.0,
         }
 
+    def record_book(self, token: str, best_bid: float, best_ask: float,
+                    bid_size: float, ask_size: float,
+                    last_trade: Optional[float] = None,
+                    last_trade_side: Optional[str] = None):
+        """Record an order book snapshot from the WebSocket."""
+        now = time.time()
+        history = self._book_history.setdefault(token, [])
+        history.append(BookSnapshot(
+            timestamp=now,
+            best_bid=best_bid,
+            best_ask=best_ask,
+            bid_size=bid_size,
+            ask_size=ask_size,
+            last_trade_price=last_trade,
+            last_trade_side=last_trade_side,
+        ))
+        # Keep last 10 minutes
+        cutoff = now - 600
+        self._book_history[token] = [s for s in history if s.timestamp > cutoff]
+
     def record_trade(self, token: str, price: float, size: float, side: str):
-        """Record a market trade for flow analysis."""
+        """Record a trade for flow analysis."""
         now = time.time()
         state = self._flow.setdefault(token, FlowState())
         state.trades.append((now, price, size, side))
-
-        # Keep only last 5 minutes
         cutoff = now - 300
         state.trades = [t for t in state.trades if t[0] > cutoff]
         state.last_update = now
-
-        # Update imbalance
         self._update_flow_state(token)
 
     def _update_flow_state(self, token: str):
-        """Update flow metrics for a token."""
         state = self._flow.get(token)
         if not state or len(state.trades) < 2:
             return
-
-        trades = state.trades
         now = time.time()
-
-        # Imbalance over last 60 seconds
-        recent = [t for t in trades if t[0] > now - 60]
+        recent = [t for t in state.trades if t[0] > now - 60]
         if recent:
             buy_vol = sum(t[2] for t in recent if t[3] == "BUY")
             sell_vol = sum(t[2] for t in recent if t[3] == "SELL")
             total = buy_vol + sell_vol
             if total > 0:
                 state.imbalance = (buy_vol - sell_vol) / total
-
-        # Volatility (std dev of price changes over 5 min)
-        if len(trades) >= 3:
-            prices = [t[1] for t in trades]
+        if len(state.trades) >= 3:
+            prices = [t[1] for t in state.trades]
             changes = [abs(prices[i] - prices[i-1]) for i in range(1, len(prices))]
             if changes:
-                mean_change = sum(changes) / len(changes)
-                variance = sum((c - mean_change) ** 2 for c in changes) / len(changes)
-                state.volatility = math.sqrt(variance)
-
-        # Informed flow proxy: large trades in one direction
-        large_trades = [t for t in recent if t[2] > 50]  # > $50 trades
-        if large_trades:
-            large_buy = sum(t[2] for t in large_trades if t[3] == "BUY")
-            large_sell = sum(t[2] for t in large_trades if t[3] == "SELL")
-            large_total = large_buy + large_sell
-            if large_total > 0:
-                state.informed_flow = (large_buy - large_sell) / large_total
+                mean_c = sum(changes) / len(changes)
+                var = sum((c - mean_c) ** 2 for c in changes) / len(changes)
+                state.volatility = math.sqrt(var)
+        large = [t for t in recent if t[2] > 50]
+        if large:
+            lb = sum(t[2] for t in large if t[3] == "BUY")
+            ls = sum(t[2] for t in large if t[3] == "SELL")
+            lt = lb + ls
+            if lt > 0:
+                state.informed_flow = (lb - ls) / lt
 
     def get_adverse_selection_score(self, token: str, order_side: str) -> float:
-        """
-        Calculate adverse selection score for an order.
-        
-        For BUY orders: adverse when buy_pressure is high (we're buying into strength)
-        For SELL orders: adverse when sell_pressure is high (we're selling into weakness)
-        
-        Returns 0.0 (no adverse selection) to 1.0 (extreme adverse selection).
-        """
         state = self._flow.get(token)
         if not state:
             return 0.0
-
         if order_side == "BUY":
-            # Adverse if we're buying when others are buying aggressively
-            # (we're the liquidity they're taking — they know something)
-            adverse = max(0, state.imbalance) * 0.5 + max(0, state.informed_flow) * 0.5
+            return min(1.0, max(0, state.imbalance) * 0.5 + max(0, state.informed_flow) * 0.5)
         else:
-            # Adverse if we're selling when others are selling aggressively
-            adverse = max(0, -state.imbalance) * 0.5 + max(0, -state.informed_flow) * 0.5
+            return min(1.0, max(0, -state.imbalance) * 0.5 + max(0, -state.informed_flow) * 0.5)
 
-        return min(1.0, adverse)
+    def _get_size_impact(self, order_usd: float, book_depth: float) -> Tuple[float, float]:
+        """Returns (fill_prob_multiplier, expected_slippage)."""
+        if book_depth <= 0:
+            return 0.4, self.SLIPPAGE_MAX
+        depth_pct = order_usd / book_depth
+        if depth_pct <= self.SIZE_IMPACT_THRESHOLD:
+            return 1.0, self.SLIPPAGE_BASE
+        # Quadratic penalty — gets bad fast
+        excess = min(1.0, (depth_pct - self.SIZE_IMPACT_THRESHOLD) / 0.10)
+        fill_mult = 1.0 - excess * 0.7  # down to 30% at 13%+ depth
+        slippage = self.SLIPPAGE_BASE + excess * (self.SLIPPAGE_MAX - self.SLIPPAGE_BASE)
+        return fill_mult, slippage
 
-    def get_fill_probability(self, order_side: str, order_price: float,
-                              best_bid: float, best_ask: float,
-                              bid_size: float, ask_size: float,
-                              spread: float, volume: float,
-                              age: float, post_only: bool,
-                              token: str = "") -> Tuple[float, bool, str]:
+    def _check_book_cross(self, token: str, order_side: str, order_price: float,
+                           order_created: float) -> bool:
         """
-        Calculate fill probability for a resting order.
+        Check if the live order book crossed our order price since we placed it.
         
-        Returns:
-        - fill_prob: probability of fill this tick (0.0 to 0.10)
-        - is_adverse: True if the fill would be adverse selection
-        - reason: explanation string
+        This is the CORE of realistic paper fills:
+        - If best_ask dropped below our BUY price → we'd be filled
+        - If best_bid rose above our SELL price → we'd be filled
         """
-        self._fill_stats["total_attempts"] += 1
+        history = self._book_history.get(token, [])
+        if not history:
+            return False
 
-        # Must be resting long enough
-        if age < self.MIN_REST_TIME:
-            return 0.0, False, "too_young"
+        # Check snapshots after order was placed
+        relevant = [s for s in history if s.timestamp > order_created]
+        if not relevant:
+            return False
 
-        # ─── Determine queue position ────────────────────────
-
-        tick_size = 0.01
-        at_best = False
-        inside_best = False
-        behind_best = False
-
-        if order_side == "BUY":
-            if abs(order_price - best_bid) < tick_size:
-                at_best = True
-            elif order_price > best_bid:
-                inside_best = True
+        tick = 0.01
+        for snap in relevant:
+            if order_side == "BUY":
+                # Our BUY would fill if best_ask <= our price
+                if snap.best_ask > 0 and snap.best_ask <= order_price + tick:
+                    return True
             else:
-                behind_best = True
-            book_depth = bid_size
-        else:
-            if abs(order_price - best_ask) < tick_size:
-                at_best = True
-            elif order_price < best_ask:
-                inside_best = True
-            else:
-                behind_best = True
-            book_depth = ask_size
+                # Our SELL would fill if best_bid >= our price
+                if snap.best_bid > 0 and snap.best_bid >= order_price - tick:
+                    return True
 
-        # Post-only: if we'd cross the spread, reject
-        if post_only:
-            if order_side == "BUY" and order_price >= best_ask:
-                self._fill_stats["rejected_fills"] += 1
-                return 0.0, False, "post_only_reject"
-            if order_side == "SELL" and order_price <= best_bid:
-                self._fill_stats["rejected_fills"] += 1
-                return 0.0, False, "post_only_reject"
+        return False
 
-        # ─── Base fill rate ──────────────────────────────────
-
-        if inside_best:
-            base = self.BASE_FILL_RATE_INSIDE
-        elif at_best:
-            base = self.BASE_FILL_RATE_AT_BEST
-        else:
-            base = self.BASE_FILL_RATE_BEHIND
-
-        # ─── Depth adjustment ───────────────────────────────
-
-        if book_depth > 0:
-            # Thin books fill faster (less competition)
-            depth_factor = min(2.5, 500 / max(book_depth, 10))
-        else:
-            depth_factor = 1.5
-        base *= depth_factor
-
-        # ─── Spread adjustment ──────────────────────────────
-
-        if spread > 0.15:
-            base *= 0.4   # 15¢+ spread → fewer takers
-        elif spread > 0.10:
-            base *= 0.55  # 10¢ spread
-        elif spread > 0.05:
-            base *= 0.80  # 5¢ spread
-        elif spread < 0.04:
-            base *= 1.4   # tight spread → many takers
-
-        # ─── Volume regime ──────────────────────────────────
-
-        vol_factor = min(1.5, math.log10(max(volume, 1)) / 5.5)
-        base *= vol_factor
-
-        # ─── Age ramp ───────────────────────────────────────
-
-        age_factor = min(2.0, 1.0 + (age - self.MIN_REST_TIME) / 150)
-        base *= age_factor
-
-        # ─── Adverse selection adjustment ───────────────────
-
-        adverse_score = self.get_adverse_selection_score(token, order_side)
-
-        if adverse_score > 0.3:
-            # Informed flow present — fills come FASTER but are ADVERSE
-            # This is realistic: when someone with info trades, they take
-            # all available liquidity including your order
-            adverse_boost = 1.0 + adverse_score * self.ADVERSE_SELECTION_STRENGTH * 2
-            base *= adverse_boost
-            is_adverse = True
-            reason = f"adverse_flow({adverse_score:.2f})"
-        else:
-            is_adverse = False
-            reason = "normal"
-
-        # ─── Time of day ────────────────────────────────────
-
-        from datetime import datetime, timezone
-        utc_hour = datetime.now(timezone.utc).hour
-        if 14 <= utc_hour <= 21:
-            base *= 1.3  # US market hours → more flow
-        elif 3 <= utc_hour <= 6:
-            base *= 0.4  # quiet hours
-
-        # ─── Volatility adjustment ──────────────────────────
-
+    def _check_trade_at_price(self, token: str, order_side: str, order_price: float,
+                                order_created: float) -> bool:
+        """
+        Check if trades printed at or through our price since order placement.
+        
+        If someone traded at our price, we likely got filled too.
+        """
         state = self._flow.get(token)
-        if state and state.volatility > 0.02:
-            # High volatility → more takers but also more adverse selection
-            base *= min(1.5, 1.0 + state.volatility * 10)
+        if not state:
+            return False
 
-        # ─── Cap ────────────────────────────────────────────
+        tick = 0.01
+        for ts, price, size, trade_side in state.trades:
+            if ts <= order_created:
+                continue
+            # A trade at or through our price
+            if order_side == "BUY" and trade_side == "SELL" and price <= order_price + tick:
+                return True
+            if order_side == "SELL" and trade_side == "BUY" and price >= order_price - tick:
+                return True
 
-        fill_prob = min(base, 0.25)  # max 25% per tick
-
-        # Apply the adverse selection penalty to profitability
-        # (fill prob is higher, but the fill is "bad")
-        if is_adverse:
-            # Still return the probability — the ADVERSE flag tells the
-            # caller to handle it (e.g., by reducing exit target)
-            pass
-
-        return fill_prob, is_adverse, reason
+        return False
 
     def simulate_fill(self, order_side: str, order_price: float,
                        order_shares: float,
@@ -302,54 +241,131 @@ class FillSimulator:
                        bid_size: float, ask_size: float,
                        spread: float, volume: float,
                        age: float, post_only: bool,
-                       token: str = "") -> Tuple[bool, float, float, bool]:
+                       token: str = "",
+                       order_created: float = 0) -> Tuple[bool, float, float, bool]:
         """
-        Simulate a fill attempt.
+        Simulate a fill using real market data.
         
-        Returns:
-        - filled: True if order filled
-        - fill_price: actual fill price (may differ from order price due to slippage)
-        - fill_shares: number of shares filled (may be partial)
-        - is_adverse: True if this was an adverse selection fill
+        Priority:
+        1. Check if book crossed our price (deterministic)
+        2. Check if trades hit our price (deterministic)
+        3. Fall back to probability model (for edge cases)
         
-        When adverse selection is active:
-        - Fill probability is HIGHER (informed traders take your liquidity)
-        - But the fill is BAD (price is about to move against you)
-        - The bot should immediately try to exit at a worse price
+        Returns (filled, fill_price, fill_shares, is_adverse).
         """
-        fill_prob, is_adverse, reason = self.get_fill_probability(
-            order_side, order_price, best_bid, best_ask,
-            bid_size, ask_size, spread, volume, age, post_only, token
-        )
+        self._fill_stats["total_attempts"] += 1
 
-        if fill_prob <= 0:
+        if age < self.MIN_REST_TIME:
             return False, 0, 0, False
 
-        if random.random() > fill_prob:
+        order_usd = order_shares * order_price
+
+        # Post-only: reject if we'd cross
+        if post_only:
+            if order_side == "BUY" and order_price >= best_ask:
+                self._fill_stats["rejected_fills"] += 1
+                return False, 0, 0, False
+            if order_side == "SELL" and order_price <= best_bid:
+                self._fill_stats["rejected_fills"] += 1
+                return False, 0, 0, False
+
+        book_depth = bid_size if order_side == "BUY" else ask_size
+        size_mult, base_slippage = self._get_size_impact(order_usd, book_depth)
+        if size_mult < 0.5:
+            self._fill_stats["size_penalized"] += 1
+
+        # ─── Priority 1: Deterministic book cross ───────────
+        tick = 0.01
+        book_crossed = False
+        if order_side == "BUY" and best_ask > 0 and best_ask <= order_price + tick:
+            book_crossed = True
+        elif order_side == "SELL" and best_bid > 0 and best_bid >= order_price - tick:
+            book_crossed = True
+
+        # Also check historical book snapshots
+        if not book_crossed and order_created > 0:
+            book_crossed = self._check_book_cross(token, order_side, order_price, order_created)
+
+        # ─── Priority 2: Trade at price ─────────────────────
+        trade_hit = False
+        if not book_crossed and order_created > 0:
+            trade_hit = self._check_trade_at_price(token, order_side, order_price, order_created)
+
+        # ─── Priority 3: Probability fallback ───────────────
+        prob_fill = False
+        if not book_crossed and not trade_hit:
+            # Only fill via probability if we're at the best level
+            at_best = False
+            if order_side == "BUY" and abs(order_price - best_bid) < tick:
+                at_best = True
+            elif order_side == "SELL" and abs(order_price - best_ask) < tick:
+                at_best = True
+
+            if at_best:
+                # Base rate: ~1.5% per second at best (much lower than v5)
+                base_rate = 0.015
+                base_rate *= size_mult
+
+                # Spread penalty
+                if spread > 0.10:
+                    base_rate *= 0.4
+                elif spread > 0.05:
+                    base_rate *= 0.65
+
+                # Adverse selection boost
+                adverse_score = self.get_adverse_selection_score(token, order_side)
+                if adverse_score > 0.2:
+                    base_rate *= (1.0 + adverse_score * self.ADVERSE_SELECTION_STRENGTH * 2)
+
+                # Age ramp
+                age_factor = min(1.5, 1.0 + (age - self.MIN_REST_TIME) / 200)
+                base_rate *= age_factor
+
+                # Time of day
+                from datetime import datetime, timezone
+                utc_hour = datetime.now(timezone.utc).hour
+                if 3 <= utc_hour <= 6:
+                    base_rate *= 0.25
+
+                base_rate = min(base_rate, 0.08)
+                prob_fill = random.random() < base_rate
+
+        # ─── No fill ────────────────────────────────────────
+        if not book_crossed and not trade_hit and not prob_fill:
             return False, 0, 0, False
 
-        # ─── Fill occurred ──────────────────────────────────
-
+        # ─── Fill occurred — determine type ─────────────────
         self._fill_stats["total_fills"] += 1
-
-        # Determine fill price
-        if order_side == "BUY":
-            # BUY fills at or below our price
-            fill_price = order_price
-            if is_adverse:
-                # Adverse fill: we pay slightly more (slippage)
-                slippage = random.uniform(0, 0.005)  # 0-0.5¢ slippage
-                fill_price = min(order_price + slippage, best_ask)
+        if book_crossed:
+            self._fill_stats["book_cross_fills"] += 1
+        elif trade_hit:
+            self._fill_stats["trade_fills"] += 1
         else:
-            # SELL fills at or above our price
-            fill_price = order_price
-            if is_adverse:
-                slippage = random.uniform(0, 0.005)
-                fill_price = max(order_price - slippage, best_bid)
+            self._fill_stats["simulated_fills"] += 1
 
-        fill_price = round(fill_price, 4)
+        # ─── Adverse selection check ────────────────────────
+        adverse_score = self.get_adverse_selection_score(token, order_side)
+        is_adverse = adverse_score > 0.25
+        if is_adverse:
+            self._fill_stats["adverse_fills"] += 1
+        else:
+            self._fill_stats["favorable_fills"] += 1
 
-        # Determine fill size (partial fills)
+        # ─── Slippage ───────────────────────────────────────
+        slip = base_slippage
+        if is_adverse:
+            slip *= random.uniform(1.5, 3.0)
+        slip = min(slip, self.SLIPPAGE_MAX)
+        total_cost = slip + self.PAPER_TAX
+        self._fill_stats["total_slippage"] += total_cost
+
+        if order_side == "BUY":
+            fill_price = min(order_price + total_cost, best_ask) if best_ask > 0 else order_price + total_cost
+        else:
+            fill_price = max(order_price - total_cost, best_bid) if best_bid > 0 else order_price - total_cost
+        fill_price = round(max(0.001, min(0.999, fill_price)), 4)
+
+        # ─── Partial fills ──────────────────────────────────
         if random.random() < self.PARTIAL_FILL_PROB:
             fill_pct = random.uniform(self.PARTIAL_FILL_MIN, self.PARTIAL_FILL_MAX)
             fill_shares = round(order_shares * fill_pct, 2)
@@ -357,18 +373,14 @@ class FillSimulator:
         else:
             fill_shares = order_shares
 
-        # Track adverse selection
         if is_adverse:
-            self._fill_stats["adverse_fills"] += 1
-            LOG.warning(f"⚠️ ADVERSE FILL | {order_side} {fill_shares:.0f} @ ${fill_price:.4f} | "
-                       f"{reason} | Price likely to move against you")
-        else:
-            self._fill_stats["favorable_fills"] += 1
+            LOG.warning(f"⚠️ ADVERSE FILL | {order_side} {fill_shares:.0f} @ ${fill_price:.4f} "
+                       f"(limit=${order_price:.4f}, slip=${total_cost:.4f}, "
+                       f"{'book_cross' if book_crossed else 'trade_hit' if trade_hit else 'simulated'})")
 
         return True, fill_price, fill_shares, is_adverse
 
     def get_stats(self) -> dict:
-        """Get fill simulation statistics."""
         s = self._fill_stats
         total = s["total_fills"]
         return {
@@ -377,15 +389,24 @@ class FillSimulator:
             "partial_rate": s["partial_fills"] / max(1, total),
             "rejection_rate": s["rejected_fills"] / max(1, s["total_attempts"]),
             "fill_rate": total / max(1, s["total_attempts"]),
+            "avg_slippage": s["total_slippage"] / max(1, total),
+            "book_cross_pct": s["book_cross_fills"] / max(1, total),
+            "trade_hit_pct": s["trade_fills"] / max(1, total),
+            "sim_pct": s["simulated_fills"] / max(1, total),
         }
 
     def report(self) -> str:
-        """Human-readable fill stats."""
         s = self.get_stats()
         return (
-            f"\n📊 FILL SIMULATOR STATS\n"
+            f"\n📊 FILL SIMULATOR v7 (book-grounded)\n"
             f"  Attempts: {s['total_attempts']} | Fills: {s['total_fills']} ({s['fill_rate']:.1%})\n"
+            f"  Book-cross: {s['book_cross_fills']} ({s['book_cross_pct']:.0%}) | "
+            f"Trade-hit: {s['trade_fills']} ({s['trade_hit_pct']:.0%}) | "
+            f"Simulated: {s['simulated_fills']} ({s['sim_pct']:.0%})\n"
             f"  Adverse: {s['adverse_fills']} ({s['adverse_rate']:.1%}) | "
             f"Partial: {s['partial_fills']} ({s['partial_rate']:.1%})\n"
+            f"  Size-penalized: {s['size_penalized']} | "
+            f"Avg slippage: ${s['avg_slippage']:.4f} | "
+            f"Total slip cost: ${s['total_slippage']:.2f}\n"
             f"  Post-only rejects: {s['rejected_fills']} ({s['rejection_rate']:.1%})"
         )

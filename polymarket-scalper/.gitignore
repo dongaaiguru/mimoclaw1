@@ -6,3 +6,7 @@ rules.jsonl
 proposals.jsonl
 commands.jsonl
 __pycache__/
+analytics.db
+bankroll.json
+brain.json
+venv/

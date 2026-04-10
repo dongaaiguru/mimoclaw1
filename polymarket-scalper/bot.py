@@ -734,7 +734,10 @@ class Brain:
         if total < 5:
             return 0.5, 1.0
         p = self.data["total_wins"] / total
-        if self.data["total_pnl"] > 0 and p > 0.5:
+        # v6: Better b estimation based on actual avg win/loss
+        if p > 0.7 and self.data["total_pnl"] > 0:
+            b = 2.0  # strong edge
+        elif p > 0.6:
             b = 1.5
         elif p > 0.5:
             b = 1.2

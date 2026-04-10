@@ -178,21 +178,22 @@ class BankrollManager:
     # ─── Dynamic Sizing ─────────────────────────────────────
 
     def get_per_order_size(self, realized_pnl: float = 0,
-                            base_per_order: float = 10) -> float:
+                            base_per_order: float = 10,
+                            paper: bool = False) -> float:
         """
         Dynamic per-order size based on current bankroll.
         
-        Scales proportionally with capital:
-        - $100 capital → $8 per order
-        - $150 capital → $12 per order (50% more)
-        - $200 capital → $16 per order
-        - $80 capital → $6.40 per order (shrunk)
-        
-        Clamped to 5-20% of capital for safety.
+        In PAPER mode: conservative sizing to test actual alpha.
+        In LIVE mode: compounds with gains.
         """
         capital = self.get_trading_capital(realized_pnl)
         
-        # Scale from the original base
+        if paper:
+            # v6: In paper mode, cap at 10% of STARTING capital
+            # This prevents fantasy compounding and tests real spread-capture alpha
+            return round(min(base_per_order, self.starting_capital * 0.10), 2)
+
+        # Live mode: compound with gains
         scale_factor = capital / self.starting_capital
         size = base_per_order * scale_factor
 

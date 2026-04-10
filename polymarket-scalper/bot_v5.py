@@ -197,11 +197,13 @@ class OrderManagerV5:
     def get_brain_adjusted_size(self, slug: str, market: Optional[Market] = None,
                                  is_market_making: bool = False,
                                  risk_multiplier: float = 1.0) -> float:
-        # v5: Dynamic base size from bankroll (compounds with gains, shrinks with losses)
-        base_size = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order)
-        # Apply bankroll growth/shrink multiplier
-        compound_mult = self.bankroll.get_combined_multiplier(self._realized_pnl)
-        base_size *= compound_mult
+        # v6: Paper mode = fixed sizing, no fantasy compounding
+        base_size = self.bankroll.get_per_order_size(
+            self._realized_pnl, self.cfg.per_order, paper=self.paper)
+        # Apply bankroll growth/shrink multiplier (only in live mode)
+        if not self.paper:
+            compound_mult = self.bankroll.get_combined_multiplier(self._realized_pnl)
+            base_size *= compound_mult
         # Apply risk guard multiplier (daily performance)
         base_size *= risk_multiplier
         # Brain adjustments
@@ -209,17 +211,22 @@ class OrderManagerV5:
             kelly_size = self.brain.get_kelly_order_size(
                 self.bankroll.get_trading_capital(self._realized_pnl), slug)
             brain_mult = self.brain.get_order_size_multiplier(slug)
-            # Blend bankroll size and Kelly size
             base_size = (base_size * 0.4 + kelly_size * brain_mult * 0.6)
-            # Clamp to reasonable range
-            per_order_floor = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order) * 0.3
-            per_order_cap = self.bankroll.get_per_order_size(self._realized_pnl, self.cfg.per_order) * 3
+            per_order_floor = self.cfg.per_order * 0.3
+            per_order_cap = self.cfg.per_order * 3
             base_size = max(per_order_floor, min(per_order_cap, base_size))
         elif self.brain:
             brain_mult = self.brain.get_order_size_multiplier(slug)
             base_size *= brain_mult
         if is_market_making:
             base_size *= 0.5
+
+        # ─── v6: Cap against market liquidity ───────────────
+        # Never place an order > 2% of market liquidity
+        if market and market.liquidity > 0:
+            max_size_by_liq = market.liquidity * 0.02
+            base_size = min(base_size, max_size_by_liq)
+
         return round(max(1.0, base_size), 2)
 
     # ─── Tick Size ──────────────────────────────────────────
@@ -797,7 +804,11 @@ class ScalperV5:
         market.spread = spread
         market.last_ws_update = time.time()
 
-        # v5: Feed data to modules
+        # v7: Feed book data to fill simulator (for book-cross detection)
+        self.om.fill_sim.record_book(token, bb_price, ba_price, bb_size, ba_size,
+                                      last_trade_price=last_trade)
+
+        # Feed data to modules
         last_trade = book.get("last_trade")
         if last_trade:
             side = "BUY" if last_trade > old_mid else "SELL"
@@ -841,6 +852,7 @@ class ScalperV5:
                     age=time.time() - order.created,
                     post_only=order.post_only,
                     token=token,
+                    order_created=order.created,
                 )
 
                 if filled:
@@ -883,6 +895,7 @@ class ScalperV5:
                 age=now - order.created,
                 post_only=order.post_only,
                 token=order.token,
+                order_created=order.created,
             )
 
             if filled:
