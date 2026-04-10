@@ -965,6 +965,8 @@ class ScalperV5:
             self.om.bankroll.get_trading_capital(self.om._realized_pnl),
             self.om.bankroll.effective_capital,
         )
+        if not can_trade:
+            LOG.debug(f"Reprice skip: risk guard blocked — {trade_reason}")
 
         # v5: Get dynamic size multiplier from risk guard
         self._current_size_mult = self.risk_guard.get_size_multiplier(
