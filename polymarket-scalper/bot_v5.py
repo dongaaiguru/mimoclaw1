@@ -1111,25 +1111,34 @@ class ScalperV5:
         bb = market.best_bid
         ba = market.best_ask
         spread = market.spread
-
-        # ── v9: Smart BUY placement ──────────────────────────
-        # On wide-spread markets, best_bid is often way below mid (no liquidity there).
-        # Placing at best_bid on a market with bid=$0.01, ask=$0.17 means waiting for
-        # someone to sweep 16¢ down the book — extremely unlikely.
-        # Solution: place at best_bid + fraction of spread, getting closer to mid
-        # where actual trading happens.
         mid = (bb + ba) / 2
 
-        if spread > tick * 10:
-            # Wide spread (10¢+): place at 25% of spread above best_bid
-            # This gets us into the "active zone" where takers actually trade
-            buy_price = round(bb + spread * 0.25, 4)
-        elif spread > tick * 5:
-            # Medium spread: place at 1 tick inside best_bid
-            buy_price = round(bb + tick, 4)
+        # ── v10: Mid-relative BUY placement ──────────────────
+        # On prediction markets, best_bid is often a dead $0.01 anchor.
+        # Placing relative to the best bid puts orders in dead zones.
+        # Instead, place 1-3¢ below the mid price where actual trading happens.
+        # This gives us queue priority while staying close to real price action.
+
+        # Offset from mid: tighter in volatile markets, wider in calm ones
+        flow_stats = self.flow.get_stats(market.yes_token)
+        velocity = flow_stats.get("velocity", 0)
+
+        if velocity > 15:
+            # Active market — tight offset for fast fills
+            offset = max(tick * 2, 0.01)  # 1¢ or 2 ticks
+        elif spread > 0.10:
+            # Wide spread — slightly more offset
+            offset = max(tick * 3, 0.02)  # 2¢ or 3 ticks
         else:
-            # Tight spread: queue at best_bid
-            buy_price = round(bb, 4)
+            # Normal market
+            offset = max(tick * 2, 0.015)  # 1.5¢ or 2 ticks
+
+        buy_price = round(mid - offset, 4)
+
+        # Safety: never cross the ask
+        buy_price = min(buy_price, round(ba - tick, 4))
+        # Safety: never below $0.02 (essentially dead)
+        buy_price = max(buy_price, 0.02)
 
         # Safety: don't cross the ask
         buy_price = min(buy_price, round(ba - tick, 4))
@@ -1192,18 +1201,20 @@ class ScalperV5:
         bb = market.best_bid
         ba = market.best_ask
 
-        if spread > tick * 10:
-            # Wide spread: place 25% inside from each side (closer to mid)
-            bid_price = round(bb + spread * 0.25, 4)
-            ask_price = round(ba - spread * 0.25, 4)
-        elif spread > tick * 5:
-            # Medium spread: 1 tick inside
-            bid_price = round(bb + tick, 4)
-            ask_price = round(ba - tick, 4)
+        # v10: Mid-relative placement for market making
+        # Place orders equidistant from mid, not from best bid/ask
+        flow_stats = self.flow.get_stats(market.yes_token)
+        velocity = flow_stats.get("velocity", 0)
+
+        if velocity > 15:
+            half_capture = max(tick * 2, 0.01)
+        elif spread > 0.10:
+            half_capture = max(tick * 3, 0.02)
         else:
-            # Tight spread: queue at best levels
-            bid_price = round(bb, 4)
-            ask_price = round(ba, 4)
+            half_capture = max(tick * 2, 0.015)
+
+        bid_price = round(mid - half_capture, 4)
+        ask_price = round(mid + half_capture, 4)
 
         # Inventory skew (small adjustment)
         inventory = self.om.token_mgr.get_balance(market.yes_token)

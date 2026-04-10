@@ -78,10 +78,10 @@ class Config:
     max_hold_sec: int = int(os.getenv("MAX_HOLD_SECONDS", "300"))
     spread_target: float = float(os.getenv("SPREAD_CAPTURE_TARGET", "0.02"))
     reprice_sec: int = int(os.getenv("REPRICE_INTERVAL", "15"))
-    min_spread: float = 0.03
-    min_liquidity: float = 3000.0
-    min_volume: float = 2000.0
-    max_markets: int = 10
+    min_spread: float = 0.02
+    min_liquidity: float = 1000.0
+    min_volume: float = 500.0
+    max_markets: int = 20
     max_orders_per_market: int = 1
     strategy: str = os.getenv("STRATEGY", "one_side")
     quiet_hours_start: int = int(os.getenv("QUIET_HOURS_START", "3"))

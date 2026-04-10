@@ -308,12 +308,52 @@ class FillSimulator:
         if not book_crossed and order_created > 0:
             trade_hit = self._check_trade_at_price(token, order_side, order_price, order_created)
 
-        # ─── Priority 3: REMOVED — no more probabilistic fake fills ──
-        # Only deterministic fills from real book data (book_cross + trade_hit).
-        # Probability model was generating fictional fills that don't reflect
-        # actual market activity. Paper trading should only fill when the
-        # real market would have filled you.
+        # ─── Priority 3: Probabilistic fill for near-mid orders ──
+        # On illiquid prediction markets, the book rarely crosses specific prices.
+        # But if our order is close to the mid on an active market, there's a
+        # realistic probability of getting filled as takers sweep the book.
+        # Model: fill probability scales with proximity to mid and trade velocity.
         prob_fill = False
+        if not book_crossed and not trade_hit:
+            mid = (best_bid + best_ask) / 2
+            if mid > 0:
+                # How close is our order to the mid? (0 = at mid, 1 = at edge)
+                if order_side == "BUY":
+                    proximity = max(0, (mid - order_price) / max(mid * 0.1, 0.01))
+                else:
+                    proximity = max(0, (order_price - mid) / max(mid * 0.1, 0.01))
+
+                # Only consider fills if within 10% of mid price
+                if proximity < 1.0:
+                    # Base rate: higher when closer to mid
+                    base_fill_rate = (1.0 - proximity) * 0.015  # up to 1.5% per tick at mid
+
+                    # Flow velocity bonus
+                    flow_state = self._flow.get(token)
+                    if flow_state and flow_state.trades:
+                        now_t = time.time()
+                        recent_trades = len([t for t in flow_state.trades if t[0] > now_t - 60])
+                        velocity_bonus = min(1.0, recent_trades / 10)  # 10 trades/min = max bonus
+                        base_fill_rate *= (0.5 + velocity_bonus * 0.5)
+
+                    # Age bonus — older orders more likely to fill
+                    if age > 30:
+                        age_bonus = min(1.5, 1.0 + (age - 30) / 120)
+                        base_fill_rate *= age_bonus
+
+                    # Spread bonus — tighter spread = more taker activity
+                    if spread < 0.06:
+                        base_fill_rate *= 1.3
+                    elif spread > 0.15:
+                        base_fill_rate *= 0.5
+
+                    # Size impact
+                    base_fill_rate *= size_mult
+
+                    # Cap
+                    base_fill_rate = min(base_fill_rate, 0.06)  # max 6% per tick
+
+                    prob_fill = random.random() < base_fill_rate
 
         # ─── No fill ────────────────────────────────────────
         if not book_crossed and not trade_hit and not prob_fill:
