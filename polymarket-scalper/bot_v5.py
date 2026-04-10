@@ -1043,7 +1043,8 @@ class ScalperV5:
                 tick = market.tick_size
 
                 # v8: Don't re-place exit orders if one already exists
-                exit_orders = [o for o in existing if o.side == "SELL"]
+                exit_side = "SELL" if pos.side == "LONG" else "BUY"
+                exit_orders = [o for o in existing if o.side == exit_side]
                 if exit_orders:
                     continue
 
@@ -1051,23 +1052,43 @@ class ScalperV5:
                 if self.brain:
                     aggression = self.brain.get_exit_aggressiveness(slug)
 
-                if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
-                    exit_price = round(market.best_bid, 4)
-                elif mid < pos.entry_price - 0.01:
-                    exit_price = round(market.best_bid, 4)
-                elif market.spread > tick * 3:
-                    exit_price = round(market.best_ask - tick, 4)
+                if pos.side == "LONG":
+                    # Exit LONG by SELLING at best ask
+                    if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
+                        exit_price = round(market.best_bid, 4)
+                    elif mid < pos.entry_price - 0.01:
+                        exit_price = round(market.best_bid, 4)
+                    elif market.spread > tick * 3:
+                        exit_price = round(market.best_ask - tick, 4)
+                    else:
+                        exit_price = round(market.best_ask, 4)
+                    exit_price = min(exit_price, 0.99)
+                    if pos.cost < 1.0 or pos.shares < 1:
+                        self.om.positions.pop(slug, None)
+                        self.om.stops.remove_stop(slug)
+                        continue
+                    gtd = self._get_gtd_seconds(slug, market.spread)
+                    await self.om.place_limit(slug, market.yes_token, "SELL",
+                        exit_price, pos.cost, market, gtd, post_only=self.cfg.post_only)
                 else:
-                    exit_price = round(market.best_ask, 4)
-
-                exit_price = min(exit_price, 0.99)
-                if pos.cost < 1.0 or pos.shares < 1:
-                    self.om.positions.pop(slug, None)
-                    self.om.stops.remove_stop(slug)
-                    continue
-                gtd = self._get_gtd_seconds(slug, market.spread)
-                await self.om.place_limit(slug, market.yes_token, "SELL",
-                    exit_price, pos.cost, market, gtd, post_only=self.cfg.post_only)
+                    # v8: Exit SHORT by BUYING at best bid (cover)
+                    if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
+                        exit_price = round(market.best_ask, 4)
+                    elif mid > pos.entry_price + 0.01:
+                        exit_price = round(market.best_ask, 4)
+                    elif market.spread > tick * 3:
+                        exit_price = round(market.best_bid + tick, 4)
+                    else:
+                        exit_price = round(market.best_bid, 4)
+                    exit_price = max(exit_price, 0.01)
+                    if pos.cost < 1.0 or abs(pos.shares) < 1:
+                        self.om.positions.pop(slug, None)
+                        self.om.stops.remove_stop(slug)
+                        continue
+                    gtd = self._get_gtd_seconds(slug, market.spread)
+                    cover_cost = abs(pos.shares) * exit_price
+                    await self.om.place_limit(slug, market.yes_token, "BUY",
+                        exit_price, cover_cost, market, gtd, post_only=self.cfg.post_only)
                 continue
 
             count_sells = self.cfg.strategy == "both_sides"

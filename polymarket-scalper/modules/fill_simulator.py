@@ -68,7 +68,7 @@ class FillSimulator:
     SLIPPAGE_MAX = 0.008              # 0.8¢ max slippage
 
     # Paper tax — hidden cost to account for real-world friction
-    PAPER_TAX = 0.001                 # 0.1¢ per fill
+    PAPER_TAX = 0.002                 # 0.2¢ per fill (was 0.1¢)
 
     # Partial fill model
     PARTIAL_FILL_PROB = 0.35          # 35% chance
@@ -83,7 +83,7 @@ class FillSimulator:
     MIN_REST_TIME = 8.0
 
     # Adverse selection
-    ADVERSE_SELECTION_STRENGTH = 0.6
+    ADVERSE_SELECTION_STRENGTH = 0.8
 
     def __init__(self):
         self._flow: Dict[str, FlowState] = {}
