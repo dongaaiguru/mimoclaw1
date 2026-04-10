@@ -270,8 +270,8 @@ class FlowAnalyzer:
             direction = "BUY" if s["buy_pressure"] > 0 else "SELL"
             return True, f"VOLUME SPIKE: {s['spike_ratio']:.1f}x, {direction} pressure={s['buy_pressure']:.2f}"
         # v8: Much higher thresholds — only pull on REAL danger, not noise
-        # 4¢ moves are normal on prediction markets; need 20¢+ to be concerning
-        if abs(s["momentum"]) > 0.20 and s["velocity"] > 30:
+        # 20¢ moves are normal on prediction markets; need 50¢+ to be concerning
+        if abs(s["momentum"]) > 0.50 and s["velocity"] > 30:
             return True, f"MOMENTUM SURGE: {s['momentum']*100:.1f}¢ move, {s['velocity']} trades/30s"
         return False, "OK"
 
@@ -1028,6 +1028,7 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
 
             liq = float(m.get("liquidityClob", 0) or 0)
             vol = float(m.get("volume", 0))
+            vol24 = float(m.get("volume24hr", 0) or 0)
             spread = float(m.get("spread", 0))
             yp = float(prices[0])
             fees = m.get("feesEnabled", False)
@@ -1037,6 +1038,9 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
                 continue
             if vol < cfg.min_volume:
                 continue
+            # v10: Filter for recent activity — prefer markets with 24hr volume
+            if vol24 > 0 and vol24 < 500:
+                continue  # dead market if <$500 traded in 24h
             if spread < cfg.min_spread:
                 continue
             if yp < 0.05 or yp > 0.95:
@@ -1073,9 +1077,10 @@ async def discover_markets(cfg: Config, brain: Optional[Brain] = None) -> List[M
             if brain.is_star_market(m.slug):
                 m._score *= 1.3
         else:
-            # Use liquidity (order book depth from Gamma API) as primary signal
-            # Volume from Gamma API includes minting/burning and may be inflated
-            m._score = m.spread * math.sqrt(max(m.liquidity, 1)) * math.log10(max(m.volume, 1))
+            # v10: Weight volume heavily — active markets fill orders
+            vol_score = math.log10(max(m.volume, 1))
+            liq_score = math.sqrt(max(m.liquidity, 1))
+            m._score = m.spread * liq_score * (vol_score ** 1.5)
 
     all_markets.sort(key=lambda m: m._score, reverse=True)
     return all_markets[:cfg.max_markets]

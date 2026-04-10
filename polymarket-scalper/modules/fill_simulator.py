@@ -326,7 +326,7 @@ class FillSimulator:
                 # Only consider fills if within 10% of mid price
                 if proximity < 1.0:
                     # Base rate: higher when closer to mid
-                    base_fill_rate = (1.0 - proximity) * 0.015  # up to 1.5% per tick at mid
+                    base_fill_rate = (1.0 - proximity) * 0.05  # up to 5% per tick at mid
 
                     # Flow velocity bonus
                     flow_state = self._flow.get(token)

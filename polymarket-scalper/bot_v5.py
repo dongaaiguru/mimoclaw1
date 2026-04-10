@@ -602,6 +602,9 @@ class ScalperV5:
         self._last_equity_snapshot = 0
         self._last_market_refresh = 0
         self._current_size_mult = 1.0  # updated each tick by risk guard
+        # v10: Track per-market WS trade activity for pruning dead markets
+        self._market_last_trade: Dict[str, float] = {}  # slug → last trade timestamp
+        self._market_trade_count: Dict[str, int] = {}   # slug → trade count in session
 
         # Supervisor
         self._supervised = cfg.supervised
@@ -734,6 +737,10 @@ class ScalperV5:
             self.om.snapshot_equity()
             self._last_equity_snapshot = now
 
+        # v10: Prune dead markets every 120s — remove markets with no trades
+        if self.tick % 120 == 0 and self.tick > 120:
+            await self._prune_dead_markets()
+
         # Refresh markets every 5 min
         if now - self._last_market_refresh > 300:
             await self._refresh_markets()
@@ -818,6 +825,9 @@ class ScalperV5:
                 last_trade_side = "BUY" if last_trade > old_mid else "SELL"
             self.flow.record_trade(token, last_trade, 0, last_trade_side)
             self.om.fill_sim.record_trade(token, last_trade, 0, last_trade_side)
+            # v10: Track per-market trading activity
+            self._market_last_trade[slug] = time.time()
+            self._market_trade_count[slug] = self._market_trade_count.get(slug, 0) + 1
 
         # v7: Feed book data to fill simulator (for book-cross detection)
         self.om.fill_sim.record_book(token, bb_price, ba_price, bb_size, ba_size,
@@ -835,10 +845,10 @@ class ScalperV5:
                     await self.om.cancel_order(order)
             LOG.warning(f"🌊 FLOW PULL | {slug[:35]} | {pull_reason}")
 
-        # v8: Reactive cancellation — only if price moved >5¢ (not 1¢ or 3¢)
-        # 3¢ moves are constant noise on prediction markets
+        # v10: Reactive cancellation — only if price moved >8¢ (not noise)
+        # Prediction markets have constant 3-5¢ noise; 8¢+ is real movement
         price_moved = abs(mid - old_mid)
-        if price_moved > 0.05:
+        if price_moved > 0.08:
             for oid, order in list(self.om.orders.items()):
                 if order.status == "live" and order.slug == slug:
                     await self.om.cancel_order(order)
@@ -926,6 +936,32 @@ class ScalperV5:
                     self.om.fill_order(order, order.price)
         except Exception as e:
             LOG.debug(f"Reconcile error: {e}")
+
+    async def _prune_dead_markets(self):
+        """v10: Remove markets that haven't traded in the last 2 minutes."""
+        now = time.time()
+        dead_markets = []
+        for slug, market in list(self.markets.items()):
+            # Don't prune markets we have positions in
+            if slug in self.om.positions:
+                continue
+            # Don't prune markets with live orders
+            has_live = any(o.status == "live" and o.slug == slug for o in self.om.orders.values())
+            if has_live:
+                continue
+            # Check if market had any WS trade activity
+            last_trade = self._market_last_trade.get(slug, 0)
+            trade_count = self._market_trade_count.get(slug, 0)
+            if trade_count == 0 or (now - last_trade > 120 and last_trade > 0):
+                dead_markets.append(slug)
+
+        if dead_markets:
+            for slug in dead_markets:
+                self.markets.pop(slug, None)
+                self._market_last_trade.pop(slug, None)
+                self._market_trade_count.pop(slug, None)
+            LOG.info(f"🗑 PRUNED {len(dead_markets)} dead markets: {[s[:25] for s in dead_markets[:5]]}")
+            LOG.info(f"📊 Active markets: {len(self.markets)}")
 
     async def _refresh_markets(self):
         """Refresh market list — discover new markets, update prices."""
@@ -1125,13 +1161,13 @@ class ScalperV5:
 
         if velocity > 15:
             # Active market — tight offset for fast fills
-            offset = max(tick * 2, 0.01)  # 1¢ or 2 ticks
+            offset = max(tick, 0.005)  # 0.5¢ or 1 tick — as tight as safe
         elif spread > 0.10:
             # Wide spread — slightly more offset
-            offset = max(tick * 3, 0.02)  # 2¢ or 3 ticks
+            offset = max(tick * 2, 0.01)  # 1¢ or 2 ticks
         else:
             # Normal market
-            offset = max(tick * 2, 0.015)  # 1.5¢ or 2 ticks
+            offset = max(tick * 2, 0.01)  # 1¢ or 2 ticks
 
         buy_price = round(mid - offset, 4)
 
@@ -1207,11 +1243,11 @@ class ScalperV5:
         velocity = flow_stats.get("velocity", 0)
 
         if velocity > 15:
-            half_capture = max(tick * 2, 0.01)
+            half_capture = max(tick, 0.005)
         elif spread > 0.10:
-            half_capture = max(tick * 3, 0.02)
+            half_capture = max(tick * 2, 0.01)
         else:
-            half_capture = max(tick * 2, 0.015)
+            half_capture = max(tick * 2, 0.01)
 
         bid_price = round(mid - half_capture, 4)
         ask_price = round(mid + half_capture, 4)
