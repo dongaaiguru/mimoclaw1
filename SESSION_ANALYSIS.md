@@ -214,3 +214,159 @@ The bot's infrastructure (brain, risk guard, flow detection, stops, analytics) i
 **The real question**: Can this bot sustain 60%+ WR with positive PnL after adverse selection and gas costs? Session #5 (95.1% WR with 2 losses) and session #6 (98.8% WR with 1 loss) suggest the underlying edge exists, but is inflated 2-3x by paper-mode optimism.
 
 **Go/no-go for live**: Calibrate the fill simulator first. If you can get the paper WR down to 75% by tightening adverse selection, and it still makes money, that's your signal.
+
+---
+
+## Session #9 — 2026-04-11 01:59–02:29 UTC+8 (29 minutes)
+
+### Configuration
+- Mode: Paper trading (real Polymarket WebSocket order book data + deterministic fill simulator v9)
+- Strategy: `one_side`
+- Capital: $100
+- Markets: 20 initial → refreshed to 26 → pruned to ~13 active
+
+### Results
+
+| Metric | Value |
+|---|---|
+| Starting Capital | $100.00 |
+| Final Equity | $200.91 |
+| Realized PnL | +$100.91 (+100.9%) |
+| Total Closed Trades | 92 |
+| Win Rate | 90W / 2L (97.8%) |
+| Profit Factor | ~1,386x |
+| Max Drawdown | 0.0% |
+| Adverse Fills | 2 (2.2%) |
+| Avg Hold Time | ~90s |
+| Flow Pulls | 18 |
+| Forced Exits | 2 (both profitable) |
+| Markets Pruned | 50+ across 12 sweeps |
+
+### Equity Curve
+
+| Time | Equity | Trades | WR |
+|---|---|---|---|
+| T+1min | $101.14 | 2 | 100% |
+| T+5min | $109.50 | 11 | 100% |
+| T+10min | $123.95 | 28 | 100% |
+| T+15min | $146.56 | 53 | 98% |
+| T+20min | $170.78 | 69 | 97% |
+| T+25min | $191.98 | 82 | 98% |
+| T+29min | $200.91 | 92 | 98% |
+
+### Per-Market P&L (from log PnL extraction)
+
+| Market | Trades | WR | PnL | Avg/Trade |
+|---|---|---|---|---|
+| Fed upper bound 5.5% | 14 | 100% | +$24.22 | +$1.73 |
+| USDT $200B | 14 | 100% | +$18.78 | +$1.34 |
+| Israeli parliament dissolved | 20 | 100% | +$17.44 | +$0.87 |
+| OpenAI consumer hardware | 17 | 100% | +$13.85 | +$0.81 |
+| Weed rescheduled | 9 | 77.8% | +$9.86 | +$1.10 |
+| NHL Hart Trophy (Kucherov) | 3 | 100% | +$8.79 | +$2.93 |
+| Israel ground offensive | 15 | 100% | +$7.75 | +$0.52 |
+
+### The Two Losses
+
+Both on `weed-rescheduled-by-december-31`:
+1. SELL 3 @ $0.4240 → PnL = -$0.006 (adverse fill on tight spread)
+2. SELL 3 @ $0.4240 → PnL = -$0.007 (same pattern, repeat adverse)
+
+Combined loss: $0.013 — noise. The weed market had tight ~10¢ spreads that occasionally produced adverse fills when selling slightly below entry.
+
+### Sentiment Signals
+
+- 3 sentiment signals fired at session start (Iran ceasefire news)
+- Bearish (0.8): palestinian shot dead during israeli settler attack
+- Bearish (0.3): has US achieved war objectives in Iran?
+- Bullish (0.7): iran ceasefire deal gives Trump a way out
+- Bot placed 5 sentiment-driven buys on Israel/Gaza markets at T+0 — all filled profitably
+
+### Risk Events
+
+- **2 forced exits** — both profitable:
+  - NHL Hart Trophy: dynamic stop at $0.1480, PnL = +$0.117
+  - Fed upper bound: timeout at $0.1120, PnL = +$1.252
+- **18 flow pulls** (momentum surge detection on 50¢+ moves)
+- **0 circuit breakers** — never hit 10% daily loss limit
+- **0 losing streak pauses** — never lost 3 in a row
+- **5 STAR markets promoted** by brain during session
+
+### Critical Observations
+
+#### 1. Diversification Improved vs Prior Sessions
+Session #5 had 85% of PnL from one market (Fed). Session #9's top market (Fed) contributed only 24% of PnL. The bot spread across 7 active markets with 6 contributing >$7 each. This is a meaningful improvement from the one_side strategy and market pruning.
+
+#### 2. NHL Hart Trophy — Explosive New Market
+The Hart Trophy market was newly discovered mid-session and immediately became a top earner (+$8.79 in 3 trades, $2.93/trade avg). The bot placed a buy at $0.126 and sold at $0.214 — an 8.8¢ capture on a market that was seeing 50¢+ momentum swings. Brain promoted it to STAR status after just 3 trades.
+
+#### 3. Adverse Selection Still Too Low
+Only 2 adverse fills in 92 trades (2.2%). Real Polymarket adverse selection runs 15-25%. The fill simulator's flow-based adverse detection catches large informed flows but misses the constant small adverse selection from competing makers and takers.
+
+#### 4. Zero Drawdown Is Still a Red Flag
+0% drawdown across 92 trades and 29 minutes means the fill simulator isn't punishing the bot enough. In live trading, even with a 90%+ WR strategy, you'd expect 3-8% drawdowns from slippage, partial fills, and timing risk.
+
+#### 5. Growth Rate Was Remarkably Linear
+$3.48/minute average with no single blowup spike. The equity curve shows steady accumulation, not boom-bust. This suggests the edge is in the strategy mechanics (mid-relative placement on wide-spread markets), not in lucky fills.
+
+#### 6. Market Pruning Is Doing Heavy Lifting
+50+ markets pruned across 12 sweeps. Without pruning, the bot would waste orders on dead markets (no WS trade activity). The 2-minute inactivity threshold works well — it keeps the bot focused on markets with actual flow.
+
+### Comparison: Session #5 vs #6 vs #9
+
+| Metric | #5 (both_sides) | #6 (one_side) | #9 (one_side) |
+|---|---|---|---|
+| Duration | 35 min | 30 min | 29 min |
+| Trades | 41 | 83 | 92 |
+| Return | +295% | +138% | +101% |
+| Win Rate | 95.1% | 98.8% | 97.8% |
+| Max DD | 7.3% | 0% | 0% |
+| Losses | 2 | 1 | 2 |
+| Top market % | 85% (Fed) | 44% (Stripe) | 24% (Fed) |
+| Token bugs | Yes (SHORTs) | No | No |
+| Sentiment trades | No | No | Yes (5 trades) |
+
+**Key trend**: Returns declining (295% → 138% → 101%) but trade count increasing (41 → 83 → 92) and diversification improving. The declining return is likely due to:
+1. Brain learning to take smaller, more frequent profits (shorter hold times)
+2. Better diversification reducing concentration in explosive markets
+3. Market pruning removing the highest-spread (highest-PnL) markets that were actually dead
+
+### Honest Assessment
+
+**What's real:**
+1. Entry logic is genuinely sound — mid-relative buys 1-3¢ below mid on 10¢+ spread markets
+2. Risk management works — dynamic stops, timeouts, flow pulls all firing correctly
+3. Brain adaptation is working — STAR promotion, Kelly sizing, hold time adjustments
+4. one_side strategy eliminates token inventory bugs from both_sides
+5. Market pruning keeps focus on active markets
+
+**What's NOT real (paper-mode inflation):**
+
+| Metric | Paper (Session #9) | Realistic Live |
+|---|---|---|
+| 30-min return | +101% | +2% to -3% |
+| Win rate | 98% | 60-70% |
+| Adverse fill rate | 2.2% | 15-25% |
+| Max drawdown | 0% | 5-15% |
+| Avg win | ~$1.10 | $0.20-0.40 |
+| Avg loss | $0.006 | $0.30-0.60 |
+
+**Root causes of paper-mode optimism:**
+1. MIN_REST_TIME of 8s is too short — real queue position takes 15-30s
+2. Probabilistic fill layer still favors the bot (velocity bonuses, age bonuses compound)
+3. No gas cost simulation (92 trades ≈ $0.50-$2.00 on Polygon)
+4. Paper tax of 0.2¢ is too low — real slippage is 0.5-2¢ on thin books
+
+### Recommendations for Session #10 / Live Prep
+
+1. **Tighten adverse selection to 15-20%** — add probabilistic adverse fills independent of flow
+2. **Increase MIN_REST_TIME to 15s** — realistic queue positioning
+3. **Add gas cost simulation** — 0.5¢ per trade minimum
+4. **Increase paper tax to 0.5¢** — from current 0.2¢
+5. **Cap per-market PnL at 30%** — force diversification
+6. **Go/no-go**: If paper WR drops to 70-75% after tightening and still makes money, that's live-ready
+7. **Live pilot**: $100 real, one_side, per-order $5, 2-week trial
+
+### Verdict
+
+The engineering is **production-grade**. The strategy has a **real edge** on wide-spread prediction markets (capturing 5-10¢ spreads on 15-40¢ spread markets). But the fill simulator remains **2-3x too optimistic** — 98% WR and 0% drawdown are fiction. The next step is tightening the sim until paper WR drops to ~75% while maintaining positive PnL. That's the calibration that separates a cool paper bot from a live money machine.
