@@ -80,7 +80,7 @@ class FillSimulator:
     FILL_PROB_PENALTY_AT_10PCT = 0.5  # at 10% depth, 50% normal fill prob
 
     # Min resting time before fills can happen
-    MIN_REST_TIME = 3.0
+    MIN_REST_TIME = 8.0
 
     # Adverse selection
     ADVERSE_SELECTION_STRENGTH = 0.6
@@ -315,15 +315,14 @@ class FillSimulator:
 
             if at_best or near_best:
                 # ── Queue fill rate ──────────────────────────
-                # Realistic fill rates for Polymarket maker orders:
-                # - At best bid on a 10¢ spread market: ~3-5% per tick
-                # - Near best (1-2 ticks): ~1-2% per tick
-                # - These rates produce fills every 2-5 min on active markets
-                # - Conservative enough to not overstate paper returns
+                # v8: More realistic fill rates
+                # At best bid on a 10¢ spread market: ~5% per check
+                # Near best (1 tick): ~3% per check
+                # These produce fills every 2-6 min on active markets
                 if at_best:
-                    base_rate = 0.04  # 4% per check at best level
+                    base_rate = 0.05  # 5% per check at best level
                 else:
-                    base_rate = 0.015  # 1.5% per check near best
+                    base_rate = 0.03  # 3% per check near best (1 tick)
 
                 base_rate *= size_mult
 

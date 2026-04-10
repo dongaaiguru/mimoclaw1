@@ -835,9 +835,10 @@ class ScalperV5:
                     await self.om.cancel_order(order)
             LOG.warning(f"🌊 FLOW PULL | {slug[:35]} | {pull_reason}")
 
-        # Reactive cancellation
+        # v8: Reactive cancellation — only if price moved >3¢ (not 1¢)
+        # 1¢ moves are constant noise on prediction markets
         price_moved = abs(mid - old_mid)
-        if price_moved > 0.01:
+        if price_moved > 0.03:
             for oid, order in list(self.om.orders.items()):
                 if order.status == "live" and order.slug == slug:
                     await self.om.cancel_order(order)
@@ -955,10 +956,42 @@ class ScalperV5:
             LOG.debug(f"Market refresh error: {e}")
 
     async def _reprice(self):
-        # Cancel existing orders
+        # v8: SMART REPRICE — only cancel stale/mispriced orders, not all
+        # This was the #1 bug: cancelling everything every 15s meant orders
+        # never rested long enough to fill. Now we check if orders are still
+        # valid before cancelling.
+        now = time.time()
         for oid, order in list(self.om.orders.items()):
-            if order.status == "live":
+            if order.status != "live":
+                continue
+            # Cancel if: expired, too old (>60s for GTC), or price is stale (>5% from mid)
+            market = self.markets.get(order.slug)
+            if not market:
                 await self.om.cancel_order(order)
+                continue
+            if order.order_type == "GTD" and order.expires_at > 0 and now > order.expires_at:
+                await self.om.cancel_order(order)
+                continue
+            if now - order.created > 60:  # GTC older than 60s — stale
+                await self.om.cancel_order(order)
+                continue
+            # Check if price is still valid (within 3 ticks of where it should be)
+            mid = (market.best_bid + market.best_ask) / 2
+            if order.side == "BUY":
+                # Cancel if our bid is above the ask (would cross) or way below best bid
+                if order.price >= market.best_ask:
+                    await self.om.cancel_order(order)
+                    continue
+                if order.price < market.best_bid - 0.03:  # 3¢ below best — too far
+                    await self.om.cancel_order(order)
+                    continue
+            elif order.side == "SELL":
+                if order.price <= market.best_bid:
+                    await self.om.cancel_order(order)
+                    continue
+                if order.price > market.best_ask + 0.03:
+                    await self.om.cancel_order(order)
+                    continue
 
         # v5: Risk guard — skip all new entries if blocked
         can_trade, trade_reason = self.risk_guard.can_trade(
@@ -998,33 +1031,36 @@ class ScalperV5:
 
             mid = (market.best_bid + market.best_ask) / 2
 
+            # v8: Skip markets that already have a live order
+            existing = [o for o in self.om.orders.values()
+                       if o.status == "live" and o.slug == slug]
+            if existing and slug not in self.om.positions:
+                continue  # already have orders on this market, don't duplicate
+
             if slug in self.om.positions:
                 pos = self.om.positions[slug]
                 hold_sec = time.time() - pos.opened
                 tick = market.tick_size
 
+                # v8: Don't re-place exit orders if one already exists
+                exit_orders = [o for o in existing if o.side == "SELL"]
+                if exit_orders:
+                    continue
+
                 aggression = 0.5
                 if self.brain:
                     aggression = self.brain.get_exit_aggressiveness(slug)
 
-                # ── Realistic exit: queue at best ask ─────────
-                # Old logic used mid+offset → often outside the book
-                # New logic: queue at best ask (or 1 tick inside)
                 if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
-                    # Timeout — dump at best bid (cross spread)
                     exit_price = round(market.best_bid, 4)
                 elif mid < pos.entry_price - 0.01:
-                    # Underwater — dump at best bid
                     exit_price = round(market.best_bid, 4)
                 elif market.spread > tick * 3:
-                    # Wide spread: 1 tick inside ask for queue advantage
                     exit_price = round(market.best_ask - tick, 4)
                 else:
-                    # Tight spread: queue at best ask
                     exit_price = round(market.best_ask, 4)
 
                 exit_price = min(exit_price, 0.99)
-                # Skip tiny positions
                 if pos.cost < 1.0 or pos.shares < 1:
                     self.om.positions.pop(slug, None)
                     self.om.stops.remove_stop(slug)
@@ -1055,12 +1091,12 @@ class ScalperV5:
         ba = market.best_ask
         spread = market.spread
 
-        # ── Realistic scalping entry: queue at best bid ─────
-        # Old logic placed orders way below best bid → never filled.
-        # New logic: place AT best bid (queue position) or 1 tick inside
-        # if spread is wide enough. This is how real scalpers work.
-        if spread > tick * 3:
-            # Wide spread: jump 1 tick inside for better queue position
+        # ── v8: Place AT best bid for queue priority ──────────
+        # The v5 logic (mid - spread*0.3) placed orders in the MIDDLE of the spread,
+        # which means nobody was in front of us but nobody would hit us either.
+        # Real scalpers queue AT the best bid (or 1 tick inside if wide spread).
+        if spread > tick * 5:
+            # Wide spread: 1 tick inside best bid for better position
             buy_price = round(bb + tick, 4)
         else:
             # Tight spread: queue at best bid
@@ -1091,12 +1127,15 @@ class ScalperV5:
             if self.brain:
                 aggression = self.brain.get_exit_aggressiveness(slug)
 
+            # v8: Exit at best ask (queue position), not mid+offset
             if hold_sec > self.cfg.max_hold_sec * (0.85 - aggression * 0.3):
-                exit_price = round(market.best_bid, 4)
-            elif mid > pos.entry_price + 0.005:
-                exit_price = round(mid + 0.003, 4)
+                exit_price = round(market.best_bid, 4)  # timeout — dump at bid
+            elif mid < pos.entry_price - 0.01:
+                exit_price = round(market.best_bid, 4)  # underwater — dump
+            elif market.spread > tick * 3:
+                exit_price = round(market.best_ask - tick, 4)  # 1 tick inside
             else:
-                exit_price = round(mid, 4)
+                exit_price = round(market.best_ask, 4)  # queue at best ask
 
             gtd = self._get_gtd_seconds(slug, market.spread)
             size = self.om.get_brain_adjusted_size(slug, market, is_market_making=True,
@@ -1120,26 +1159,33 @@ class ScalperV5:
         gtd = self._get_gtd_seconds(slug, market.spread)
         tick = market.tick_size
 
-        half_capture = max(0.005, spread * 0.3)
-        bid_price = round(mid - half_capture, 4)
-        ask_price = round(mid + half_capture, 4)
+        # v8: Place AT best bid/ask for queue priority, not in the middle of spread
+        # Real market makers queue at the front of the book
+        bb = market.best_bid
+        ba = market.best_ask
 
-        bid_price = max(bid_price, round(market.best_bid + tick, 4))
-        ask_price = min(ask_price, round(market.best_ask - tick, 4))
+        if spread > tick * 5:
+            # Wide spread: 1 tick inside for better queue position
+            bid_price = round(bb + tick, 4)
+            ask_price = round(ba - tick, 4)
+        else:
+            # Tight spread: queue at best levels
+            bid_price = round(bb, 4)
+            ask_price = round(ba, 4)
 
-        # Inventory skew
+        # Inventory skew (small adjustment)
         inventory = self.om.token_mgr.get_balance(market.yes_token)
-        skew = inventory * 0.005
+        skew = inventory * 0.002
         bid_price = round(bid_price - skew, 4)
         ask_price = round(ask_price - skew, 4)
 
         # Flow adjustment
         flow_stats = self.flow.get_stats(market.yes_token)
         buy_pressure = flow_stats.get("buy_pressure", 0)
-        if buy_pressure > 0.3:
-            ask_price = round(ask_price - 0.002, 4)
-        elif buy_pressure < -0.3:
-            bid_price = round(bid_price + 0.002, 4)
+        if buy_pressure > 0.5:
+            ask_price = round(min(ask_price - tick, ask_price), 4)
+        elif buy_pressure < -0.5:
+            bid_price = round(max(bid_price + tick, bid_price), 4)
 
         bid_price = self.om.snap_to_tick(bid_price, tick)
         ask_price = self.om.snap_to_tick(ask_price, tick)
